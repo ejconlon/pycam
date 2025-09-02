@@ -51,7 +51,18 @@ class ModelExtrusion(pycam.Plugins.PluginBase):
             self.gui.get_object("ExtrusionGrid").set_value(0.5)
             extrusion_model = self.gui.get_object("ExtrusionTypeModel")
             for row in EXTRUSION_TYPES:
-                extrusion_model.append((row[0], row[1], self.gui.get_object(row[2]).get_pixbuf()))
+                # GTK 4: get_pixbuf() replaced with get_paintable() or get_texture()
+                image_widget = self.gui.get_object(row[2])
+                try:
+                    # GTK 4: Try paintable first
+                    pixbuf = image_widget.get_paintable()
+                    if pixbuf is None:
+                        # Try texture as fallback
+                        pixbuf = image_widget.get_texture()
+                except AttributeError:
+                    # GTK 3 compatibility
+                    pixbuf = image_widget.get_pixbuf()
+                extrusion_model.append((row[0], row[1], pixbuf))
             self.gui.get_object("ExtrusionTypeSelector").set_active(0)
             self.register_gtk_handlers(self._gtk_handlers)
             self.register_event_handlers(self._event_handlers)

@@ -73,10 +73,10 @@ class GtkConsole(pycam.Plugins.PluginBase):
                     ("CommandInput", "activate", self._execute_command),
                     ("CopyConsoleButton", "clicked", self._copy_to_clipboard),
                     ("WipeConsoleButton", "clicked", self._clear_console),
-                    ("CommandInput", "key-press-event", self._scroll_history),
+                    ("CommandInput", "key-pressed", self._scroll_history),
                     ("ToggleConsoleWindow", "toggled", self._set_window_visibility),
                     ("CloseConsoleButton", "clicked", hide_window),
-                    ("ConsoleDialog", "delete-event", hide_window),
+                    ("ConsoleDialog", "close-request", hide_window),
                     ("ConsoleDialog", "destroy", hide_window)):
                 self._gtk_handlers.append((self.gui.get_object(objname), signal, func))
             self.register_gtk_handlers(self._gtk_handlers)

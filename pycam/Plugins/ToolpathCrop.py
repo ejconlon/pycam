@@ -52,7 +52,7 @@ class ToolpathCrop(pycam.Plugins.PluginBase):
                 return [id(model) for model in models]
 
             self.models_widget.set_conversion(set_conv=set_converter, get_conv=get_converter)
-            self.gui.get_object("ModelTableContainer").add(self.models_widget.get_widget())
+            self.gui.get_object("ModelTableContainer").append(self.models_widget.get_widget())
             self._event_handlers = (
                 ("model-list-changed", self._update_models_list),
                 ("toolpath-selection-changed", self._update_visibility))

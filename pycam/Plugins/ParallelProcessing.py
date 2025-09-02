@@ -42,7 +42,7 @@ class ParallelProcessing(pycam.Plugins.PluginBase):
             self.process_pool_window.set_default_size(500, 400)
             self._gtk_handlers = []
             self._gtk_handlers.extend((
-                (self.process_pool_window, "delete-event", self.toggle_process_pool_window, False),
+                (self.process_pool_window, "close-request", self.toggle_process_pool_window, False),
                 (self.process_pool_window, "destroy", self.toggle_process_pool_window, False)))
             self._gtk_handlers.append((
                 self.gui.get_object("ProcessPoolWindowClose"), "clicked",

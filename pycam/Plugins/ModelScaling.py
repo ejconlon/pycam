@@ -39,16 +39,16 @@ class ModelScaling(pycam.Plugins.PluginBase):
             scale_dimension_control = self.gui.get_object("ScaleDimensionControl")
             self._gtk_handlers = []
             self._gtk_handlers.extend((
-                (scale_percent, "focus-in-event",
+                (scale_percent, "focus-enter",
                  lambda widget, data: scale_button.grab_default()),
-                (scale_percent, "focus-out-event",
+                (scale_percent, "focus-leave",
                  lambda widget, data: scale_box.get_toplevel().set_default(None)),
                 (scale_button, "clicked", self._scale_model),
                 (self.gui.get_object("ScaleDimensionAxis"), "changed",
                  lambda widget=None: self.core.emit_event("model-change-after")),
-                (scale_dimension_control, "focus-in-event",
+                (scale_dimension_control, "focus-enter",
                  lambda widget, data: scale_dimension_button.grab_default()),
-                (scale_dimension_control, "focus-out-event",
+                (scale_dimension_control, "focus-leave",
                  lambda widget, data: scale_box.get_toplevel().set_default(None)),
                 (scale_dimension_button, "clicked",
                  lambda widget: self._scale_model_axis_fit(proportionally=True)),

@@ -42,7 +42,7 @@ class Fonts(pycam.Plugins.PluginBase):
             window = self.font_dialog_window
             hide_window = lambda *args: self.toggle_font_dialog_window(state=False)
             self._gtk_handlers = [
-                (window, "delete-event", hide_window),
+                (window, "close-request", hide_window),
                 (window, "destroy", hide_window),
                 (self.gui.get_object("FontDialogCancel"), "clicked", hide_window),
                 (self.gui.get_object("FontDialogApply"), "clicked", self.import_from_font_dialog),

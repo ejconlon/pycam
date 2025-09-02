@@ -50,7 +50,7 @@ class MemoryAnalyzer(pycam.Plugins.PluginBase):
             self.window.set_default_size(500, 400)
             hide_window = lambda *args: self.toggle_window(value=False)
             self._gtk_handlers.extend([
-                (self.window, "delete-event", hide_window),
+                (self.window, "close-request", hide_window),
                 (self.window, "destroy", hide_window),
                 (self.gui.get_object("MemoryAnalyzerCloseButton"), "clicked", hide_window),
                 (self.gui.get_object("MemoryAnalyzerCopyButton"), "clicked",

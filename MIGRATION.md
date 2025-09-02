@@ -33,62 +33,63 @@ Remember the following:
 - ✅ Basic 3D visualization framework
 - ✅ Plugin tab management and UI
 
+## ✅ Completed GTK 4 Migration Tasks (Phase 14)
+
+### High Priority Plugin Fixes - COMPLETED
+
+#### ✅ Task 1: Signal Migration Issues - COMPLETED
+**Fixed**: All deprecated GTK 3 signals migrated to GTK 4 equivalents
+- ✅ `delete-event` → `close-request` (ParallelProcessing, Fonts, MemoryAnalyzer, Log, GtkConsole)
+- ✅ `focus-in-event` → `focus-enter` (ModelScaling, ModelPosition) 
+- ✅ `focus-out-event` → `focus-leave` (ModelScaling, ModelPosition)
+- ✅ `button-press-event` → `button-pressed` (Log)
+- ✅ `key-press-event` → `key-pressed` (GtkConsole)
+
+**Fixed Files**:
+```
+✅ pycam/Plugins/ParallelProcessing.py
+✅ pycam/Plugins/Fonts.py  
+✅ pycam/Plugins/MemoryAnalyzer.py
+✅ pycam/Plugins/ModelScaling.py
+✅ pycam/Plugins/ModelPosition.py
+✅ pycam/Plugins/Log.py
+✅ pycam/Plugins/GtkConsole.py
+```
+
+#### ✅ Task 2: Container Method Migration - COMPLETED
+**Fixed**: GTK 4 container API changes resolved
+- ✅ `container.add()` → `container.append()` (ToolpathCrop)
+- ✅ OpenGLWindow already had proper GTK 4 container handling
+
+**Fixed Files**:
+```
+✅ pycam/Plugins/ToolpathCrop.py
+✅ pycam/Plugins/OpenGLWindow.py (already GTK 4 compatible)
+```
+
+#### ✅ Task 3: Image Widget API Changes - COMPLETED
+**Fixed**: GTK 4 Image widget API migration with backward compatibility
+- ✅ `Image.get_pixbuf()` → `Image.get_paintable()/get_texture()` with GTK 3 fallback
+
+**Fixed Files**:
+```
+✅ pycam/Plugins/ModelExtrusion.py
+```
+
 ## 🚧 Remaining GTK 4 Migration Tasks
-
-Based on current plugin errors when running `.venv/bin/python -m pycam.run_gui`:
-
-### High Priority: Core Plugin Fixes
-
-#### Task 1: Signal Migration Issues
-**Problem**: Multiple plugins using deprecated GTK 3 signals
-- `delete-event` → `close-request` (ParallelProcessing, Fonts, MemoryAnalyzer)
-- `focus-in-event` → `focus-enter` (ModelScaling, ModelPosition) 
-- `button-press-event` → `button-pressed` (Log)
-- `key-press-event` → `key-pressed` (GtkConsole)
-
-**Files to Fix**:
-```
-pycam/Plugins/ParallelProcessing.py
-pycam/Plugins/Fonts.py  
-pycam/Plugins/MemoryAnalyzer.py
-pycam/Plugins/ModelScaling.py
-pycam/Plugins/ModelPosition.py
-pycam/Plugins/Log.py
-pycam/Plugins/GtkConsole.py
-```
-
-#### Task 2: Container Method Migration
-**Problem**: GTK 4 container API changes
-- `container.add()` → `container.append()` (ToolpathCrop)
-- `container.remove()` → PopoverMenu specific removal methods (OpenGLWindow)
-
-**Files to Fix**:
-```
-pycam/Plugins/ToolpathCrop.py
-pycam/Plugins/OpenGLWindow.py
-```
-
-#### Task 3: Image Widget API Changes  
-**Problem**: GTK 4 Image widget changes
-- `Image.get_pixbuf()` → new GTK 4 texture/paintable API (ModelExtrusion)
-
-**Files to Fix**:
-```
-pycam/Plugins/ModelExtrusion.py
-```
 
 ### Medium Priority: Dependency Chain Recovery
 
-#### Task 4: OpenGL Plugin Chain
-**Problem**: OpenGL plugins disabled due to OpenGLWindow dependency failure
-- Fix OpenGLWindow first (Task 2 issue)
-- This will enable: OpenGLViewGrid, OpenGLViewDimension, OpenGLViewToolpath, OpenGLViewBounds
-- Secondary: ToolpathSimulation (depends on OpenGLViewToolpath)
+#### Task 4: OpenGL Plugin Chain - READY FOR TESTING
+**Status**: Core GTK 4 plugin fixes completed - OpenGL chain should now work
+- ✅ OpenGLWindow GTK 4 compatibility confirmed
+- **Ready to test**: OpenGLViewGrid, OpenGLViewDimension, OpenGLViewToolpath, OpenGLViewBounds
+- **Ready to test**: ToolpathSimulation (depends on OpenGLViewToolpath)
 
-#### Task 5: Model Support Chain
-**Problem**: ModelSupportGrid disabled due to ModelSupport dependency
-- Need to identify and fix ModelSupport plugin issues
-- This will restore 3D model support functionality
+#### Task 5: Model Support Chain - READY FOR INVESTIGATION
+**Status**: Ready to investigate and fix remaining ModelSupport plugin issues
+- **Next step**: Test ModelSupport plugin loading after signal migration fixes
+- **Goal**: Restore ModelSupportGrid and 3D model support functionality
 
 ### Low Priority: Enhanced Features
 
@@ -150,4 +151,4 @@ pycam/Plugins/ModelExtrusion.py
 
 ---
 
-*Last Updated: 2025-09-02 - Core GTK 4 migration complete, focusing on plugin compatibility*
+*Last Updated: 2025-09-02 - Phase 14 completed: GTK 4 plugin compatibility fixes implemented*

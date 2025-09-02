@@ -45,7 +45,7 @@ class Log(pycam.Plugins.PluginBase):
             # status bar
             self.status_bar = self.gui.get_object("StatusBar")
             event_bar = self.gui.get_object("StatusBarEventBox")
-            self._gtk_handlers.append((event_bar, "button-press-event", self.toggle_log_window))
+            self._gtk_handlers.append((event_bar, "button-pressed", self.toggle_log_window))
             event_bar.unparent()
             self.core.register_ui("main_window", "Status", event_bar, 100)
             # "log" window
@@ -53,7 +53,7 @@ class Log(pycam.Plugins.PluginBase):
             self.log_window.set_default_size(500, 400)
             hide_window = lambda *args: self.toggle_log_window(value=False)
             self._gtk_handlers.extend([
-                (self.log_window, "delete-event", hide_window),
+                (self.log_window, "close-request", hide_window),
                 (self.log_window, "destroy", hide_window),
                 (self.gui.get_object("LogWindowClose"), "clicked", hide_window),
                 (self.gui.get_object("LogWindowClear"), "clicked", self.clear_log_window),
