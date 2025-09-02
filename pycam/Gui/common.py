@@ -65,7 +65,7 @@ def import_gtk_carefully():
     try:
         import gi
         # avoid Gtk version warnings for later imports
-        gi.require_version("Gtk", "3.0")
+        gi.require_version("Gtk", "4.0")
     except ImportError:
         pass
     if not in_windows:

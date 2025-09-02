@@ -22,7 +22,6 @@ along with PyCAM.  If not, see <http://www.gnu.org/licenses/>.
 import glob
 import os.path
 from setuptools import setup, find_packages
-
 from pycam import VERSION
 
 BASE_DIR = os.path.realpath(os.path.abspath(os.path.dirname(__file__)))

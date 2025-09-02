@@ -40,7 +40,7 @@ class GtkMainLoop:
 
     def __init__(self):
         import gi
-        gi.require_version("Gtk", "3.0")
+        gi.require_version("Gtk", "4.0")
         from gi.repository import Gtk
         self._gtk = Gtk
         self._is_running = False
