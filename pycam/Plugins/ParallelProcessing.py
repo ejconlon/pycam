@@ -246,9 +246,10 @@ class ParallelProcessing(pycam.Plugins.PluginBase):
             self.log.info("Multiprocessing disabled")
         # set the label of the "connect" button
         if enable_server_obj.get_active():
-            info = self._gtk.stock_lookup(self._gtk.STOCK_DISCONNECT)
+            # GTK 4: stock items removed, use plain text labels
+            label_text = "Disconnect"
         else:
-            info = self._gtk.stock_lookup(self._gtk.STOCK_CONNECT)
-        enable_server_obj.set_label(info.label)
+            label_text = "Connect"
+        enable_server_obj.set_label(label_text)
         complete_area.set_sensitive(True)
         self.update_parallel_processes_settings()

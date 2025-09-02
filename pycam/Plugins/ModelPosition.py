@@ -41,16 +41,16 @@ class ModelPosition(pycam.Plugins.PluginBase):
             for axis in "XYZ":
                 obj = self.gui.get_object("ShiftPosition%s" % axis)
                 self._gtk_handlers.extend((
-                    (obj, "focus-enter", lambda widget, data: shift_button.grab_default()),
-                    (obj, "focus-leave",
+                    (obj, "focus-in", lambda widget, data: shift_button.grab_default()),
+                    (obj, "focus-out",
                      lambda widget, data: shift_button.get_toplevel().set_default(None))))
             for axis in "XYZ":
                 for name_template in ("AlignPosition%s", "AlignPosition%sMin",
                                       "AlignPosition%sCenter", "AlignPosition%sMax"):
                     obj = self.gui.get_object(name_template % axis)
                     self._gtk_handlers.extend((
-                        (obj, "focus-enter", lambda widget, data: align_button.grab_default()),
-                        (obj, "focus-leave",
+                        (obj, "focus-in", lambda widget, data: align_button.grab_default()),
+                        (obj, "focus-out",
                          lambda widget, data: align_button.get_toplevel().set_default(None))))
             self._event_handlers = (("model-selection-changed", self._update_position_widgets), )
             self.register_gtk_handlers(self._gtk_handlers)

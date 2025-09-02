@@ -73,13 +73,18 @@ class GtkConsole(pycam.Plugins.PluginBase):
                     ("CommandInput", "activate", self._execute_command),
                     ("CopyConsoleButton", "clicked", self._copy_to_clipboard),
                     ("WipeConsoleButton", "clicked", self._clear_console),
-                    ("CommandInput", "key-pressed", self._scroll_history),
+                    # GTK 4: key-pressed will be handled via event controller below
                     ("ToggleConsoleWindow", "toggled", self._set_window_visibility),
                     ("CloseConsoleButton", "clicked", hide_window),
                     ("ConsoleDialog", "close-request", hide_window),
                     ("ConsoleDialog", "destroy", hide_window)):
                 self._gtk_handlers.append((self.gui.get_object(objname), signal, func))
             self.register_gtk_handlers(self._gtk_handlers)
+            # GTK 4: Add event controller for key events
+            command_input = self.gui.get_object("CommandInput")
+            key_controller = self._gtk.EventControllerKey.new()
+            key_controller.connect("key-pressed", self._scroll_history)
+            command_input.add_controller(key_controller)
         return True
 
     def teardown(self):

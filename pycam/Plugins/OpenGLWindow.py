@@ -341,29 +341,28 @@ class OpenGLWindow(pycam.Plugins.PluginBase):
         toolbar = self.gui.get_object("ViewItems")
         
         # GTK 4: Clear children using new iteration method
-        for parent in (pref_box, self.context_menu, toolbar):
+        for parent in (pref_box, toolbar):
             if parent is not None:
-                # PopoverMenu in GTK 4 doesn't support child iteration like regular containers
-                if hasattr(parent, 'get_first_child'):
-                    child = parent.get_first_child()
-                    while child:
-                        next_child = child.get_next_sibling()
-                        parent.remove(child)
-                        child = next_child
-                # For GTK 4 PopoverMenu, we might need to handle differently
-                elif hasattr(parent, 'set_menu_model'):
-                    # GTK 4 PopoverMenu uses menu models, not direct child widgets
-                    parent.set_menu_model(None)
+                child = parent.get_first_child()
+                while child:
+                    next_child = child.get_next_sibling()
+                    parent.remove(child)
+                    child = next_child
+                
+        # GTK 4: PopoverMenu uses menu models, not direct widgets
+        if self.context_menu is not None and hasattr(self.context_menu, 'set_menu_model'):
+            self.context_menu.set_menu_model(None)
                 
         items = list(self._display_items.values())
         items.sort(key=lambda item: item["weight"])
         for item in items:
-            # GTK 4: Use append instead of pack_start, add for toolbar
+            # GTK 4: Use append for regular containers
             pref_box.append(item["widgets"][0])
-            toolbar.append(item["widgets"][1])  # toolbar.add should still work
-            self.context_menu.append(item["widgets"][2])
+            toolbar.append(item["widgets"][1])
+            # Skip PopoverMenu for now as it needs proper GMenu integration
+            # self.context_menu.append(item["widgets"][2])
             
-        for parent in (pref_box, toolbar, self.context_menu):
+        for parent in (pref_box, toolbar):
             parent.insert_action_group(self.core.get("gtk_action_group_prefix"),
                                        self.core.get("gtk_action_group"))
 

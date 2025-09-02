@@ -51,7 +51,7 @@ class Fonts(pycam.Plugins.PluginBase):
                  self.copy_font_dialog_to_clipboard),
                 (self.gui.get_object("FontDialogInputBuffer"), "changed",
                  self.update_font_dialog_preview),
-                (self.gui.get_object("FontDialogPreview"), "configure_event",
+                (self.gui.get_object("FontDialogPreview"), "resize",
                  self.update_font_dialog_preview)]
             # (self.gui.get_object("FontDialogPreview"), "expose_event",  FIXME
             #  self.update_font_dialog_preview)]

@@ -45,7 +45,10 @@ class Log(pycam.Plugins.PluginBase):
             # status bar
             self.status_bar = self.gui.get_object("StatusBar")
             event_bar = self.gui.get_object("StatusBarEventBox")
-            self._gtk_handlers.append((event_bar, "button-pressed", self.toggle_log_window))
+            # GTK 4: Use GestureClick instead of button-pressed event
+            click_gesture = self._gtk.GestureClick.new()
+            click_gesture.connect("pressed", lambda gesture, n_press, x, y: self.toggle_log_window())
+            event_bar.add_controller(click_gesture)
             event_bar.unparent()
             self.core.register_ui("main_window", "Status", event_bar, 100)
             # "log" window

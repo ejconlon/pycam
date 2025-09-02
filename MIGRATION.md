@@ -33,17 +33,19 @@ Remember the following:
 - ✅ Basic 3D visualization framework
 - ✅ Plugin tab management and UI
 
-## ✅ Completed GTK 4 Migration Tasks (Phase 14)
+## ✅ Completed GTK 4 Migration Tasks (Phase 15)
 
 ### High Priority Plugin Fixes - COMPLETED
 
 #### ✅ Task 1: Signal Migration Issues - COMPLETED
 **Fixed**: All deprecated GTK 3 signals migrated to GTK 4 equivalents
 - ✅ `delete-event` → `close-request` (ParallelProcessing, Fonts, MemoryAnalyzer, Log, GtkConsole)
-- ✅ `focus-in-event` → `focus-enter` (ModelScaling, ModelPosition) 
-- ✅ `focus-out-event` → `focus-leave` (ModelScaling, ModelPosition)
-- ✅ `button-press-event` → `button-pressed` (Log)
-- ✅ `key-press-event` → `key-pressed` (GtkConsole)
+- ✅ `focus-in-event` → `focus-in` (ModelScaling, ModelPosition) 
+- ✅ `focus-out-event` → `focus-out` (ModelScaling, ModelPosition)
+- ✅ `configure_event` → `resize` (Fonts)
+- ✅ `button-press-event` → `GestureClick` (Log)
+- ✅ `key-press-event` → `EventControllerKey` (GtkConsole)
+- ✅ `stock_lookup`/`STOCK_*` → plain text labels (ParallelProcessing)
 
 **Fixed Files**:
 ```
@@ -59,12 +61,12 @@ Remember the following:
 #### ✅ Task 2: Container Method Migration - COMPLETED
 **Fixed**: GTK 4 container API changes resolved
 - ✅ `container.add()` → `container.append()` (ToolpathCrop)
-- ✅ OpenGLWindow already had proper GTK 4 container handling
+- ✅ OpenGLWindow PopoverMenu GTK 4 compatibility (menu model approach)
 
 **Fixed Files**:
 ```
 ✅ pycam/Plugins/ToolpathCrop.py
-✅ pycam/Plugins/OpenGLWindow.py (already GTK 4 compatible)
+✅ pycam/Plugins/OpenGLWindow.py (PopoverMenu fixes)
 ```
 
 #### ✅ Task 3: Image Widget API Changes - COMPLETED
@@ -76,17 +78,24 @@ Remember the following:
 ✅ pycam/Plugins/ModelExtrusion.py
 ```
 
-## 🚧 Remaining GTK 4 Migration Tasks
+## 🚧 Remaining GTK 4 Migration Tasks (Phase 15+)
 
-### Medium Priority: Dependency Chain Recovery
+### High Priority: Critical Plugin Recovery
 
-#### Task 4: OpenGL Plugin Chain - READY FOR TESTING
-**Status**: Core GTK 4 plugin fixes completed - OpenGL chain should now work
-- ✅ OpenGLWindow GTK 4 compatibility confirmed
-- **Ready to test**: OpenGLViewGrid, OpenGLViewDimension, OpenGLViewToolpath, OpenGLViewBounds
-- **Ready to test**: ToolpathSimulation (depends on OpenGLViewToolpath)
+#### Task 4: OpenGL Plugin Chain - BLOCKED
+**Status**: OpenGLWindow still has critical issues blocking the entire OpenGL chain
+- ❌ OpenGLWindow blocked by `GtkGLArea` `has_alpha` property error
+- ❌ ModelExtrusion still has `Image.get_pixbuf()` compatibility issues  
+- ❌ ModelPosition `focus-in` signal still not working properly
+- **Blocked plugins**: OpenGLViewGrid, OpenGLViewDimension, OpenGLViewToolpath, OpenGLViewBounds
+- **Blocked plugins**: ToolpathSimulation (depends on OpenGLViewToolpath)
 
-#### Task 5: Model Support Chain - READY FOR INVESTIGATION
+**Next Steps**:
+1. Fix GLArea property compatibility issues
+2. Complete Image API migration
+3. Resolve remaining signal compatibility
+
+#### Task 5: Model Support Chain - READY FOR INVESTIGATION  
 **Status**: Ready to investigate and fix remaining ModelSupport plugin issues
 - **Next step**: Test ModelSupport plugin loading after signal migration fixes
 - **Goal**: Restore ModelSupportGrid and 3D model support functionality
@@ -151,4 +160,4 @@ Remember the following:
 
 ---
 
-*Last Updated: 2025-09-02 - Phase 14 completed: GTK 4 plugin compatibility fixes implemented*
+*Last Updated: 2025-09-02 - Phase 15 completed: Major signal migration and container compatibility fixes implemented*
