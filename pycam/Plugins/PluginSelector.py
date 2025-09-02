@@ -34,7 +34,7 @@ class PluginSelector(pycam.Plugins.PluginBase):
             self.plugin_window = self.gui.get_object("PluginManagerWindow")
             self._gtk_handlers = []
             self._gtk_handlers.extend((
-                (self.plugin_window, "delete-event", self.toggle_plugin_window, False),
+                (self.plugin_window, "close-request", self.toggle_plugin_window, False),
                 (self.plugin_window, "destroy", self.toggle_plugin_window, False)))
             self._gtk_handlers.append((self.gui.get_object("ClosePluginManager"), "clicked",
                                        self.toggle_plugin_window, False))

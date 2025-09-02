@@ -8,48 +8,49 @@
     <property name="title" translatable="yes">Console</property>
     <property name="default_width">480</property>
     <property name="default_height">320</property>
-    <child internal-child="vbox">
+    <child>
       <object class="GtkBox" id="dialog-box1">
-      <property name="orientation">vertical</property>
+        <property name="orientation">vertical</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="spacing">2</property>
-        <child internal-child="action_area">
+        <child>
           <object class="GtkBox" id="dialog-action_area1">
-      <property name="orientation">horizontal</property>
+            <property name="orientation">horizontal</property>
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-                    <child>
+            <child>
               <object class="GtkButton" id="CopyConsoleButton">
                 <property name="label">gtk-copy</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
-                          </object>
-
+              </object>
+            </child>
             <child>
               <object class="GtkButton" id="WipeConsoleButton">
                 <property name="label">Clear</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
-                          </object>
-
+              </object>
+            </child>
             <child>
               <object class="GtkButton" id="CloseConsoleButton">
                 <property name="label">gtk-close</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
-                          </object>
-
+              </object>
+            </child>
           </object>
+        </child>
 
         <child>
           <object class="GtkScrolledWindow" id="scrolledwindow1">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
-                    <child>
+            <child>
               <object class="GtkTextView" id="ConsoleView">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
@@ -57,12 +58,13 @@
                 <property name="wrap_mode">word-char</property>
                 <property name="buffer">ConsoleViewBuffer</property>
               </object>
-
+            </child>
           </object>
+        </child>
 
         <child>
           <object class="GtkBox" id="box1">
-      <property name="orientation">vertical</property>
+            <property name="orientation">vertical</property>
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="spacing">3</property>
@@ -72,7 +74,7 @@
                 <property name="can_focus">False</property>
                 <property name="label" translatable="yes">Input:</property>
               </object>
-
+            </child>
             <child>
               <object class="GtkEntry" id="CommandInput">
                 <property name="visible">True</property>
@@ -81,18 +83,19 @@
                 <property name="events">GDK_KEY_PRESS_MASK | GDK_STRUCTURE_MASK</property>
                 <property name="invisible_char">●</property>
               </object>
-
+            </child>
             <child>
               <object class="GtkButton" id="ConsoleExecuteButton">
                 <property name="label">Apply</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
-                          </object>
-
+              </object>
+            </child>
           </object>
-
+        </child>
       </object>
+    </child>
 
     <action-widgets>
       <action-widget response="0">CopyConsoleButton</action-widget>

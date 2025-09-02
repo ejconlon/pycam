@@ -242,126 +242,66 @@
                   <object class="GtkLabel">
                     <property name="label">X Min:</property>
                     <property name="xalign">0</property>
-                  </object>
-                  <layout>
-                    <property name="column">0</property>
-                    <property name="row">0</property>
-                  </layout>
-                </child>
+                  </object></child>
                 <child>
                   <object class="GtkSpinButton" id="BoundaryLowX">
                     <property name="adjustment">BoundaryLowXValue</property>
                     <property name="digits">2</property>
-                  </object>
-                  <layout>
-                    <property name="column">1</property>
-                    <property name="row">0</property>
-                  </layout>
-                </child>
+                  </object></child>
                 <child>
                   <object class="GtkLabel">
                     <property name="label">X Max:</property>
                     <property name="xalign">0</property>
-                  </object>
-                  <layout>
-                    <property name="column">2</property>
-                    <property name="row">0</property>
-                  </layout>
-                </child>
+                  </object></child>
                 <child>
                   <object class="GtkSpinButton" id="BoundaryHighX">
                     <property name="adjustment">BoundaryHighXValue</property>
                     <property name="digits">2</property>
-                  </object>
-                  <layout>
-                    <property name="column">3</property>
-                    <property name="row">0</property>
-                  </layout>
-                </child>
+                  </object></child>
 
                 <!-- Y Bounds -->
                 <child>
                   <object class="GtkLabel">
                     <property name="label">Y Min:</property>
                     <property name="xalign">0</property>
-                  </object>
-                  <layout>
-                    <property name="column">0</property>
-                    <property name="row">1</property>
-                  </layout>
-                </child>
+                  </object></child>
                 <child>
                   <object class="GtkSpinButton" id="BoundaryLowY">
                     <property name="adjustment">BoundaryLowYValue</property>
                     <property name="digits">2</property>
-                  </object>
-                  <layout>
-                    <property name="column">1</property>
-                    <property name="row">1</property>
-                  </layout>
-                </child>
+                  </object></child>
                 <child>
                   <object class="GtkLabel">
                     <property name="label">Y Max:</property>
                     <property name="xalign">0</property>
-                  </object>
-                  <layout>
-                    <property name="column">2</property>
-                    <property name="row">1</property>
-                  </layout>
-                </child>
+                  </object></child>
                 <child>
                   <object class="GtkSpinButton" id="BoundaryHighY">
                     <property name="adjustment">BoundaryHighYValue</property>
                     <property name="digits">2</property>
-                  </object>
-                  <layout>
-                    <property name="column">3</property>
-                    <property name="row">1</property>
-                  </layout>
-                </child>
+                  </object></child>
 
                 <!-- Z Bounds -->
                 <child>
                   <object class="GtkLabel">
                     <property name="label">Z Min:</property>
                     <property name="xalign">0</property>
-                  </object>
-                  <layout>
-                    <property name="column">0</property>
-                    <property name="row">2</property>
-                  </layout>
-                </child>
+                  </object></child>
                 <child>
                   <object class="GtkSpinButton" id="BoundaryLowZ">
                     <property name="adjustment">BoundaryLowZValue</property>
                     <property name="digits">2</property>
-                  </object>
-                  <layout>
-                    <property name="column">1</property>
-                    <property name="row">2</property>
-                  </layout>
-                </child>
+                  </object></child>
                 <child>
                   <object class="GtkLabel">
                     <property name="label">Z Max:</property>
                     <property name="xalign">0</property>
-                  </object>
-                  <layout>
-                    <property name="column">2</property>
-                    <property name="row">2</property>
-                  </layout>
-                </child>
+                  </object></child>
                 <child>
                   <object class="GtkSpinButton" id="BoundaryHighZ">
                     <property name="adjustment">BoundaryHighZValue</property>
                     <property name="digits">2</property>
-                  </object>
-                  <layout>
-                    <property name="column">3</property>
-                    <property name="row">2</property>
-                  </layout>
-                </child>
+                  </object></child>
               </object>
             </child>
           </object>

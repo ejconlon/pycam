@@ -9,87 +9,112 @@
     <property name="icon_name">accessories-calculator</property>
     <child>
       <object class="GtkBox" id="dialog-box7">
-      <property name="orientation">vertical</property>
+        <property name="orientation">vertical</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="spacing">2</property>
         <child>
           <object class="GtkBox" id="dialog-action_area5">
-      <property name="orientation">horizontal</property>
+            <property name="orientation">horizontal</property>
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-                    <child>
+            <child>
               <placeholder/>
+            </child>
             <child>
               <object class="GtkButton" id="UnitChangeApply">
                 <property name="label">Apply</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
+              </object>
+            </child>
+          </object>
+        </child>
         <child>
           <object class="GtkFrame" id="UnitChangeFrame">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="label_xalign">0</property>
+            <child>
+              <object class="GtkBox" id="frame-box">
+                <property name="orientation">vertical</property>
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="spacing">5</property>
+                <child>
+                  <object class="GtkCheckButton" id="UnitChangeModel">
+                    <property name="label" translatable="yes">Model</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">False</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkCheckButton" id="UnitChangeTools">
+                    <property name="label" translatable="yes">Tools</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">False</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkCheckButton" id="UnitChangeProcesses">
+                    <property name="label" translatable="yes">Processes</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">False</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkCheckButton" id="UnitChangeBounds">
+                    <property name="label" translatable="yes">Bounds</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">False</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkBox" id="buttonbox2">
+                    <property name="orientation">horizontal</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
                     <child>
-                    <child>
-                      <object class="GtkCheckButton" id="UnitChangeModel">
-                        <property name="label" translatable="yes">Model</property>
+                      <object class="GtkButton" id="UnitChangeSelectAll">
+                        <property name="label">Select All</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
-                        <property name="receives_default">False</property>
-                        <property name="xalign">0.5</property>
-                        <property name="draw_indicator">True</property>
+                        <property name="receives_default">True</property>
+                      </object>
+                    </child>
                     <child>
-                      <object class="GtkCheckButton" id="UnitChangeTools">
-                        <property name="label" translatable="yes">Tools</property>
+                      <object class="GtkButton" id="UnitChangeSelectNone">
+                        <property name="label">Clear</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
-                        <property name="receives_default">False</property>
-                        <property name="xalign">0.5</property>
-                        <property name="draw_indicator">True</property>
-                    <child>
-                      <object class="GtkCheckButton" id="UnitChangeProcesses">
-                        <property name="label" translatable="yes">Processes</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="receives_default">False</property>
-                        <property name="xalign">0.5</property>
-                        <property name="draw_indicator">True</property>
-                    <child>
-                      <object class="GtkCheckButton" id="UnitChangeBounds">
-                        <property name="label" translatable="yes">Bounds</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="receives_default">False</property>
-                        <property name="xalign">0.5</property>
-                        <property name="draw_indicator">True</property>
-                    <child>
-                      <object class="GtkBox" id="buttonbox2">
-      <property name="orientation">horizontal</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <child>
-                          <object class="GtkButton" id="UnitChangeSelectAll">
-                            <property name="label">Select All</property>
-                            <property name="visible">True</property>
-                            <property name="can_focus">True</property>
-                            <property name="receives_default">True</property>
-                        <child>
-                          <object class="GtkButton" id="UnitChangeSelectNone">
-                            <property name="label">Clear</property>
-                            <property name="visible">True</property>
-                            <property name="can_focus">True</property>
-                            <property name="receives_default">True</property>
+                        <property name="receives_default">True</property>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
             <child type="label">
               <object class="GtkLabel" id="UnitChangeFrameLabel">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="label" translatable="yes">&lt;b&gt;Change of unit size&lt;/b&gt;</property>
                 <property name="use_markup">True</property>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
     <action-widgets>
       <action-widget response="0">UnitChangeApply</action-widget>
     </action-widgets>
+  </object>
   <object class="GtkListStore" id="UnitModel">
     <columns>
       <!-- column-name name -->
@@ -103,8 +128,9 @@
         <col id="0" translatable="yes">inch</col>
       </row>
     </data>
+  </object>
   <object class="GtkBox" id="UnitPrefBox">
-      <property name="orientation">vertical</property>
+    <property name="orientation">vertical</property>
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <child>
@@ -113,6 +139,8 @@
         <property name="can_focus">False</property>
         <property name="label" translatable="yes">Unit (for all dimensions):</property>
         <property name="xalign">0</property>
+      </object>
+    </child>
     <child>
       <object class="GtkComboBox" id="unit_control">
         <property name="visible">True</property>
@@ -124,4 +152,8 @@
           <attributes>
             <attribute name="text">0</attribute>
           </attributes>
+        </child>
+      </object>
+    </child>
+  </object>
 </interface>

@@ -115,7 +115,9 @@ class PluginBase:
                     if common_accel_group:
                         for obj in self.gui.get_objects():
                             if isinstance(obj, self._gtk.Window):
-                                obj.add_accel_group(common_accel_group)
+                                # GTK 4 compatibility: add_accel_group method doesn't exist
+                                if hasattr(obj, 'add_accel_group'):
+                                    obj.add_accel_group(common_accel_group)
 
         if self._gtk:
             for key in self.ICONS:

@@ -13,7 +13,13 @@
         <property name="label" translatable="yes">&lt;b&gt;Color Selection&lt;/b&gt;</property>
         <property name="use_markup">True</property>
       </object>
-
+    </child>
+    <child>
+      <object class="GtkGrid" id="ColorTable">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+      </object>
+    </child>
   </object>
   <object class="GtkFrame" id="DisplayItemsPrefTab">
     <property name="visible">True</property>
@@ -25,149 +31,218 @@
         <property name="can_focus">False</property>
         <property name="label" translatable="yes">&lt;b&gt;Display settings&lt;/b&gt;</property>
         <property name="use_markup">True</property>
+      </object>
+    </child>
+    <child>
+      <object class="GtkBox" id="PreferencesVisibleItemsBox">
+        <property name="orientation">vertical</property>
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+      </object>
+    </child>
+  </object>
   <object class="GtkAdjustment" id="DrillProgressMaxFPS">
     <property name="lower">1</property>
     <property name="upper">50</property>
     <property name="value">1</property>
     <property name="step-increment">1</property>
+  </object>
   <object class="GtkFrame" id="OpenGLPrefTab">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="label_xalign">0</property>
     <child>
+      <object class="GtkBox">
+        <property name="orientation">vertical</property>
+        <child>
+          <object class="GtkCheckButton" id="OpenGLLight">
+            <property name="label" translatable="yes">Lighting</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">False</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkCheckButton" id="OpenGLShadow">
+            <property name="label" translatable="yes">Shadows</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">False</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkCheckButton" id="OpenGLPerspective">
+            <property name="label" translatable="yes">Perspective view</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">False</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkCheckButton" id="OpenGLCache">
+            <property name="label" translatable="yes">Use caching</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">False</property>
+            <property name="tooltip_text" translatable="yes">OpenGL caching (via Display Lists) works without problems for most users. But if your 3D view is distorted or not usable at all, then you should consider to disable caching. The cache improves performance significantly.</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkCheckButton" id="OpenGLPolygon">
+            <property name="label" translatable="yes">Show polygons</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">False</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkBox" id="box7">
+            <property name="orientation">vertical</property>
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="spacing">2</property>
             <child>
-              <object class="GtkCheckButton" id="OpenGLLight">
-                <property name="label" translatable="yes">Lighting</property>
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">False</property>
-                <property name="xalign">0.5</property>
-                <property name="draw_indicator">True</property>
-            <child>
-              <object class="GtkCheckButton" id="OpenGLShadow">
-                <property name="label" translatable="yes">Shadows</property>
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">False</property>
-                <property name="xalign">0.5</property>
-                <property name="draw_indicator">True</property>
-            <child>
-              <object class="GtkCheckButton" id="OpenGLPerspective">
-                <property name="label" translatable="yes">Perspective view</property>
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">False</property>
-                <property name="xalign">0.5</property>
-                <property name="draw_indicator">True</property>
-            <child>
-              <object class="GtkCheckButton" id="OpenGLCache">
-                <property name="label" translatable="yes">Use caching</property>
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">False</property>
-                <property name="tooltip_text" translatable="yes">OpenGL caching (via Display Lists) works without problems for most users. But if your 3D view is distorted or not usable at all, then you should consider to disable caching. The cache improves performance significantly.</property>
-                <property name="xalign">0.5</property>
-                <property name="draw_indicator">True</property>
-            <child>
-              <object class="GtkBox" id="box7">
-      <property name="orientation">vertical</property>
+              <object class="GtkLabel" id="DrillUpdateFPSLabel">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="spacing">2</property>
-                <child>
-                  <object class="GtkLabel" id="DrillUpdateFPSLabel">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="label" translatable="yes">Maximum Frames per Second:</property>
-                <child>
-                  <object class="GtkSpinButton" id="DrillProgressFrameSkipControl">
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="invisible_char">●</property>
-                    <property name="adjustment">DrillProgressMaxFPS</property>
+                <property name="label" translatable="yes">Maximum Frames per Second:</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkSpinButton" id="DrillProgressFrameSkipControl">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="adjustment">DrillProgressMaxFPS</property>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
     <child type="label">
       <object class="GtkLabel" id="OpenGLSettingsFrameLabel">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="label" translatable="yes">&lt;b&gt;OpenGL Settings&lt;/b&gt;</property>
         <property name="use_markup">True</property>
+      </object>
+    </child>
+  </object>
   <object class="GtkWindow" id="OpenGLWindow">
     <property name="can_focus">False</property>
     <property name="title" translatable="yes">PyCAM Visualization</property>
     <child>
       <object class="GtkBox" id="OpenGLBox">
-      <property name="orientation">vertical</property>
+        <property name="orientation">vertical</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
+        <child>
+          <object class="GtkBox" id="InfoBox">
+            <property name="orientation">vertical</property>
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkToggleButton" id="Toggle3DView">
+            <property name="label" translatable="yes">3D View</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
   <object class="GtkBox" id="ViewControls">
-      <property name="orientation">vertical</property>
+    <property name="orientation">vertical</property>
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="spacing">4</property>
     <child>
-      <object class="GtkToolbar" id="ViewItems">
+      <object class="GtkBox" id="ViewItems">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="toolbar_style">text</property>
+        <property name="orientation">horizontal</property>
+      </object>
+    </child>
     <child>
       <object class="GtkSeparator" id="separator13">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="orientation">vertical</property>
+      </object>
+    </child>
     <child>
       <object class="GtkBox" id="box38">
-      <property name="orientation">vertical</property>
+        <property name="orientation">vertical</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <child>
-          <object class="GtkToolButton" id="ResetView">
+          <object class="GtkButton" id="ResetView">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="label" translatable="yes">Center</property>
             <property name="use_underline">True</property>
+          </object>
+        </child>
         <child>
-          <object class="GtkToolButton" id="FrontView">
+          <object class="GtkButton" id="FrontView">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="label" translatable="yes">Front</property>
             <property name="use_underline">True</property>
+          </object>
+        </child>
         <child>
-          <object class="GtkToolButton" id="BackView">
+          <object class="GtkButton" id="BackView">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="label" translatable="yes">Back</property>
             <property name="use_underline">True</property>
+          </object>
+        </child>
         <child>
-          <object class="GtkToolButton" id="LeftView">
+          <object class="GtkButton" id="LeftView">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="label" translatable="yes">Left</property>
             <property name="use_underline">True</property>
+          </object>
+        </child>
         <child>
-          <object class="GtkToolButton" id="RightView">
+          <object class="GtkButton" id="RightView">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="label" translatable="yes">Right</property>
             <property name="use_underline">True</property>
+          </object>
+        </child>
         <child>
-          <object class="GtkToolButton" id="TopView">
+          <object class="GtkButton" id="TopView">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="label" translatable="yes">Top</property>
             <property name="use_underline">True</property>
+          </object>
+        </child>
         <child>
-          <object class="GtkToolButton" id="BottomView">
+          <object class="GtkButton" id="BottomView">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="label" translatable="yes">Bottom</property>
             <property name="use_underline">True</property>
+          </object>
+        </child>
+      </object>
+    </child>
     <child>
       <object class="GtkLinkButton" id="3DViewHelp">
         <property name="label">gtk-help</property>
         <property name="visible">True</property>
         <property name="can_focus">True</property>
         <property name="receives_default">True</property>
-        <property name="relief">none</property>
-            <property name="xalign">1</property>
         <property name="uri">http://pycam.sourceforge.net/3d-view</property>
+      </object>
+    </child>
+  </object>
 </interface>

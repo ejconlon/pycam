@@ -23,18 +23,18 @@
     <property name="title" translatable="yes">Engrave text</property>
     <property name="destroy_with_parent">True</property>
     <property name="icon_name">accessories-character-map</property>
-    <child internal-child="vbox">
+    <child>
       <object class="GtkBox" id="dialog-box8">
       <property name="orientation">vertical</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="spacing">4</property>
-        <child internal-child="action_area">
+        <child>
           <object class="GtkBox" id="dialog-action_area7">
-      <property name="orientation">horizontal</property>
+            <property name="orientation">horizontal</property>
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-                    <child>
+            <child>
               <object class="GtkButton" id="FontDialogCancel">
                 <property name="label">gtk-cancel</property>
                 <property name="visible">True</property>

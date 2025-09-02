@@ -69,7 +69,12 @@ class OpenGLWindow(pycam.Plugins.PluginBase):
             self.BUTTON_MOVE = self._gdk.ModifierType.BUTTON2_MASK
             self.BUTTON_ZOOM = self._gdk.ModifierType.BUTTON3_MASK
             self.BUTTON_RIGHT = 3
-            self.context_menu = self._gtk.Menu()
+            # GTK 4 compatibility: Use PopoverMenu instead of Menu
+            if hasattr(self._gtk, 'Menu'):
+                self.context_menu = self._gtk.Menu()
+            else:
+                # GTK 4: Use a simple PopoverMenu
+                self.context_menu = self._gtk.PopoverMenu()
             self.window = self.gui.get_object("OpenGLWindow")
             self.window.insert_action_group(self.core.get("gtk_action_group_prefix"),
                                             self.core.get("gtk_action_group"))
@@ -103,15 +108,16 @@ class OpenGLWindow(pycam.Plugins.PluginBase):
 
             def clear_window():
                 # GTK 4: Remove all children using new iteration method
-                child = detail_box.get_first_child()
-                while child:
-                    next_child = child.get_next_sibling()
-                    detail_box.remove(child)
-                    child = next_child
+                if detail_box is not None:
+                    child = detail_box.get_first_child()
+                    while child:
+                        next_child = child.get_next_sibling()
+                        detail_box.remove(child)
+                        child = next_child
 
             def add_widget_to_window(item, name):
                 # GTK 4: Check children using iteration
-                has_children = detail_box.get_first_child() is not None
+                has_children = detail_box is not None and detail_box.get_first_child() is not None
                 if has_children:
                     sep = self._gtk.Separator(orientation=self._gtk.Orientation.HORIZONTAL)
                     detail_box.append(sep)
@@ -258,9 +264,18 @@ class OpenGLWindow(pycam.Plugins.PluginBase):
         action = self._gio.SimpleAction.new_stateful(name, self._glib.VariantType.new("s"),
                                                      self._glib.Variant.new_string("0"))
         widgets = []
-        for index, item in enumerate((self._gtk.CheckButton(),
-                                      self._gtk.ToggleToolButton(),
-                                      self._gtk.CheckMenuItem())):
+        # GTK 4 compatibility: CheckMenuItem and ToggleToolButton don't exist
+        menu_widgets = [self._gtk.CheckButton()]
+        if hasattr(self._gtk, 'ToggleToolButton'):
+            menu_widgets.append(self._gtk.ToggleToolButton())
+        else:
+            menu_widgets.append(self._gtk.ToggleButton())  # GTK 4 replacement
+        if hasattr(self._gtk, 'CheckMenuItem'):
+            menu_widgets.append(self._gtk.CheckMenuItem())
+        else:
+            menu_widgets.append(self._gtk.CheckButton())  # GTK 4 replacement
+        
+        for index, item in enumerate(menu_widgets):
             item.insert_action_group(self.core.get("gtk_action_group_prefix"),
                                      self.core.get("gtk_action_group"))
             item.set_label(label)
@@ -327,11 +342,18 @@ class OpenGLWindow(pycam.Plugins.PluginBase):
         
         # GTK 4: Clear children using new iteration method
         for parent in (pref_box, self.context_menu, toolbar):
-            child = parent.get_first_child()
-            while child:
-                next_child = child.get_next_sibling()
-                parent.remove(child)
-                child = next_child
+            if parent is not None:
+                # PopoverMenu in GTK 4 doesn't support child iteration like regular containers
+                if hasattr(parent, 'get_first_child'):
+                    child = parent.get_first_child()
+                    while child:
+                        next_child = child.get_next_sibling()
+                        parent.remove(child)
+                        child = next_child
+                # For GTK 4 PopoverMenu, we might need to handle differently
+                elif hasattr(parent, 'set_menu_model'):
+                    # GTK 4 PopoverMenu uses menu models, not direct child widgets
+                    parent.set_menu_model(None)
                 
         items = list(self._display_items.values())
         items.sort(key=lambda item: item["weight"])
@@ -387,11 +409,12 @@ class OpenGLWindow(pycam.Plugins.PluginBase):
     def _rebuild_color_settings(self):
         color_table = self.gui.get_object("ColorTable")
         # GTK 4: Clear children using new iteration method  
-        child = color_table.get_first_child()
-        while child:
-            next_child = child.get_next_sibling()
-            color_table.remove(child)
-            child = next_child
+        if color_table is not None:
+            child = color_table.get_first_child()
+            while child:
+                next_child = child.get_next_sibling()
+                color_table.remove(child)
+                child = next_child
         items = list(self._color_settings.values())
         items.sort(key=lambda item: item["weight"])
         for index, item in enumerate(items):
