@@ -126,11 +126,12 @@ class Log(pycam.Plugins.PluginBase):
             else:
                 new_state = action
         if new_state:
-            if self._log_window_position:
-                self.log_window.move(*self._log_window_position)
+            # GTK 4: Window positioning is handled by the compositor
+            # The move() method has been removed, so we skip position restoration
             self.log_window.show()
         else:
-            self._log_window_position = self.log_window.get_position()
+            # GTK 4: get_position() has been removed as windows are managed by compositor
+            # We no longer store/restore position manually
             self.log_window.hide()
         toggle_log_checkbox.set_active(new_state)
         self.gui.get_object("StatusBarWarning").hide()

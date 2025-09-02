@@ -115,15 +115,16 @@ class Fonts(pycam.Plugins.PluginBase):
                 self.font_selector = font_selector
             if len(self._fonts_cache) > 0:
                 # show the dialog only if fonts are available
-                if self._font_dialog_window_position:
-                    self.font_dialog_window.move(*self._font_dialog_window_position)
+                # GTK 4: Window positioning is handled by the compositor
+                # The move() method has been removed, so we skip position restoration
                 self.font_dialog_window.show()
                 self._font_dialog_window_visible = True
             else:
                 self.log.error("No fonts were found on your system. Please check the Log Window "
                                "for details.")
         else:
-            self._font_dialog_window_position = self.font_dialog_window.get_position()
+            # GTK 4: get_position() has been removed as windows are managed by compositor
+            # We no longer store/restore position manually
             self.font_dialog_window.hide()
             self._font_dialog_window_visible = False
         # don't close the window - just hide it (for "delete-event")

@@ -88,12 +88,13 @@ class MemoryAnalyzer(pycam.Plugins.PluginBase):
         else:
             new_state = action
         if new_state:
-            if self._window_position:
-                self.window.move(*self._window_position)
+            # GTK 4: Window positioning is handled by the compositor
+            # The move() method has been removed, so we skip position restoration
             self.refresh_memory_analyzer()
             self.window.show()
         else:
-            self._window_position = self.window.get_position()
+            # GTK 4: get_position() has been removed as windows are managed by compositor
+            # We no longer store/restore position manually
             self.window.hide()
         self.toggle_action.set_active(new_state)
         # don't destroy the window with a "destroy" event

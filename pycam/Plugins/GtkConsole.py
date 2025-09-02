@@ -141,11 +141,12 @@ class GtkConsole(pycam.Plugins.PluginBase):
         else:
             new_state = action
         if new_state:
-            if self._window_position:
-                self._window.move(*self._window_position)
+            # GTK 4: Window positioning is handled by the compositor
+            # The move() method has been removed, so we skip position restoration
             self._window.show()
         else:
-            self._window_position = self._window.get_position()
+            # GTK 4: get_position() has been removed as windows are managed by compositor
+            # We no longer store/restore position manually
             self._window.hide()
         toggle_checkbox.set_active(new_state)
         return True

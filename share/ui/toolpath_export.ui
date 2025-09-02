@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Generated with glade 3.18.3 -->
 <interface>
-  <requires lib="gtk" version="4.0"/>
+  <requires lib="gtk+" version="3.12"/>
   <object class="GtkListStore" id="PostprocessorList">
     <columns>
       <!-- column-name label -->
@@ -20,8 +20,31 @@
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="label_xalign">0</property>
+    <property name="shadow_type">none</property>
     <child>
-
+      <object class="GtkAlignment" id="alignment1">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="left_padding">12</property>
+        <child>
+          <object class="GtkButtonBox" id="buttonbox1">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="layout_style">center</property>
+            <child>
+              <object class="GtkButton" id="ExportGCodeAll">
+                <property name="label" translatable="yes">_Export all</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="use_underline">True</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
             <child>
               <object class="GtkButton" id="ExportGCodeSelected">
                 <property name="label" translatable="yes">Export selected</property>
@@ -29,7 +52,12 @@
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
               </object>
-
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
             <child>
               <object class="GtkButton" id="ExportGCodeVisible">
                 <property name="label" translatable="yes">Export visible</property>
@@ -37,11 +65,16 @@
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
               </object>
-
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="position">2</property>
+              </packing>
+            </child>
           </object>
-
+        </child>
       </object>
-
+    </child>
     <child type="label">
       <object class="GtkLabel" id="label1">
         <property name="visible">True</property>
@@ -49,6 +82,6 @@
         <property name="label" translatable="yes">&lt;b&gt;Save toolpath as GCode&lt;/b&gt;</property>
         <property name="use_markup">True</property>
       </object>
-
+    </child>
   </object>
 </interface>

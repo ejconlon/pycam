@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Generated with glade 3.20.1 -->
 <interface>
-  <requires lib="gtk" version="4.0"/>
+  <requires lib="gtk+" version="3.12"/>
   <object class="GtkListStore" id="ToolList">
     <columns>
       <!-- column-name uuid -->
@@ -28,7 +28,6 @@
     <property name="orientation">vertical</property>
     <child>
       <object class="GtkBox" id="hbox9">
-      <property name="orientation">vertical</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="spacing">4</property>
@@ -36,7 +35,8 @@
           <object class="GtkScrolledWindow" id="scrolledwindow6">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
-                    <child>
+            <property name="shadow_type">etched-in</property>
+            <child>
               <object class="GtkTreeView" id="ToolTable">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
@@ -45,7 +45,7 @@
                 <property name="search_column">0</property>
                 <child internal-child="selection">
                   <object class="GtkTreeSelection" id="treeview-selection1"/>
-
+                </child>
                 <child>
                   <object class="GtkTreeViewColumn" id="IDColumn">
                     <property name="title">Tool ID</property>
@@ -53,9 +53,9 @@
                       <object class="GtkCellRendererText" id="IDCell">
                         <property name="editable">True</property>
                       </object>
-
+                    </child>
                   </object>
-
+                </child>
                 <child>
                   <object class="GtkTreeViewColumn" id="NameColumn">
                     <property name="title">Name</property>
@@ -64,9 +64,9 @@
                       <object class="GtkCellRendererText" id="NameCell">
                         <property name="editable">True</property>
                       </object>
-
+                    </child>
                   </object>
-
+                </child>
                 <child>
                   <object class="GtkTreeViewColumn" id="ShapeColumn">
                     <property name="title">Shape</property>
@@ -74,57 +74,92 @@
                       <object class="GtkCellRendererText" id="ShapeCell">
                         <property name="alignment">right</property>
                       </object>
-
+                    </child>
                   </object>
-
+                </child>
               </object>
-
+            </child>
           </object>
-
+          <packing>
+            <property name="expand">True</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
         <child>
           <object class="GtkBox" id="box16">
-      <property name="orientation">vertical</property>
             <property name="visible">True</property>
             <property name="can_focus">False</property>
+            <property name="orientation">vertical</property>
             <child>
-              <object class="GtkBox" id="buttonbox1">
-      <property name="orientation">horizontal</property>
+              <object class="GtkButtonBox" id="buttonbox1">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="orientation">vertical</property>
+                <property name="layout_style">center</property>
                 <child>
                   <object class="GtkButton" id="ToolNew">
                     <property name="label">gtk-new</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
-                                  </object>
-
+                    <property name="use_stock">True</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
                 <child>
                   <object class="GtkButton" id="ToolDelete">
-                    <property name="label">Delete</property>
+                    <property name="label">gtk-delete</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
-                                  </object>
-
+                    <property name="use_stock">True</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
                 <child>
                   <object class="GtkButton" id="ToolMoveUp">
-                    <property name="label">↑</property>
+                    <property name="label">gtk-go-up</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
-                                  </object>
-
+                    <property name="use_stock">True</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
+                    <property name="position">2</property>
+                  </packing>
+                </child>
                 <child>
                   <object class="GtkButton" id="ToolMoveDown">
-                    <property name="label">↓</property>
+                    <property name="label">gtk-go-down</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
-                                  </object>
-
+                    <property name="use_stock">True</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
+                    <property name="position">3</property>
+                  </packing>
+                </child>
               </object>
-
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
             <child>
               <object class="GtkLinkButton" id="ToolHelp">
                 <property name="label">gtk-help</property>
@@ -132,21 +167,57 @@
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
                 <property name="relief">none</property>
-                            <property name="uri">http://pycam.sourceforge.net/tool-types</property>
+                <property name="use_stock">True</property>
+                <property name="uri">http://pycam.sourceforge.net/tool-types</property>
               </object>
-
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
           </object>
-
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
       </object>
-
+      <packing>
+        <property name="resize">True</property>
+        <property name="shrink">False</property>
+      </packing>
+    </child>
     <child>
       <object class="GtkBox" id="ToolSettingsControlsBox">
-      <property name="orientation">vertical</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
+        <property name="orientation">vertical</property>
         <property name="spacing">4</property>
         <child>
-
+          <object class="GtkAlignment" id="ToolSelectorBox">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="xscale">0</property>
+            <property name="yscale">0</property>
+            <child>
+              <object class="GtkBox" id="box1">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="spacing">3</property>
+                <child>
+                  <object class="GtkLabel" id="label1">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="label" translatable="yes">Tool shape:</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
                 <child>
                   <object class="GtkComboBox" id="ToolShapeSelector">
                     <property name="visible">True</property>
@@ -157,28 +228,64 @@
                       <attributes>
                         <attribute name="text">0</attribute>
                       </attributes>
-
+                    </child>
                   </object>
-
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
               </object>
-
+            </child>
           </object>
-
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
         <child>
-
+          <object class="GtkAlignment">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="top_padding">10</property>
+            <property name="bottom_padding">10</property>
+            <property name="left_padding">10</property>
+            <property name="right_padding">10</property>
+            <child>
+              <object class="GtkBox" id="ToolParameterBox">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="orientation">vertical</property>
+                <property name="spacing">5</property>
+                <child>
+                  <placeholder/>
+                </child>
+              </object>
+            </child>
           </object>
-
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
       </object>
-
+      <packing>
+        <property name="resize">True</property>
+        <property name="shrink">False</property>
+      </packing>
+    </child>
   </object>
   <object class="GtkAdjustment" id="tooldiameter">
     <property name="lower">0.0001</property>
     <property name="upper">500</property>
-    <property name="step-increment">0.10000000000000001</property>
+    <property name="step_increment">0.10000000000000001</property>
   </object>
   <object class="GtkAdjustment" id="torusdiameter">
     <property name="lower">0.0001</property>
     <property name="upper">500</property>
-    <property name="step-increment">0.050000000000000003</property>
+    <property name="step_increment">0.050000000000000003</property>
   </object>
 </interface>

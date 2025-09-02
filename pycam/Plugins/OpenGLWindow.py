@@ -444,12 +444,14 @@ class OpenGLWindow(pycam.Plugins.PluginBase):
 
     def show(self):
         self.is_visible = True
-        self.window.move(*self._position)
+        # GTK 4: Window positioning is handled by the compositor
+        # The move() method has been removed, so we skip position restoration
         self.window.show()
 
     def hide(self):
         self.is_visible = False
-        self._position = self.window.get_position()
+        # GTK 4: get_position() has been removed as windows are managed by compositor
+        # We no longer store/restore position manually
         self.window.hide()
 
     def key_handler(self, widget=None, event=None):
