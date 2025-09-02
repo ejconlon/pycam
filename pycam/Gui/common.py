@@ -114,14 +114,22 @@ def requirements_details_gtk():
 def recommends_details_gtk():
     result = {}
     try:
-        import gtk.gtkgl  # noqa F401
-        result["gtkgl"] = True
-        result["gl"] = True
+        # GTK 4 uses GtkGLArea instead of gtkgl
+        from gi.repository import Gtk
+        # Check if GLArea is available (part of GTK 4)
+        if hasattr(Gtk, 'GLArea'):
+            result["gtkgl"] = True
+            result["gl"] = True
+        else:
+            result["gtkgl"] = False
+            result["gl"] = False
     except ImportError as err_msg:
         log.warn("Failed to import OpenGL for GTK (ImportError): %s", str(err_msg))
         result["gtkgl"] = False
+        result["gl"] = False
     except RuntimeError as err_msg:
         log.warn("Failed to import OpenGL for GTK (RuntimeError): %s", str(err_msg))
+        result["gtkgl"] = False
         result["gl"] = False
     try:
         import OpenGL  # noqa F401
@@ -129,6 +137,7 @@ def recommends_details_gtk():
     except ImportError as err_msg:
         log.warn("Failed to import OpenGL: %s", str(err_msg))
         result["opengl"] = False
+    return result
 
 
 def check_dependencies(details):

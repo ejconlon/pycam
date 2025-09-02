@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Generated with glade 3.18.3 -->
 <interface>
-  <requires lib="gtk+" version="3.12"/>
+  <requires lib="gtk" version="4.0"/>
   <object class="GtkListStore" id="CategoryList">
     <columns>
       <!-- column-name label -->
@@ -85,50 +85,34 @@
     <property name="width_request">640</property>
     <property name="height_request">500</property>
     <property name="can_focus">False</property>
-    <property name="border_width">5</property>
     <property name="title" translatable="yes">Plugins</property>
-    <property name="role">pycam-plugins</property>
-    <property name="window_position">center</property>
-    <property name="type_hint">normal</property>
     <child internal-child="vbox">
       <object class="GtkBox" id="dialog-box1">
+      <property name="orientation">vertical</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="orientation">vertical</property>
         <property name="spacing">3</property>
         <child internal-child="action_area">
-          <object class="GtkButtonBox" id="dialog-action_area1">
+          <object class="GtkBox" id="dialog-action_area1">
+      <property name="orientation">horizontal</property>
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="layout_style">end</property>
-            <child>
+                    <child>
               <object class="GtkButton" id="ClosePluginManager">
                 <property name="label">gtk-close</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
-                <property name="use_stock">True</property>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">False</property>
-                <property name="position">0</property>
-              </packing>
-            </child>
+                          </object>
+
           </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">False</property>
-            <property name="pack_type">end</property>
-            <property name="position">0</property>
-          </packing>
-        </child>
+
         <child>
-          <object class="GtkButtonBox" id="buttonbox1">
+          <object class="GtkBox" id="buttonbox1">
+      <property name="orientation">horizontal</property>
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="layout_style">spread</property>
-            <child>
+                    <child>
               <object class="GtkComboBox" id="StatusFilter">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
@@ -138,14 +122,9 @@
                   <attributes>
                     <attribute name="text">0</attribute>
                   </attributes>
-                </child>
+
               </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">False</property>
-                <property name="position">0</property>
-              </packing>
-            </child>
+
             <child>
               <object class="GtkComboBox" id="CategoryFilter">
                 <property name="visible">True</property>
@@ -156,27 +135,16 @@
                   <attributes>
                     <attribute name="text">0</attribute>
                   </attributes>
-                </child>
+
               </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">False</property>
-                <property name="position">1</property>
-              </packing>
-            </child>
+
           </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">1</property>
-          </packing>
-        </child>
+
         <child>
           <object class="GtkScrolledWindow" id="scrolledwindow1">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
-            <property name="shadow_type">etched-out</property>
-            <child>
+                    <child>
               <object class="GtkTreeView" id="PluginsTable">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
@@ -187,7 +155,7 @@
                 <property name="tooltip_column">5</property>
                 <child internal-child="selection">
                   <object class="GtkTreeSelection" id="treeview-selection1"/>
-                </child>
+
                 <child>
                   <object class="GtkTreeViewColumn" id="PluginsEnabled">
                     <property name="title">Enabled</property>
@@ -201,9 +169,9 @@
                         <attribute name="activatable">4</attribute>
                         <attribute name="active">2</attribute>
                       </attributes>
-                    </child>
+
                   </object>
-                </child>
+
                 <child>
                   <object class="GtkTreeViewColumn" id="PluginsNameColumn">
                     <property name="title">Name</property>
@@ -213,9 +181,9 @@
                       <attributes>
                         <attribute name="text">0</attribute>
                       </attributes>
-                    </child>
+
                   </object>
-                </child>
+
                 <child>
                   <object class="GtkTreeViewColumn" id="PluginsDescriptionColumn">
                     <property name="sizing">autosize</property>
@@ -229,9 +197,9 @@
                       <attributes>
                         <attribute name="text">1</attribute>
                       </attributes>
-                    </child>
+
                   </object>
-                </child>
+
                 <child>
                   <object class="GtkTreeViewColumn" id="PluginsDependenciesColumn">
                     <property name="title">Dependencies</property>
@@ -241,27 +209,17 @@
                       <attributes>
                         <attribute name="markup">3</attribute>
                       </attributes>
-                    </child>
+
                   </object>
-                </child>
+
               </object>
-            </child>
+
           </object>
-          <packing>
-            <property name="expand">True</property>
-            <property name="fill">True</property>
-            <property name="position">2</property>
-          </packing>
-        </child>
+
       </object>
-    </child>
+
     <action-widgets>
       <action-widget response="0">ClosePluginManager</action-widget>
     </action-widgets>
-  </object>
-  <object class="GtkToggleAction" id="TogglePluginWindow">
-    <property name="label">Plugin Manager</property>
-    <property name="short_label">Plugin Manager</property>
-    <property name="icon_name">preferences-other</property>
   </object>
 </interface>

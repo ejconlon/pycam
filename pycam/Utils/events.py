@@ -64,8 +64,12 @@ class GtkMainLoop:
             log.info("Main loop was stopped before")
 
     def update(self):
-        while self._gtk.events_pending():
-            self._gtk.main_iteration()
+        # GTK 4: events_pending() and main_iteration() were removed
+        # Use GLib.MainContext.default().iteration() instead
+        from gi.repository import GLib
+        context = GLib.MainContext.default()
+        while context.pending():
+            context.iteration()
 
 
 def get_event_handler():

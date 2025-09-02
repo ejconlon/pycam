@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Generated with glade 3.20.2 -->
 <interface>
-  <requires lib="gtk+" version="3.12"/>
+  <requires lib="gtk" version="4.0"/>
   <object class="GtkAdjustment" id="ToolpathCropMarginValue">
     <property name="lower">-1000</property>
     <property name="upper">1000</property>
@@ -16,55 +16,16 @@
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="label_xalign">0</property>
-    <property name="shadow_type">none</property>
     <child>
-      <object class="GtkAlignment" id="alignment1">
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="left_padding">12</property>
-        <child>
-          <object class="GtkBox" id="box">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="orientation">vertical</property>
-            <property name="spacing">3</property>
+
             <child>
-              <object class="GtkLabel" id="ToolpathCropUsageHint">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="label" translatable="yes">Reduce the toolpath moves to the area enclosed by the outer limits of a selected model.
-BEWARE: currently only 2D models are supported. </property>
-                <property name="wrap">True</property>
-                <property name="width_chars">45</property>
-                <property name="xalign">0</property>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">0</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkAlignment" id="ModelTableContainer">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <child>
-                  <placeholder/>
-                </child>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">1</property>
-              </packing>
-            </child>
+
             <child>
               <object class="GtkViewport" id="ToolpathCropInfoBox">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="resize_mode">queue</property>
-                <property name="shadow_type">etched-out</property>
-                <child>
+                            <child>
                   <object class="GtkLabel" id="ToolpathCropInfo">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
@@ -77,14 +38,9 @@ BEWARE: currently only 2D models are supported. </property>
                       <attribute name="foreground" value="#ffff00000000"/>
                     </attributes>
                   </object>
-                </child>
+
               </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">2</property>
-              </packing>
-            </child>
+
             <child>
               <object class="GtkGrid" id="grid1">
                 <property name="visible">True</property>
@@ -98,11 +54,7 @@ BEWARE: currently only 2D models are supported. </property>
                     <property name="label" translatable="yes">Margin:</property>
                     <property name="xalign">0</property>
                   </object>
-                  <packing>
-                    <property name="left_attach">0</property>
-                    <property name="top_attach">1</property>
-                  </packing>
-                </child>
+
                 <child>
                   <object class="GtkSpinButton" id="ToolpathCropMargin">
                     <property name="visible">True</property>
@@ -112,11 +64,7 @@ BEWARE: currently only 2D models are supported. </property>
                     <property name="adjustment">ToolpathCropMarginValue</property>
                     <property name="digits">2</property>
                   </object>
-                  <packing>
-                    <property name="left_attach">1</property>
-                    <property name="top_attach">1</property>
-                  </packing>
-                </child>
+
                 <child>
                   <object class="GtkLabel" id="ToolpathCropZSliceLabel">
                     <property name="visible">True</property>
@@ -124,11 +72,7 @@ BEWARE: currently only 2D models are supported. </property>
                     <property name="label" translatable="yes">Slicing level (z):</property>
                     <property name="xalign">0</property>
                   </object>
-                  <packing>
-                    <property name="left_attach">0</property>
-                    <property name="top_attach">0</property>
-                  </packing>
-                </child>
+
                 <child>
                   <object class="GtkSpinButton" id="ToolpathCropZSlice">
                     <property name="visible">True</property>
@@ -138,18 +82,9 @@ BEWARE: currently only 2D models are supported. </property>
                     <property name="adjustment">ToolpathCropZSliceValue</property>
                     <property name="digits">2</property>
                   </object>
-                  <packing>
-                    <property name="left_attach">1</property>
-                    <property name="top_attach">0</property>
-                  </packing>
-                </child>
+
               </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">3</property>
-              </packing>
-            </child>
+
             <child>
               <object class="GtkCheckButton" id="ToolpathCropKeepOriginal">
                 <property name="label" translatable="yes">Keep original toolpath</property>
@@ -160,42 +95,26 @@ BEWARE: currently only 2D models are supported. </property>
                 <property name="active">True</property>
                 <property name="draw_indicator">True</property>
               </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">4</property>
-              </packing>
-            </child>
+
             <child>
-              <object class="GtkButtonBox" id="buttonbox1">
+              <object class="GtkBox" id="buttonbox1">
+      <property name="orientation">horizontal</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="layout_style">start</property>
-                <child>
+                            <child>
                   <object class="GtkButton" id="CropButton">
                     <property name="label">gtk-execute</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
-                    <property name="use_stock">True</property>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">False</property>
-                    <property name="position">0</property>
-                  </packing>
-                </child>
+                                  </object>
+
               </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">5</property>
-              </packing>
-            </child>
+
           </object>
-        </child>
+
       </object>
-    </child>
+
     <child type="label">
       <object class="GtkLabel" id="label1">
         <property name="visible">True</property>
@@ -203,6 +122,6 @@ BEWARE: currently only 2D models are supported. </property>
         <property name="label" translatable="yes">&lt;b&gt;Crop toolpath&lt;/b&gt;</property>
         <property name="use_markup">True</property>
       </object>
-    </child>
+
   </object>
 </interface>

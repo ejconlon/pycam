@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Generated with glade 3.18.3 -->
 <interface>
-  <requires lib="gtk+" version="3.12"/>
+  <requires lib="gtk" version="4.0"/>
   <object class="GtkImage" id="GenerateOneToolPathIcon">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
@@ -33,6 +33,7 @@
     <property name="orientation">vertical</property>
     <child>
       <object class="GtkBox" id="hbox19">
+      <property name="orientation">vertical</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="spacing">2</property>
@@ -40,8 +41,7 @@
           <object class="GtkScrolledWindow" id="scrolledwindow3">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
-            <property name="shadow_type">etched-in</property>
-            <child>
+                    <child>
               <object class="GtkTreeView" id="TaskView">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
@@ -52,7 +52,7 @@
                 <property name="search_column">0</property>
                 <child internal-child="selection">
                   <object class="GtkTreeSelection" id="treeview-selection1"/>
-                </child>
+
                 <child>
                   <object class="GtkTreeViewColumn" id="NameColumn">
                     <property name="title">Name</property>
@@ -60,29 +60,23 @@
                       <object class="GtkCellRendererText" id="NameCell">
                         <property name="editable">True</property>
                       </object>
-                    </child>
+
                   </object>
-                </child>
+
               </object>
-            </child>
+
           </object>
-          <packing>
-            <property name="expand">True</property>
-            <property name="fill">True</property>
-            <property name="position">0</property>
-          </packing>
-        </child>
+
         <child>
           <object class="GtkBox" id="vbox35">
+      <property name="orientation">vertical</property>
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="orientation">vertical</property>
             <child>
-              <object class="GtkButtonBox" id="buttonbox4">
+              <object class="GtkBox" id="buttonbox4">
+      <property name="orientation">horizontal</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="orientation">vertical</property>
-                <property name="layout_style">center</property>
                 <child>
                   <object class="GtkButton" id="GenerateToolPathButton">
                     <property name="label" translatable="yes">_Generate Toolpath</property>
@@ -92,12 +86,7 @@
                     <property name="image">GenerateOneToolPathIcon</property>
                     <property name="use_underline">True</property>
                   </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">False</property>
-                    <property name="position">0</property>
-                  </packing>
-                </child>
+
                 <child>
                   <object class="GtkButton" id="GenerateAllToolPathsButton">
                     <property name="label" translatable="yes">Generate _All</property>
@@ -106,75 +95,41 @@
                     <property name="receives_default">True</property>
                     <property name="use_underline">True</property>
                   </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">False</property>
-                    <property name="position">1</property>
-                  </packing>
-                </child>
+
                 <child>
                   <object class="GtkButton" id="TaskNew">
                     <property name="label">gtk-new</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
-                    <property name="use_stock">True</property>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">False</property>
-                    <property name="position">2</property>
-                  </packing>
-                </child>
+                                  </object>
+
                 <child>
                   <object class="GtkButton" id="TaskDelete">
-                    <property name="label">gtk-delete</property>
+                    <property name="label">Delete</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
-                    <property name="use_stock">True</property>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">False</property>
-                    <property name="position">3</property>
-                  </packing>
-                </child>
+                                  </object>
+
                 <child>
                   <object class="GtkButton" id="TaskMoveUp">
-                    <property name="label">gtk-go-up</property>
+                    <property name="label">↑</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
-                    <property name="use_stock">True</property>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">False</property>
-                    <property name="position">4</property>
-                  </packing>
-                </child>
+                                  </object>
+
                 <child>
                   <object class="GtkButton" id="TaskMoveDown">
-                    <property name="label">gtk-go-down</property>
+                    <property name="label">↓</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
-                    <property name="use_stock">True</property>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">False</property>
-                    <property name="position">5</property>
-                  </packing>
-                </child>
+                                  </object>
+
               </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">0</property>
-              </packing>
-            </child>
+
             <child>
               <object class="GtkLinkButton" id="TaskHelp">
                 <property name="label">gtk-help</property>
@@ -182,57 +137,21 @@
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
                 <property name="relief">none</property>
-                <property name="use_stock">True</property>
-                <property name="uri">http://pycam.sourceforge.net/task-settings</property>
+                            <property name="uri">http://pycam.sourceforge.net/task-settings</property>
               </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">1</property>
-              </packing>
-            </child>
+
           </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">1</property>
-          </packing>
-        </child>
+
       </object>
-      <packing>
-        <property name="resize">True</property>
-        <property name="shrink">False</property>
-      </packing>
-    </child>
+
     <child>
       <object class="GtkBox" id="TaskDetails">
+      <property name="orientation">vertical</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="orientation">vertical</property>
         <property name="spacing">5</property>
         <child>
-          <object class="GtkAlignment" id="TaskChooserBox">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="xscale">0</property>
-            <property name="yscale">0</property>
-            <child>
-              <object class="GtkBox" id="hbox1">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="spacing">3</property>
-                <child>
-                  <object class="GtkLabel" id="label1">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="label" translatable="yes">Task type:</property>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">0</property>
-                  </packing>
-                </child>
+
                 <child>
                   <object class="GtkComboBox" id="TaskTypeSelector">
                     <property name="visible">True</property>
@@ -243,44 +162,26 @@
                       <attributes>
                         <attribute name="text">0</attribute>
                       </attributes>
-                    </child>
+
                   </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">1</property>
-                  </packing>
-                </child>
+
               </object>
-            </child>
+
           </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">0</property>
-          </packing>
-        </child>
+
         <child>
           <object class="GtkBox" id="TaskParameterBox">
+      <property name="orientation">vertical</property>
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="spacing">5</property>
             <child>
               <placeholder/>
-            </child>
+
           </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">1</property>
-          </packing>
-        </child>
+
       </object>
-      <packing>
-        <property name="resize">False</property>
-        <property name="shrink">False</property>
-      </packing>
-    </child>
+
   </object>
   <object class="GtkAdjustment" id="feedrate">
     <property name="lower">1</property>
