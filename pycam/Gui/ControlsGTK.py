@@ -100,7 +100,7 @@ class InputNumber(InputBaseClass):
     def __init__(self, digits=0, start=0, lower=-999999, upper=999999, increment=1,
                  change_handler=None):
         # beware: the default values for lower/upper are both zero
-        adjustment = Gtk.Adjustment(value=start, lower=lower, upper=upper, step_incr=increment)
+        adjustment = Gtk.Adjustment(value=start, lower=lower, upper=upper, step_increment=increment)
         self.control = Gtk.SpinButton.new(adjustment, climb_rate=1, digits=digits)
         self.control.set_value(start)
         self.connect("value-changed", change_handler)

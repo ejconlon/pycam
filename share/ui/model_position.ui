@@ -5,32 +5,32 @@
   <object class="GtkAdjustment" id="AlignPositionXValue">
     <property name="lower">-2000</property>
     <property name="upper">2000</property>
-    <property name="step_increment">1</property>
+    <property name="step-increment">1</property>
   </object>
   <object class="GtkAdjustment" id="AlignPositionYValue">
     <property name="lower">-2000</property>
     <property name="upper">2000</property>
-    <property name="step_increment">1</property>
+    <property name="step-increment">1</property>
   </object>
   <object class="GtkAdjustment" id="AlignPositionZValue">
     <property name="lower">-2000</property>
     <property name="upper">2000</property>
-    <property name="step_increment">1</property>
+    <property name="step-increment">1</property>
   </object>
   <object class="GtkAdjustment" id="ShiftPositionXValue">
     <property name="lower">-2000</property>
     <property name="upper">2000</property>
-    <property name="step_increment">1</property>
+    <property name="step-increment">1</property>
   </object>
   <object class="GtkAdjustment" id="ShiftPositionYValue">
     <property name="lower">-2000</property>
     <property name="upper">2000</property>
-    <property name="step_increment">1</property>
+    <property name="step-increment">1</property>
   </object>
   <object class="GtkAdjustment" id="ShiftPositionZValue">
     <property name="lower">-2000</property>
     <property name="upper">2000</property>
-    <property name="step_increment">1</property>
+    <property name="step-increment">1</property>
   </object>
   <object class="GtkWindow" id="window1">
     <property name="can_focus">False</property>

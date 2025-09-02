@@ -59,12 +59,15 @@
                 <property name="model">TaskList</property>
                 <property name="headers-visible">false</property>
                 <child>
-                  <object class="GtkTreeViewColumn" id="TaskNameColumn">
+                  <object class="GtkTreeViewColumn" id="NameColumn">
                     <property name="title">Name</property>
                     <child>
-                      <object class="GtkCellRendererText" id="TaskNameCell">
+                      <object class="GtkCellRendererText" id="NameCell">
                         <property name="editable">true</property>
                       </object>
+                      <attributes>
+                        <attribute name="text">0</attribute>
+                      </attributes>
                     </child>
                   </object>
                 </child>

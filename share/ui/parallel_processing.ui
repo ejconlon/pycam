@@ -4,12 +4,12 @@
   <requires lib="gtk" version="4.0"/>
   <object class="GtkAdjustment" id="NumberOfProcessesValue">
     <property name="upper">1000</property>
-    <property name="step_increment">1</property>
+    <property name="step-increment">1</property>
   </object>
   <object class="GtkAdjustment" id="ProcessPoolRefreshIntervalValue">
     <property name="lower">1</property>
     <property name="upper">60</property>
-    <property name="step_increment">1</property>
+    <property name="step-increment">1</property>
   </object>
   <object class="GtkListStore" id="ProcessPoolStatisticsModel">
     <columns>
@@ -268,11 +268,11 @@ Please read the description of the Server Mode (linked below) to understand the 
   </object>
   <object class="GtkAdjustment" id="RemoteServerPortValue">
     <property name="upper">65535</property>
-    <property name="step_increment">1</property>
+    <property name="step-increment">1</property>
   </object>
   <object class="GtkAdjustment" id="ServerPortLocalValue">
     <property name="upper">65535</property>
-    <property name="step_increment">1</property>
+    <property name="step-increment">1</property>
   </object>
   <object class="GtkFrame" id="MultiprocessingFrame">
     <property name="visible">True</property>

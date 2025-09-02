@@ -26,6 +26,9 @@ Thumbs.db
 *~
 .*.sw?
 
+# Temporary files directory
+tmp/
+
 man/pycam.1
 
 # Generated mkdocs files go into the site directory

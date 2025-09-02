@@ -26,7 +26,7 @@
     <property name="lower">1</property>
     <property name="upper">50</property>
     <property name="value">1</property>
-    <property name="step_increment">1</property>
+    <property name="step-increment">1</property>
   <object class="GtkFrame" id="OpenGLPrefTab">
     <property name="visible">True</property>
     <property name="can_focus">False</property>

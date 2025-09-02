@@ -5,32 +5,32 @@
   <object class="GtkAdjustment" id="BoundaryHighXValue">
     <property name="lower">-2000</property>
     <property name="upper">2000</property>
-    <property name="step_increment">1</property>
+    <property name="step-increment">1</property>
   </object>
   <object class="GtkAdjustment" id="BoundaryHighYValue">
     <property name="lower">-2000</property>
     <property name="upper">2000</property>
-    <property name="step_increment">1</property>
+    <property name="step-increment">1</property>
   </object>
   <object class="GtkAdjustment" id="BoundaryHighZValue">
     <property name="lower">-2000</property>
     <property name="upper">2000</property>
-    <property name="step_increment">1</property>
+    <property name="step-increment">1</property>
   </object>
   <object class="GtkAdjustment" id="BoundaryLowXValue">
     <property name="lower">-2000</property>
     <property name="upper">2000</property>
-    <property name="step_increment">1</property>
+    <property name="step-increment">1</property>
   </object>
   <object class="GtkAdjustment" id="BoundaryLowYValue">
     <property name="lower">-2000</property>
     <property name="upper">2000</property>
-    <property name="step_increment">1</property>
+    <property name="step-increment">1</property>
   </object>
   <object class="GtkAdjustment" id="BoundaryLowZValue">
     <property name="lower">-2000</property>
     <property name="upper">2000</property>
-    <property name="step_increment">1</property>
+    <property name="step-increment">1</property>
   </object>
   <object class="GtkListStore" id="BoundsList">
     <columns>

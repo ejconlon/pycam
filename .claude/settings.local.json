@@ -7,7 +7,8 @@
       "Read(/private/tmp/**)",
       "Bash(grep:*)",
       "Bash(timeout:*)",
-      "Read(/private/tmp/**)"
+      "Read(/private/tmp/**)",
+      "Bash(find:*)"
     ],
     "deny": [],
     "ask": []

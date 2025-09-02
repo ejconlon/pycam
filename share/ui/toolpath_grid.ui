@@ -5,22 +5,22 @@
   <object class="GtkAdjustment" id="GridXCountValue">
     <property name="lower">1</property>
     <property name="upper">1000</property>
-    <property name="step_increment">1</property>
+    <property name="step-increment">1</property>
   </object>
   <object class="GtkAdjustment" id="GridXDistanceValue">
     <property name="lower">-1000</property>
     <property name="upper">1000</property>
-    <property name="step_increment">1</property>
+    <property name="step-increment">1</property>
   </object>
   <object class="GtkAdjustment" id="GridYCountValue">
     <property name="lower">1</property>
     <property name="upper">1000</property>
-    <property name="step_increment">1</property>
+    <property name="step-increment">1</property>
   </object>
   <object class="GtkAdjustment" id="GridYDistanceValue">
     <property name="lower">-1000</property>
     <property name="upper">1000</property>
-    <property name="step_increment">1</property>
+    <property name="step-increment">1</property>
   </object>
   <object class="GtkFrame" id="ToolpathGridFrame">
     <property name="visible">True</property>

@@ -101,17 +101,51 @@ class ProjectGui(pycam.Gui.BaseUI):
     META_DATA_PREFIX = "PYCAM-META-DATA:"
 
     def __init__(self, event_manager):
+        import sys
+        print("DEBUG: ProjectGui.__init__ called")
+        sys.stdout.flush()
         super().__init__(event_manager)
+        print("DEBUG: ProjectGui super().__init__ completed")
+        sys.stdout.flush()
+        print("DEBUG: About to set _event_handlers")
+        sys.stdout.flush()
         self._event_handlers = []
+        print("DEBUG: _event_handlers set, setting up more attributes...")
+        sys.stdout.flush()
+        print("DEBUG: Setting gui_is_active")
         self.gui_is_active = False
+        print("DEBUG: Creating Gtk.Builder()")
         self.gui = Gtk.Builder()
+        print("DEBUG: Setting _mainloop_is_running")
         self._mainloop_is_running = False
-        self.mainloop = get_mainloop(use_gtk=True)
+        print("DEBUG: About to get mainloop...")
+        sys.stdout.flush()
+        try:
+            # Use a timeout to prevent hanging during initialization
+            import signal
+            def timeout_handler(signum, frame):
+                raise TimeoutError("Mainloop creation timed out")
+            
+            signal.signal(signal.SIGALRM, timeout_handler)
+            signal.alarm(2)  # 2 second timeout
+            self.mainloop = get_mainloop(use_gtk=True)
+            signal.alarm(0)  # Cancel alarm
+            print("DEBUG: Mainloop obtained successfully")
+        except (TimeoutError, Exception) as e:
+            print(f"DEBUG: Mainloop creation failed ({e}), using fallback")
+            self.mainloop = None
+        print("DEBUG: Getting UI file location...")
+        sys.stdout.flush()
         gtk_build_file = get_ui_file_location(GTKBUILD_FILE)
+        print(f"DEBUG: Looking for UI file: {GTKBUILD_FILE}")
+        print(f"DEBUG: Found UI file at: {gtk_build_file}")
         if gtk_build_file is None:
             raise InitializationError("Failed to load GTK layout specification file: {}"
                                       .format(gtk_build_file))
+        print("DEBUG: Loading UI file...")
         self.gui.add_from_file(gtk_build_file)
+        print("DEBUG: UI file loaded successfully")
+        print("DEBUG: Checkpoint 1 - UI file loading complete")
         if pycam.Utils.get_platform() == pycam.Utils.OSPlatform.WINDOWS:
             gtkrc_file = get_ui_file_location(GTKRC_FILE_WINDOWS)
             if gtkrc_file:
@@ -121,17 +155,23 @@ class ProjectGui(pycam.Gui.BaseUI):
         self.settings.set("gtk_action_group_prefix", "pycam")
         self.settings.set("gtk_action_group", action_group)
         self.window = self.gui.get_object("ProjectWindow")
+        print("DEBUG: Checkpoint 2 - ProjectWindow obtained")
         self.window.insert_action_group(
             self.settings.get("gtk_action_group_prefix"), self.settings.get("gtk_action_group"))
         self.settings.set("main_window", self.window)
+        print("DEBUG: Checkpoint 3 - Window setup complete")
         
         # GTK 4: Connect window close signal to proper handler
         self.window.connect("close-request", self._on_window_close_request)
         
         # Initialize new GTK 4 menu system
+        print("DEBUG: Checkpoint 4 - About to initialize MenuManager")
         self.menu_manager = MenuManager(None, self)  # TODO: Pass application when available
+        print("DEBUG: Checkpoint 5 - MenuManager created, creating menubar...")
         menubar = self.menu_manager.create_menubar()
+        print("DEBUG: Checkpoint 6 - Menubar created, creating actions...")
         self.menu_manager.create_actions()
+        print("DEBUG: Checkpoint 7 - Actions created")
         
         # Add menu actions to window
         menu_action_group = self.menu_manager.get_action_group()
@@ -140,14 +180,21 @@ class ProjectGui(pycam.Gui.BaseUI):
         # Set the menu model on the menubar widget
         try:
             menubar_widget = self.gui.get_object("MenuBar")
+            print(f"DEBUG: MenuBar widget found: {menubar_widget}")
             if menubar_widget:
                 menubar_widget.set_menu_model(menubar)
-        except AttributeError:
+                print("DEBUG: Menu model set on MenuBar widget")
+            else:
+                print("DEBUG: MenuBar widget is None")
+        except AttributeError as e:
             # MenuBar widget not found in UI file, skip menu integration
+            print(f"DEBUG: MenuBar widget not found: {e}")
             pass
+        print("DEBUG: Checkpoint 8 - Menu connection attempt complete")
         # show stock items on buttons
         # increase the initial width of the window (due to hidden elements)
         self.window.set_default_size(400, -1)
+        print("DEBUG: Checkpoint 9 - Window size set")
         # initialize the RecentManager (TODO: check for Windows)
         if False and pycam.Utils.get_platform() == pycam.Utils.OSPlatform.WINDOWS:
             # The pyinstaller binary for Windows fails mysteriously when trying
@@ -164,6 +211,7 @@ class ProjectGui(pycam.Gui.BaseUI):
                 # "appunti" GTK packages for Windows (April 2010).
                 # see http://www.daa.com.au/pipermail/pygtk/2009-May/017052.html
                 self.recent_manager = None
+        print("DEBUG: Checkpoint 10 - RecentManager setup complete")
         # file loading
         self.last_dirname = None
         self.last_model_uri = None
@@ -342,11 +390,14 @@ class ProjectGui(pycam.Gui.BaseUI):
 
         def clear_main_window():
             # GTK 4: Use iteration instead of foreach
+            # IMPORTANT: Preserve MenuBar while clearing other children
             if main_window:
                 child = main_window.get_first_child()
                 while child:
                     next_child = child.get_next_sibling()
-                    main_window.remove(child)
+                    # Don't remove GtkPopoverMenuBar (MenuBar) - only remove other children
+                    if not isinstance(child, Gtk.PopoverMenuBar):
+                        main_window.remove(child)
                     child = next_child
 
         def add_main_window_item(item, name, **extra_args):
@@ -372,6 +423,7 @@ class ProjectGui(pycam.Gui.BaseUI):
             if main_tab:
                 main_tab.set_sensitive(True)
 
+        print("DEBUG: Checkpoint 11 - UI controls setup complete")
         # configure locations of external programs
         for auto_control_name, location_control_name, browse_button, key in (
                 ("ExternalProgramInkscapeAuto", "ExternalProgramInkscapeControl",
@@ -489,6 +541,7 @@ class ProjectGui(pycam.Gui.BaseUI):
         # self.settings.register_ui("file_menu", "QuitSeparator", None, 95)
         # self.settings.register_ui("main_window", "Main", self.menubar, -100)
         self.settings.set("set_last_filename", self.add_to_recent_file_list)
+        print("DEBUG: Checkpoint 12 - About to register event handlers")
         self._event_handlers.extend((
             ("history-changed", self._update_undo_button),
             ("model-change-after", "visual-item-updated"),
@@ -497,14 +550,65 @@ class ProjectGui(pycam.Gui.BaseUI):
             ("notify-file-saved", self.add_to_recent_file_list),
             ("notify-file-opened", self.add_to_recent_file_list),
         ))
+        print("DEBUG: Checkpoint 13 - Event handlers extended")
         for name, target in self._event_handlers:
             self.settings.register_event(name, target)
         # allow the task settings control to be updated
-        self.mainloop.update()
+        if self.mainloop is not None:
+            self.mainloop.update()
+        
+        # FINAL FALLBACK: Ensure menu is properly set up
+        # (The original setup at lines 132-152 might not work due to initialization order)
+        print("DEBUG: About to call _ensure_final_menu_setup")
+        self._ensure_final_menu_setup()
+        print("DEBUG: _ensure_final_menu_setup completed")
+        
         # register a logging handler for displaying error messages
         pycam.Utils.log.add_gtk_gui(self.window, logging.ERROR)
         self.window.show()
-        self.mainloop.update()
+        if self.mainloop is not None:
+            self.mainloop.update()
+
+    def _ensure_final_menu_setup(self):
+        """Final fallback to ensure File menu appears - called at end of __init__"""
+        try:
+            # Check if menu_manager already exists and is working
+            if hasattr(self, 'menu_manager') and self.menu_manager is not None:
+                # Check if menu is already set
+                try:
+                    menubar_widget = self.gui.get_object("MenuBar")
+                    if menubar_widget and menubar_widget.get_menu_model():
+                        print("DEBUG: Menu already set up properly, skipping")
+                        return
+                except:
+                    pass
+            
+            print("DEBUG: Setting up File menu as final fallback...")
+            
+            # Import here to avoid issues
+            from pycam.Gui.MenuManager import MenuManager
+            
+            # Create or recreate menu manager 
+            self.menu_manager = MenuManager(None, self)
+            menubar = self.menu_manager.create_menubar()
+            self.menu_manager.create_actions()
+            
+            # Add actions to window
+            menu_action_group = self.menu_manager.get_action_group()
+            self.window.insert_action_group("app", menu_action_group)
+            
+            # Connect to MenuBar widget
+            menubar_widget = self.gui.get_object("MenuBar")
+            if menubar_widget:
+                menubar_widget.set_menu_model(menubar)
+                print("DEBUG: ✅ File menu should now be visible!")
+            else:
+                print("DEBUG: ❌ MenuBar widget not found")
+                
+        except Exception as e:
+            print(f"DEBUG: Error setting up final menu: {e}")
+            import traceback
+            traceback.print_exc()
 
     def get_question_response(self, question, default_response, allow_memorize=False):
         """display a dialog presenting a simple question and yes/no buttons
@@ -642,7 +746,14 @@ class ProjectGui(pycam.Gui.BaseUI):
     def run_forever(self):
         self._mainloop_is_running = True
         # the main loop returns as soon "stop" is called
-        self.mainloop.run()
+        if self.mainloop is not None:
+            self.mainloop.run()
+        else:
+            # Fallback: Use GTK 4 main loop directly
+            print("DEBUG: Using GTK 4 main loop fallback")
+            from gi.repository import GLib
+            main_loop = GLib.MainLoop()
+            main_loop.run()
         # in case we were interrupted: initiate a shutdown
         self.settings.emit_event("mainloop-stop")
 

@@ -19,6 +19,7 @@ class MenuManager:
         
     def create_menubar(self):
         """Create the main menubar using GMenu"""
+        print("DEBUG: Creating menubar...")
         self.menubar = Gio.Menu()
         
         # Create main menu sections
@@ -35,6 +36,7 @@ class MenuManager:
         self.menubar.append_submenu("_View", view_menu)
         self.menubar.append_submenu("_Help", help_menu)
         
+        print(f"DEBUG: Menubar created with {self.menubar.get_n_items()} items")
         return self.menubar
     
     def _create_file_menu(self):

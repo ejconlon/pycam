@@ -149,10 +149,59 @@ class BaseUI:
 
     def reset_preferences(self, widget=None):
         """ reset all preferences to their default values """
+        print("DEBUG: reset_preferences called")
         for key, value in PREFERENCES_DEFAULTS.items():
             self.settings.set(key, value)
         # redraw the model due to changed colors, display items ...
         self.settings.emit_event("model-change-after")
+        
+        # WORKAROUND: Force menu creation here since __init__ setup might not work
+        print("DEBUG: About to call _ensure_menu_setup")
+        self._ensure_menu_setup()
+
+    def _ensure_menu_setup(self):
+        """Ensure the File menu is properly set up - workaround for initialization issues"""
+        try:
+            # Only do this if we have a gui object (ProjectGui has it)
+            if not hasattr(self, 'gui'):
+                print("DEBUG: No gui object, skipping menu setup")
+                return
+                
+            print("DEBUG: _ensure_menu_setup called")
+            
+            # Import here to avoid circular imports
+            from pycam.Gui.MenuManager import MenuManager
+            
+            # Create menu manager if it doesn't exist
+            if not hasattr(self, 'menu_manager') or self.menu_manager is None:
+                print("DEBUG: Creating MenuManager")
+                self.menu_manager = MenuManager(None, self)
+                menubar = self.menu_manager.create_menubar()
+                self.menu_manager.create_actions()
+                
+                # Add menu actions to window
+                if hasattr(self, 'window'):
+                    menu_action_group = self.menu_manager.get_action_group()
+                    self.window.insert_action_group("app", menu_action_group)
+                    print("DEBUG: Action group added to window")
+                
+                # Set the menu model on the menubar widget
+                try:
+                    menubar_widget = self.gui.get_object("MenuBar")
+                    if menubar_widget:
+                        menubar_widget.set_menu_model(menubar)
+                        print("DEBUG: Menu model set on MenuBar widget - MENU SHOULD NOW APPEAR!")
+                    else:
+                        print("DEBUG: MenuBar widget is None")
+                except Exception as e:
+                    print(f"DEBUG: Failed to set menu model: {e}")
+            else:
+                print("DEBUG: MenuManager already exists, skipping setup")
+                
+        except Exception as e:
+            print(f"DEBUG: Error in _ensure_menu_setup: {e}")
+            import traceback
+            traceback.print_exc()
 
     def load_preferences(self):
         """ load all settings (see Preferences window) from a file in the user's home directory """

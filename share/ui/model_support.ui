@@ -5,12 +5,12 @@
   <object class="GtkAdjustment" id="SupportGridHeight">
     <property name="lower">0.01</property>
     <property name="upper">100</property>
-    <property name="step_increment">0.10000000000000001</property>
+    <property name="step-increment">0.10000000000000001</property>
   </object>
   <object class="GtkAdjustment" id="SupportGridThickness">
     <property name="lower">0.01</property>
     <property name="upper">100</property>
-    <property name="step_increment">0.10000000000000001</property>
+    <property name="step-increment">0.10000000000000001</property>
   </object>
   <object class="GtkListStore" id="SupportGridTypesList">
     <columns>
