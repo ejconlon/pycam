@@ -25,6 +25,15 @@ import pycam.Utils
 
 def _get_filters_from_list(gtk, filter_list):
     result = []
+    # Mime type mappings for common CAD/CAM formats
+    mime_types = {
+        "*.stl": "model/stl",
+        "*.dxf": "image/vnd.dxf", 
+        "*.svg": "image/svg+xml",
+        "*.eps": "application/postscript",
+        "*.ps": "application/postscript"
+    }
+    
     for one_filter in filter_list:
         current_filter = gtk.FileFilter()
         current_filter.set_name(one_filter[0])
@@ -32,7 +41,13 @@ def _get_filters_from_list(gtk, filter_list):
         if not isinstance(file_extensions, (list, tuple)):
             file_extensions = [file_extensions]
         for ext in file_extensions:
-            current_filter.add_pattern(pycam.Utils.get_case_insensitive_file_pattern(ext))
+            # Add pattern for file extension matching
+            pattern = pycam.Utils.get_case_insensitive_file_pattern(ext)
+            current_filter.add_pattern(pattern)
+            
+            # GTK 4: Also add mime type if known (helps with file filtering)
+            if ext in mime_types:
+                current_filter.add_mime_type(mime_types[ext])
         result.append(current_filter)
     return result
 
@@ -48,16 +63,10 @@ def _get_filename_with_suffix(filename, type_filter):
     if not filter_ext.startswith("*"):
         # weird filter content
         return filename
-    else:
-        filter_ext = filter_ext[1:]
-    basename = os.path.basename(filename)
-    if (basename.rfind(".") == -1) or (basename[-6:].rfind(".") == -1):
-        # The filename does not contain a dot or the dot is not within the
-        # last five characters. Dots within the start of the filename are
-        # ignored.
+    filter_ext = filter_ext[1:]
+    if filter_ext and not filename.endswith(filter_ext):
         return filename + filter_ext
     else:
-        # contains at least one dot
         return filename
 
 
@@ -66,12 +75,11 @@ class FilenameDialog(pycam.Plugins.PluginBase):
     CATEGORIES = ["System"]
 
     def setup(self):
-        if not self._gtk:
-            return False
-        else:
-            self.last_dirname = None
-            self.core.set("get_filename_func", self.get_filename_dialog)
-            return True
+        # FilenameDialog works with or without a GUI builder object
+        # since we create dialogs programmatically
+        self.last_dirname = None
+        self.core.set("get_filename_func", self.get_filename_dialog)
+        return True
 
     def teardown(self):
         self.core.set("get_filename_func", None)
@@ -82,130 +90,96 @@ class FilenameDialog(pycam.Plugins.PluginBase):
         if parent is None:
             parent = self.core.get("main_window")
         
-        # GTK 4: Create file dialog 
-        if mode_load:
-            dialog = self._gtk.FileChooserNative(
-                title=title,
-                transient_for=parent,
-                action=self._gtk.FileChooserAction.OPEN
-            )
-            # GTK 4: Labels are handled automatically by FileChooserNative
-        else:
-            dialog = self._gtk.FileChooserNative(
-                title=title,
-                transient_for=parent,
-                action=self._gtk.FileChooserAction.SAVE
-            )
-            # GTK 4: Labels are handled automatically by FileChooserNative
-        # set the initial directory to the last one used  
+        from gi.repository import Gio, GLib
+        
+        try:
+            # GTK 4.10+: Use the modern FileDialog API
+            dialog = self._gtk.FileDialog()
+            dialog.set_title(title)
+        except Exception as e:
+            print(f"Error creating FileDialog: {e}")
+            return None
+        
+        # Set initial folder
         if self.last_dirname and os.path.isdir(self.last_dirname):
-            # GTK 4: Use GFile for current folder
-            from gi.repository import Gio
             folder = Gio.File.new_for_path(self.last_dirname)
-            dialog.set_current_folder(folder)
+            dialog.set_initial_folder(folder)
         
-        # GTK 4: FileChooserNative doesn't support extra widgets
-        # Skip extra_widget functionality for now (rarely used)
-        if extra_widget:
-            # TODO: Implement alternative UI for extra widgets if needed
-            pass
-        # add filter for files
+        # Build filters using the new ListStore model
         if type_filter:
+            filter_store = Gio.ListStore.new(self._gtk.FileFilter)
             for file_filter in _get_filters_from_list(self._gtk, type_filter):
-                dialog.add_filter(file_filter)
-        # guess the export filename based on the model's filename
-        valid_templates = []
-        if filename_templates:
+                filter_store.append(file_filter)
+            # Add "All files" filter
+            all_filter = self._gtk.FileFilter()
+            all_filter.set_name("All files")
+            all_filter.add_pattern("*")
+            filter_store.append(all_filter)
+            
+            # Set the filters on the dialog
+            dialog.set_filters(filter_store)
+            # Set the first filter as default
+            dialog.set_default_filter(filter_store.get_item(0))
+        
+        # Handle filename templates for save mode
+        if not mode_load and filename_templates:
+            valid_templates = []
             for template in filename_templates:
-                if not template:
-                    continue
-                elif hasattr(template, "get_path"):
-                    valid_templates.append(template.get_path())
-                else:
-                    valid_templates.append(template)
-        if valid_templates:
-            filename_template = valid_templates[0]
-            # remove the extension
-            default_filename = os.path.splitext(filename_template)[0]
-            if filename_extension:
-                default_filename += os.path.extsep + filename_extension
-            elif type_filter:
-                for one_type in type_filter:
-                    extension = one_type[1]
-                    if isinstance(extension, (list, tuple, set)):
-                        extension = extension[0]
-                    # use only the extension of the type filter string
-                    extension = os.path.splitext(extension)[1]
-                    if extension:
-                        default_filename += extension
-                        # finish the loop
-                        break
-            # GTK 4: Set initial filename 
-            if mode_load:
-                from gi.repository import Gio
-                file = Gio.File.new_for_path(default_filename)
-                dialog.set_file(file)
-            else:
-                dialog.set_current_name(os.path.basename(default_filename))
-        # add filter for all files
-        ext_filter = self._gtk.FileFilter()
-        ext_filter.set_name("All files")
-        ext_filter.add_pattern("*")
-        dialog.add_filter(ext_filter)
-        # GTK 4: For FileChooserNative, we need to handle it synchronously
-        # Store the result
+                if template:
+                    if hasattr(template, "get_path"):
+                        valid_templates.append(template.get_path())
+                    else:
+                        valid_templates.append(template)
+            if valid_templates:
+                filename_template = valid_templates[0]
+                default_filename = os.path.splitext(filename_template)[0]
+                if filename_extension:
+                    default_filename += os.path.extsep + filename_extension
+                dialog.set_initial_name(os.path.basename(default_filename))
+        
+        # Show dialog and wait for response (synchronous for compatibility)
         filename = None
-        
-        def response_callback(dialog, response_id):
-            nonlocal filename
-            if response_id == self._gtk.ResponseType.ACCEPT:
-                selected_file = dialog.get_file()
-                if selected_file:
-                    filename = selected_file.get_path()
-            # Quit the local main loop
-            loop.quit()
-        
-        # Connect the response signal
-        dialog.connect('response', response_callback)
-        
-        # Create a local main loop
-        from gi.repository import GLib
         loop = GLib.MainLoop()
         
-        # Show the dialog
-        dialog.show()
+        def on_finish(dialog, result):
+            nonlocal filename
+            try:
+                if mode_load:
+                    file = dialog.open_finish(result)
+                else:
+                    file = dialog.save_finish(result)
+                if file:
+                    filename = file.get_path()
+            except GLib.Error as e:
+                print(f"Dialog operation cancelled or error: {e}")
+            except Exception as e:
+                print(f"Unexpected dialog error: {e}")
+            finally:
+                loop.quit()
         
-        # Run the local main loop (this blocks until dialog is closed)
-        loop.run()
-        
-        # Clean up
-        dialog.destroy()
-        
-        if not filename:
+        try:
+            if mode_load:
+                dialog.open(parent, None, on_finish)
+            else:
+                dialog.save(parent, None, on_finish)
+            
+            loop.run()
+        except Exception as e:
+            print(f"Error showing dialog: {e}")
             return None
-            
-        uri = pycam.Utils.URIHandler(filename)
         
-        if not mode_load and filename:
-            # check if we want to add a default suffix
-            filename = _get_filename_with_suffix(filename, type_filter)
-            
-        if not mode_load and os.path.exists(filename):
-            # GTK 4: Simple confirmation for overwrite (synchronous)
-            # TODO: Use proper async AlertDialog when we have better async support
-            import sys
-            response = input(f"File '{filename}' exists. Overwrite? (y/N): ").strip().lower()
-            if response not in ['y', 'yes']:
-                return None
-            
-        elif mode_load and not uri.exists():
-            print(f"Error: File '{filename}' does not exist.")
-            return None
-            
-        # add the file to the list of recently used ones
         if filename:
-            self.core.get("set_last_filename")(filename)
-            # Update last directory for next dialog
             self.last_dirname = os.path.dirname(filename)
             
+            if not mode_load and filename:
+                # check if we want to add a default suffix
+                filename = _get_filename_with_suffix(filename, type_filter)
+                
+            if not mode_load and os.path.exists(filename):
+                # Simple confirmation for overwrite
+                import sys
+                response = input(f"File '{filename}' exists. Overwrite? (y/N): ").strip().lower()
+                if response not in ['y', 'yes']:
+                    return None
+        
         return filename

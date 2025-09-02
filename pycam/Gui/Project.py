@@ -835,8 +835,12 @@ class ProjectGui(pycam.Gui.BaseUI):
         if callable(filename):
             filename = filename()
         if not filename:
-            filename = self.settings.get("get_filename_func")("Loading model ...", mode_load=True,
-                                                              type_filter=FILTER_MODEL)
+            get_filename_func = self.settings.get("get_filename_func")
+            if get_filename_func is None:
+                print("Error: FilenameDialog plugin not available")
+                return False
+            filename = get_filename_func("Loading model ...", mode_load=True,
+                                       type_filter=FILTER_MODEL)
         if filename:
             name_suggestion = os.path.splitext(os.path.basename(filename))[0]
             model_params = {"source": {"type": "file", "location": filename}}

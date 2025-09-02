@@ -173,17 +173,32 @@ class GTKHandler(logging.Handler):
         else:
             message_type = Gtk.MessageType.ERROR
             message_title = "Error"
-        window = Gtk.MessageDialog(self.parent_window, type=message_type,
-                                   buttons=Gtk.ButtonsType.OK)
-        window.set_markup(str(message))
-        window.set_title(message_title)
-        # make sure that the window gets destroyed later
-        for signal in ("close", "response"):
-            window.connect(signal, lambda dialog, *args: dialog.destroy())
-        # accept "destroy" action -> remove window
-        window.connect("destroy", lambda *args: True)
-        # show the window, but don't wait for a response
-        window.show()
+        # GTK 4: Use AlertDialog instead of MessageDialog
+        if hasattr(Gtk, 'AlertDialog'):
+            window = Gtk.AlertDialog()
+            window.set_message(str(message))
+            window.set_detail(message_title)
+            # Show the dialog (GTK 4 async)
+            window.show(self.parent_window)
+        else:
+            # Fallback for older GTK versions
+            window = Gtk.MessageDialog()
+            window.set_transient_for(self.parent_window)
+            window.set_message_type(message_type)
+            window.add_buttons(Gtk.ButtonsType.OK)
+            window.set_markup(str(message))
+            window.set_title(message_title)
+            window.show()
+        # GTK 4 AlertDialog handles cleanup automatically when async, 
+        # signals only needed for MessageDialog fallback
+        if not hasattr(Gtk, 'AlertDialog'):
+            # make sure that the window gets destroyed later
+            for signal in ("close", "response"):
+                window.connect(signal, lambda dialog, *args: dialog.destroy())
+            # accept "destroy" action -> remove window  
+            window.connect("destroy", lambda *args: True)
+            # show the window, but don't wait for a response
+            window.show()
 
 
 class HookHandler(logging.Handler):

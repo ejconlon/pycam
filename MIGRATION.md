@@ -471,6 +471,12 @@ The OpenGL visualization system has been successfully migrated to GTK 4! Key fin
 - ✅ **Application Initialization**: Completes full initialization without fatal crashes
 - ✅ **GTK 4 Compatibility**: Runs natively on GTK 4 with modern UI system
 
+**✅ File Dialog System Modernization:**
+- **Problem Solved**: STL files were grayed out in open dialog due to deprecated FileChooserNative API
+- **Solution**: Migrated to GTK 4.20+ modern `FileDialog` API with proper `Gio.ListStore` filter management
+- **Result**: File dialogs now work correctly, STL files are selectable, proper MIME type support added
+- **API Used**: `dialog.open()` with async completion handlers, `set_filters()` with ListStore model
+
 ### Migration Status Overview
 After 13 successful phases, PyCAM GTK 4 migration has achieved major milestones:
 

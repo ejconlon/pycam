@@ -43,14 +43,17 @@ class Tools(pycam.Plugins.ListPluginBase):
                                      (self.ACTION_DOWN, "ToolMoveDown"),
                                      (self.ACTION_DELETE, "ToolDelete")):
                 self.register_list_action_button(action, self.gui.get_object(obj_name))
-            self._gtk_handlers.append((self.gui.get_object("ToolNew"), "clicked", self._tool_new))
+            tool_new_obj = self.gui.get_object("ToolNew")
+            if tool_new_obj:
+                self._gtk_handlers.append((tool_new_obj, "clicked", self._tool_new))
             # parameters
             parameters_box = self.gui.get_object("ToolParameterBox")
 
             def clear_parameter_widgets():
                 # GTK 4: Use iteration instead of foreach
-                while parameters_box.get_first_child():
-                    parameters_box.remove(parameters_box.get_first_child())
+                if parameters_box:
+                    while parameters_box.get_first_child():
+                        parameters_box.remove(parameters_box.get_first_child())
 
             def add_parameter_widget(item, name):
                 # GTK 4: create a frame with proper child handling
@@ -70,7 +73,8 @@ class Tools(pycam.Plugins.ListPluginBase):
                 
                 frame.set_child(align_box)
                 align_box.append(item)
-                parameters_box.append(frame)
+                if parameters_box:
+                    parameters_box.append(frame)
 
             self.core.register_ui_section("tool_parameters", add_parameter_widget,
                                           clear_parameter_widgets)
@@ -212,17 +216,23 @@ class Tools(pycam.Plugins.ListPluginBase):
             if not tool.get_value("shape").value in shape_names:
                 self.get_collection().remove(tool)
         # show "new" only if a strategy is available
-        self.gui.get_object("ToolNew").set_sensitive(len(model) > 0)
+        tool_new_widget = self.gui.get_object("ToolNew")
+        if tool_new_widget:
+            tool_new_widget.set_sensitive(len(model) > 0)
         selector_box = self.gui.get_object("ToolSelectorBox")
-        if len(model) < 2:
-            selector_box.hide()
-        else:
-            selector_box.show()
+        if selector_box:
+            if len(model) < 2:
+                selector_box.hide()
+            else:
+                selector_box.show()
 
     def _update_tool_widgets(self, widget=None):
         """transfer the content of the currently selected tool to the related widgets"""
         tool = self.get_selected()
         control_box = self.gui.get_object("ToolSettingsControlsBox")
+        if control_box is None:
+            # UI object not found, skip widget updates
+            return
         if tool is None:
             control_box.hide()
         else:
