@@ -27,11 +27,11 @@ def _get_filters_from_list(gtk, filter_list):
     result = []
     # Mime type mappings for common CAD/CAM formats
     mime_types = {
-        "*.stl": "model/stl",
-        "*.dxf": "image/vnd.dxf", 
-        "*.svg": "image/svg+xml",
-        "*.eps": "application/postscript",
-        "*.ps": "application/postscript"
+        "*.stl": ["model/stl", "application/sla"],
+        "*.dxf": ["image/vnd.dxf", "application/dxf"], 
+        "*.svg": ["image/svg+xml"],
+        "*.eps": ["application/postscript"],
+        "*.ps": ["application/postscript"]
     }
     
     for one_filter in filter_list:
@@ -41,13 +41,21 @@ def _get_filters_from_list(gtk, filter_list):
         if not isinstance(file_extensions, (list, tuple)):
             file_extensions = [file_extensions]
         for ext in file_extensions:
-            # Add pattern for file extension matching
-            pattern = pycam.Utils.get_case_insensitive_file_pattern(ext)
-            current_filter.add_pattern(pattern)
+            # GTK 4: Add multiple patterns for better compatibility
+            # Basic pattern
+            current_filter.add_pattern(ext)
+            # Uppercase version
+            current_filter.add_pattern(ext.upper())
+            # Lowercase version  
+            current_filter.add_pattern(ext.lower())
+            # Case insensitive pattern (for compatibility)
+            case_insensitive_pattern = pycam.Utils.get_case_insensitive_file_pattern(ext)
+            current_filter.add_pattern(case_insensitive_pattern)
             
-            # GTK 4: Also add mime type if known (helps with file filtering)
+            # GTK 4: Add mime types if known (helps with file filtering)
             if ext in mime_types:
-                current_filter.add_mime_type(mime_types[ext])
+                for mime_type in mime_types[ext]:
+                    current_filter.add_mime_type(mime_type)
         result.append(current_filter)
     return result
 
@@ -102,24 +110,37 @@ class FilenameDialog(pycam.Plugins.PluginBase):
         
         # Set initial folder
         if self.last_dirname and os.path.isdir(self.last_dirname):
-            folder = Gio.File.new_for_path(self.last_dirname)
-            dialog.set_initial_folder(folder)
+            try:
+                folder = Gio.File.new_for_path(self.last_dirname)
+                dialog.set_initial_folder(folder)
+            except Exception as e:
+                print(f"Error setting initial folder: {e}")
         
         # Build filters using the new ListStore model
         if type_filter:
-            filter_store = Gio.ListStore.new(self._gtk.FileFilter)
-            for file_filter in _get_filters_from_list(self._gtk, type_filter):
-                filter_store.append(file_filter)
-            # Add "All files" filter
-            all_filter = self._gtk.FileFilter()
-            all_filter.set_name("All files")
-            all_filter.add_pattern("*")
-            filter_store.append(all_filter)
-            
-            # Set the filters on the dialog
-            dialog.set_filters(filter_store)
-            # Set the first filter as default
-            dialog.set_default_filter(filter_store.get_item(0))
+            try:
+                filter_store = Gio.ListStore.new(self._gtk.FileFilter)
+                
+                # Add specific filters first
+                for file_filter in _get_filters_from_list(self._gtk, type_filter):
+                    filter_store.append(file_filter)
+                
+                # Add "All files" filter last
+                all_filter = self._gtk.FileFilter()
+                all_filter.set_name("All files")
+                all_filter.add_pattern("*")
+                filter_store.append(all_filter)
+                
+                # Set the filters on the dialog
+                dialog.set_filters(filter_store)
+                
+                # Set the first specific filter as default (not "All files")
+                if filter_store.get_n_items() > 0:
+                    dialog.set_default_filter(filter_store.get_item(0))
+                    
+            except Exception as e:
+                print(f"Error setting up file filters: {e}")
+                # Continue without filters if there's an error
         
         # Handle filename templates for save mode
         if not mode_load and filename_templates:
@@ -158,6 +179,10 @@ class FilenameDialog(pycam.Plugins.PluginBase):
                 loop.quit()
         
         try:
+            # Ensure parent window is valid
+            if parent is None:
+                print("Warning: No parent window available for dialog")
+            
             if mode_load:
                 dialog.open(parent, None, on_finish)
             else:
