@@ -90,6 +90,14 @@
             </child>
           </object>
         </child>
+        
+        <!-- Help Link -->
+        <child>
+          <object class="GtkLinkButton" id="ModelTransformationsHelp">
+            <property name="label">Help</property>
+            <property name="uri">http://pycam.sourceforge.net/</property>
+          </object>
+        </child>
       </object>
     </child>
     

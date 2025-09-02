@@ -101,4 +101,70 @@ Copyright © 2010-2011 Lars Kruse</property>
     </child>
   </object>
 
+  <!-- Preferences Dialog -->
+  <object class="GtkDialog" id="GeneralSettingsWindow">
+    <property name="title">PyCAM Preferences</property>
+    <property name="modal">true</property>
+    <property name="transient-for">ProjectWindow</property>
+    <property name="default-width">600</property>
+    <property name="default-height">400</property>
+    <child>
+      <object class="GtkBox">
+        <property name="orientation">vertical</property>
+        <property name="spacing">10</property>
+        <property name="margin-start">20</property>
+        <property name="margin-end">20</property>
+        <property name="margin-top">20</property>
+        <property name="margin-bottom">20</property>
+        
+        <!-- Logo -->
+        <child>
+          <object class="GtkImage" id="logo">
+            <property name="icon-name">preferences-desktop</property>
+            <property name="margin-bottom">10</property>
+            <property name="icon-size">large</property>
+          </object>
+        </child>
+        
+        <!-- Preferences Notebook -->
+        <child>
+          <object class="GtkNotebook" id="PreferencesNotebook">
+            <property name="vexpand">true</property>
+            <!-- Pages will be added dynamically by plugins -->
+            <child>
+              <object class="GtkNotebookPage">
+                <property name="child">
+                  <object class="GtkLabel">
+                    <property name="label">Preferences will be loaded here</property>
+                  </object>
+                </property>
+                <property name="tab">
+                  <object class="GtkLabel">
+                    <property name="label">General</property>
+                  </object>
+                </property>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+    
+    <!-- Dialog Buttons -->
+    <child type="action">
+      <object class="GtkButton" id="ResetPreferencesButton">
+        <property name="label">Reset to Defaults</property>
+      </object>
+    </child>
+    <child type="action">
+      <object class="GtkButton" id="CloseSettingsWindow">
+        <property name="label">Close</property>
+      </object>
+    </child>
+    <action-widgets>
+      <action-widget response="1">ResetPreferencesButton</action-widget>
+      <action-widget response="0">CloseSettingsWindow</action-widget>
+    </action-widgets>
+  </object>
+
 </interface>

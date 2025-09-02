@@ -262,9 +262,10 @@ class ParameterSection(WidgetBaseClass):
 
     def __init__(self):
         self._widgets = []
-        self._table = Gtk.Table(rows=1, columns=2)
-        self._table.set_col_spacings(3)
-        self._table.set_row_spacings(3)
+        # GTK 4: Use Grid instead of Table
+        self._table = Gtk.Grid()
+        self._table.set_column_spacing(3)
+        self._table.set_row_spacing(3)
         self.update_widgets()
         self._update_widgets_visibility()
 
@@ -294,56 +295,67 @@ class ParameterSection(WidgetBaseClass):
     def update_widgets(self):
         widgets = list(self._widgets)
         widgets.sort(key=lambda item: item.weight)
-        # remove all widgets from the table
-        for child in self._table.get_children():
+        # GTK 4: Remove all widgets from the grid
+        child = self._table.get_first_child()
+        while child:
+            next_child = child.get_next_sibling()
             self._table.remove(child)
+            child = next_child
+        
         # add the current controls
         for index, widget in enumerate(widgets):
             if hasattr(widget.widget, "get_label"):
                 # checkbox
                 widget.widget.set_label(widget.label)
-                self._table.attach(widget.widget, 0, 2, index, index + 1, xoptions=Gtk.Align.FILL,
-                                   yoptions=Gtk.Align.FILL)
+                # GTK 4: attach(child, left, top, width, height)
+                self._table.attach(widget.widget, 0, index, 2, 1)
+                widget.widget.set_hexpand(True)
             elif not widget.label:
-                self._table.attach(widget.widget, 0, 2, index, index + 1, xoptions=Gtk.Align.FILL,
-                                   yoptions=Gtk.Align.FILL)
+                # GTK 4: attach(child, left, top, width, height)  
+                self._table.attach(widget.widget, 0, index, 2, 1)
+                widget.widget.set_hexpand(True)
             else:
                 # spinbutton, combobox, ...
                 # GTK 4: Create label without arguments and set text separately
                 label = Gtk.Label()
                 label.set_text("%s:" % widget.label)
                 label.set_xalign(0.0)  # GTK 4: Use set_xalign instead of set_alignment
-                self._table.attach(label, 0, 1, index, index + 1, xoptions=Gtk.Align.FILL,
-                                   yoptions=Gtk.Align.FILL)
-                self._table.attach(widget.widget, 1, 2, index, index + 1, xoptions=Gtk.Align.FILL,
-                                   yoptions=Gtk.Align.FILL)
+                # GTK 4: attach(child, left, top, width, height)
+                self._table.attach(label, 0, index, 1, 1)
+                self._table.attach(widget.widget, 1, index, 1, 1)
+                widget.widget.set_hexpand(True)
         self._update_widgets_visibility()
 
     def _get_table_row_of_widget(self, widget):
-        for child in self._table.get_children():
-            if child is widget:
-                return self._get_child_row(child)
+        # GTK 4: Search through widgets list to find row index
+        widgets = list(self._widgets)
+        widgets.sort(key=lambda item: item.weight)
+        for index, item in enumerate(widgets):
+            if item.widget is widget:
+                return index
         return -1
 
     def _get_child_row(self, widget):
-        return Gtk.Container.child_get_property(self._table, widget, "top-attach")
+        # GTK 4: Use the index-based approach
+        return self._get_table_row_of_widget(widget)
 
     def _update_widgets_visibility(self, widget=None):
         # Hide and show labels (or other items) that share a row with a
         # configured item (according to its visibility).
         visibility_collector = []
-        for widget in self._widgets:
-            table_row = self._get_table_row_of_widget(widget.widget)
-            is_visible = widget.widget.props.visible
+        for widget_item in self._widgets:
+            table_row = self._get_table_row_of_widget(widget_item.widget)
+            is_visible = widget_item.widget.props.visible
             visibility_collector.append(is_visible)
-            for child in self._table.get_children():
-                if widget == child:
+            # GTK 4: Iterate through all widgets to find row matches
+            for other_item in self._widgets:
+                if widget_item.widget == other_item.widget:
                     continue
-                if self._get_child_row(child) == table_row:
+                if self._get_table_row_of_widget(other_item.widget) == table_row:
                     if is_visible:
-                        child.show()
+                        other_item.widget.show()
                     else:
-                        child.hide()
+                        other_item.widget.hide()
         # hide the complete section if all items are hidden
         if any(visibility_collector):
             self._table.show()

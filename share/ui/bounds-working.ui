@@ -9,6 +9,76 @@
     </columns>
   </object>
   
+  <!-- Adjustments for boundary values -->
+  <object class="GtkAdjustment" id="BoundaryLowXValue">
+    <property name="lower">-1000</property>
+    <property name="upper">1000</property>
+    <property name="step-increment">0.1</property>
+    <property name="page-increment">1</property>
+  </object>
+  <object class="GtkAdjustment" id="BoundaryLowYValue">
+    <property name="lower">-1000</property>
+    <property name="upper">1000</property>
+    <property name="step-increment">0.1</property>
+    <property name="page-increment">1</property>
+  </object>
+  <object class="GtkAdjustment" id="BoundaryLowZValue">
+    <property name="lower">-1000</property>
+    <property name="upper">1000</property>
+    <property name="step-increment">0.1</property>
+    <property name="page-increment">1</property>
+  </object>
+  <object class="GtkAdjustment" id="BoundaryHighXValue">
+    <property name="lower">-1000</property>
+    <property name="upper">1000</property>
+    <property name="step-increment">0.1</property>
+    <property name="page-increment">1</property>
+  </object>
+  <object class="GtkAdjustment" id="BoundaryHighYValue">
+    <property name="lower">-1000</property>
+    <property name="upper">1000</property>
+    <property name="step-increment">0.1</property>
+    <property name="page-increment">1</property>
+  </object>
+  <object class="GtkAdjustment" id="BoundaryHighZValue">
+    <property name="lower">-1000</property>
+    <property name="upper">1000</property>
+    <property name="step-increment">0.1</property>
+    <property name="page-increment">1</property>
+  </object>
+  
+  <!-- Other list stores -->
+  <object class="GtkListStore" id="RelativeUnitModel">
+    <columns>
+      <column type="gchararray"/>
+    </columns>
+    <data>
+      <row>
+        <col id="0">%</col>
+      </row>
+      <row>
+        <col id="0">mm/inch</col>
+      </row>
+    </data>
+  </object>
+  
+  <object class="GtkListStore" id="ToolLimitModeList">
+    <columns>
+      <column type="gchararray"/>
+    </columns>
+    <data>
+      <row>
+        <col id="0">move inside limits</col>
+      </row>
+      <row>
+        <col id="0">move along limits</col>
+      </row>
+      <row>
+        <col id="0">move around limits</col>
+      </row>
+    </data>
+  </object>
+  
   <!-- Main Bounds Tab Content -->
   <object class="GtkPaned" id="BoundsBox">
     <property name="orientation">horizontal</property>
@@ -30,7 +100,7 @@
             <property name="vexpand">true</property>
             <property name="hscrollbar-policy">never</property>
             <child>
-              <object class="GtkTreeView" id="BoundsView">
+              <object class="GtkTreeView" id="BoundsTable">
                 <property name="model">BoundsList</property>
                 <property name="headers-visible">false</property>
                 <child>
@@ -89,6 +159,36 @@
         <property name="margin-top">10</property>
         <property name="margin-bottom">10</property>
         
+        <!-- Boundary Type Selection -->
+        <child>
+          <object class="GtkFrame">
+            <property name="label">Boundary Type</property>
+            <child>
+              <object class="GtkBox">
+                <property name="orientation">vertical</property>
+                <property name="spacing">5</property>
+                <property name="margin-start">10</property>
+                <property name="margin-end">10</property>
+                <property name="margin-top">10</property>
+                <property name="margin-bottom">10</property>
+                
+                <child>
+                  <object class="GtkCheckButton" id="TypeRelativeMargin">
+                    <property name="label">Relative Margin</property>
+                    <property name="active">true</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkCheckButton" id="TypeCustom">
+                    <property name="label">Custom Boundary</property>
+                    <property name="group">TypeRelativeMargin</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+        
         <!-- Bounds Settings -->
         <child>
           <object class="GtkFrame">
@@ -110,8 +210,9 @@
                   </object>
                 </child>
                 <child>
-                  <object class="GtkSpinButton" id="BoundsXMin">
-                    <property name="digits">3</property>
+                  <object class="GtkSpinButton" id="BoundaryLowX">
+                    <property name="adjustment">BoundaryLowXValue</property>
+                    <property name="digits">2</property>
                   </object>
                 </child>
                 
@@ -122,8 +223,9 @@
                   </object>
                 </child>
                 <child>
-                  <object class="GtkSpinButton" id="BoundsXMax">
-                    <property name="digits">3</property>
+                  <object class="GtkSpinButton" id="BoundaryHighX">
+                    <property name="adjustment">BoundaryHighXValue</property>
+                    <property name="digits">2</property>
                   </object>
                 </child>
                 
@@ -135,8 +237,9 @@
                   </object>
                 </child>
                 <child>
-                  <object class="GtkSpinButton" id="BoundsYMin">
-                    <property name="digits">3</property>
+                  <object class="GtkSpinButton" id="BoundaryLowY">
+                    <property name="adjustment">BoundaryLowYValue</property>
+                    <property name="digits">2</property>
                   </object>
                 </child>
                 
@@ -147,8 +250,9 @@
                   </object>
                 </child>
                 <child>
-                  <object class="GtkSpinButton" id="BoundsYMax">
-                    <property name="digits">3</property>
+                  <object class="GtkSpinButton" id="BoundaryHighY">
+                    <property name="adjustment">BoundaryHighYValue</property>
+                    <property name="digits">2</property>
                   </object>
                 </child>
                 
@@ -160,8 +264,9 @@
                   </object>
                 </child>
                 <child>
-                  <object class="GtkSpinButton" id="BoundsZMin">
-                    <property name="digits">3</property>
+                  <object class="GtkSpinButton" id="BoundaryLowZ">
+                    <property name="adjustment">BoundaryLowZValue</property>
+                    <property name="digits">2</property>
                   </object>
                 </child>
                 
@@ -172,8 +277,78 @@
                   </object>
                 </child>
                 <child>
-                  <object class="GtkSpinButton" id="BoundsZMax">
-                    <property name="digits">3</property>
+                  <object class="GtkSpinButton" id="BoundaryHighZ">
+                    <property name="adjustment">BoundaryHighZValue</property>
+                    <property name="digits">2</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+        
+        <!-- Tool Limit Mode -->
+        <child>
+          <object class="GtkFrame">
+            <property name="label">Tool Collision Handling</property>
+            <child>
+              <object class="GtkBox">
+                <property name="orientation">horizontal</property>
+                <property name="spacing">10</property>
+                <property name="margin-start">10</property>
+                <property name="margin-end">10</property>
+                <property name="margin-top">10</property>
+                <property name="margin-bottom">10</property>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="label">Mode:</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkComboBox" id="ToolLimit">
+                    <property name="model">ToolLimitModeList</property>
+                    <property name="active">0</property>
+                    <child>
+                      <object class="GtkCellRendererText" id="BoundaryModeColumn"/>
+                      <attributes>
+                        <attribute name="text">0</attribute>
+                      </attributes>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+        
+        <!-- Relative Unit -->
+        <child>
+          <object class="GtkFrame">
+            <property name="label">Relative Margin Units</property>
+            <child>
+              <object class="GtkBox">
+                <property name="orientation">horizontal</property>
+                <property name="spacing">10</property>
+                <property name="margin-start">10</property>
+                <property name="margin-end">10</property>
+                <property name="margin-top">10</property>
+                <property name="margin-bottom">10</property>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="label">Unit:</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkComboBox" id="RelativeUnit">
+                    <property name="model">RelativeUnitModel</property>
+                    <child>
+                      <object class="GtkCellRendererText">
+                        <property name="xalign">0.5</property>
+                      </object>
+                      <attributes>
+                        <attribute name="text">0</attribute>
+                      </attributes>
+                    </child>
                   </object>
                 </child>
               </object>

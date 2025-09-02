@@ -9,6 +9,31 @@
     </columns>
   </object>
   
+  <object class="GtkListStore" id="TaskTypeList">
+    <columns>
+      <column type="gchararray"/>
+      <column type="gchararray"/>
+    </columns>
+    <data>
+      <row>
+        <col id="0">Test</col>
+        <col id="1">sfd</col>
+      </row>
+    </data>
+  </object>
+  
+  <!-- Adjustments -->
+  <object class="GtkAdjustment" id="feedrate">
+    <property name="lower">1</property>
+    <property name="upper">10000</property>
+    <property name="step-increment">1</property>
+  </object>
+  <object class="GtkAdjustment" id="speed">
+    <property name="lower">1</property>
+    <property name="upper">100000</property>
+    <property name="step-increment">1</property>
+  </object>
+  
   <!-- Main Tasks Tab Content -->
   <object class="GtkPaned" id="TaskBox">
     <property name="orientation">horizontal</property>
@@ -51,24 +76,46 @@
         <!-- Task Controls -->
         <child>
           <object class="GtkBox">
-            <property name="orientation">horizontal</property>
-            <property name="homogeneous">true</property>
+            <property name="orientation">vertical</property>
             <property name="spacing">5</property>
+            <child>
+              <object class="GtkButton" id="GenerateToolPathButton">
+                <property name="label">Generate Toolpath</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkButton" id="GenerateAllToolPathsButton">
+                <property name="label">Generate All</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkButton" id="TaskNew">
+                <property name="label">New</property>
+              </object>
+            </child>
             <child>
               <object class="GtkButton" id="TaskDelete">
                 <property name="label">Delete</property>
               </object>
             </child>
             <child>
-              <object class="GtkButton" id="TaskDeleteAll">
-                <property name="label">Clear</property>
+              <object class="GtkButton" id="TaskMoveUp">
+                <property name="label">↑</property>
               </object>
             </child>
             <child>
-              <object class="GtkButton" id="TaskGenerate">
-                <property name="label">Generate</property>
+              <object class="GtkButton" id="TaskMoveDown">
+                <property name="label">↓</property>
               </object>
             </child>
+          </object>
+        </child>
+        
+        <!-- Help Link -->
+        <child>
+          <object class="GtkLinkButton" id="TaskHelp">
+            <property name="label">Help</property>
+            <property name="uri">http://pycam.sourceforge.net/task-settings</property>
           </object>
         </child>
       </object>
@@ -76,21 +123,44 @@
     
     <!-- Right: Task Parameters -->
     <child>
-      <object class="GtkNotebook" id="TaskParametersNotebook">
-        <property name="tab-pos">top</property>
-        <!-- Pages will be added dynamically -->
+      <object class="GtkBox" id="TaskDetails">
+        <property name="orientation">vertical</property>
+        <property name="spacing">5</property>
+        <property name="margin-start">10</property>
+        <property name="margin-end">10</property>
+        <property name="margin-top">10</property>
+        <property name="margin-bottom">10</property>
+        
+        <!-- Task Type Chooser -->
         <child>
-          <object class="GtkNotebookPage">
-            <property name="child">
+          <object class="GtkBox" id="TaskChooserBox">
+            <property name="orientation">horizontal</property>
+            <property name="spacing">10</property>
+            <child>
               <object class="GtkLabel">
-                <property name="label">Task parameters will be loaded here</property>
+                <property name="label">Task type:</property>
               </object>
-            </property>
-            <property name="tab">
-              <object class="GtkLabel">
-                <property name="label">Info</property>
+            </child>
+            <child>
+              <object class="GtkComboBox" id="TaskTypeSelector">
+                <property name="model">TaskTypeList</property>
+                <child>
+                  <object class="GtkCellRendererText"/>
+                  <attributes>
+                    <attribute name="text">0</attribute>
+                  </attributes>
+                </child>
               </object>
-            </property>
+            </child>
+          </object>
+        </child>
+        
+        <!-- Task Parameters -->
+        <child>
+          <object class="GtkBox" id="TaskParameterBox">
+            <property name="orientation">horizontal</property>
+            <property name="spacing">5</property>
+            <property name="vexpand">true</property>
           </object>
         </child>
       </object>

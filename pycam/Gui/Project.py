@@ -279,8 +279,9 @@ class ProjectGui(pycam.Gui.BaseUI):
 
         def clear_preferences():
             if preferences_book:
-                for child in preferences_book.get_children():
-                    preferences_book.remove(child)
+                # GTK 4: Remove notebook pages by index
+                while preferences_book.get_n_pages() > 0:
+                    preferences_book.remove_page(0)
 
         def add_preferences_item(item, name):
             if preferences_book:

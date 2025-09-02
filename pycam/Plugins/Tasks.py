@@ -57,19 +57,24 @@ class Tasks(pycam.Plugins.ListPluginBase):
                     parameters_box.remove(parameters_box.get_first_child())
 
             def add_parameter_widget(item, name):
-                # create a frame within an alignment and the item inside
+                # GTK 4: create a frame with proper child handling
                 if item.get_parent():
                     item.unparent()
                 frame_label = self._gtk.Label()
                 frame_label.set_markup("<b>%s</b>" % name)
                 frame = self._gtk.Frame()
                 frame.set_label_widget(frame_label)
-                align = self._gtk.Alignment()
-                frame.add(align)
-                align.set_padding(0, 3, 12, 3)
-                align.add(item)
-                frame.show_all()
-                parameters_box.pack_start(frame, expand=False, fill=False, padding=0)
+                
+                # GTK 4: Use Box instead of Alignment for padding
+                align_box = self._gtk.Box(orientation=self._gtk.Orientation.VERTICAL)
+                align_box.set_margin_start(12)
+                align_box.set_margin_end(3)
+                align_box.set_margin_top(0)
+                align_box.set_margin_bottom(3)
+                
+                frame.set_child(align_box)
+                align_box.append(item)
+                parameters_box.append(frame)
 
             self.core.register_ui_section("task_parameters", add_parameter_widget,
                                           clear_parameter_widgets)

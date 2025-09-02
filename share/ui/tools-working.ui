@@ -9,6 +9,27 @@
     </columns>
   </object>
   
+  <object class="GtkListStore" id="ToolShapeList">
+    <columns>
+      <column type="gchararray"/>
+      <column type="gchararray"/>
+    </columns>
+    <data>
+      <row>
+        <col id="0">Ball nose</col>
+        <col id="1">ballnose</col>
+      </row>
+      <row>
+        <col id="0">Bull nose</col>
+        <col id="1">bullnose</col>
+      </row>
+      <row>
+        <col id="0">Flat</col>
+        <col id="1">flat</col>
+      </row>
+    </data>
+  </object>
+  
   <!-- Main Tools Tab Content -->
   <object class="GtkPaned" id="ToolBox">
     <property name="orientation">horizontal</property>
@@ -105,33 +126,53 @@
     
     <!-- Right: Tool Parameters -->
     <child>
-      <object class="GtkBox">
+      <object class="GtkBox" id="ToolSettingsControlsBox">
         <property name="orientation">vertical</property>
         <property name="spacing">5</property>
+        <property name="margin-start">10</property>
+        <property name="margin-end">10</property>
+        <property name="margin-top">10</property>
+        <property name="margin-bottom">10</property>
+        
+        <!-- Tool Shape Selector -->
+        <child>
+          <object class="GtkFrame">
+            <property name="label">Tool Shape</property>
+            <child>
+              <object class="GtkBox">
+                <property name="orientation">horizontal</property>
+                <property name="spacing">10</property>
+                <property name="margin-start">10</property>
+                <property name="margin-end">10</property>
+                <property name="margin-top">10</property>
+                <property name="margin-bottom">10</property>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="label">Shape:</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkComboBox" id="ToolShapeSelector">
+                    <property name="model">ToolShapeList</property>
+                    <property name="hexpand">true</property>
+                    <child>
+                      <object class="GtkCellRendererText"/>
+                      <attributes>
+                        <attribute name="text">0</attribute>
+                      </attributes>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+        
+        <!-- Tool Parameter Box for dynamic widgets -->
         <child>
           <object class="GtkBox" id="ToolParameterBox">
             <property name="orientation">vertical</property>
             <property name="spacing">5</property>
-          </object>
-        </child>
-        <child>
-          <object class="GtkNotebook" id="ToolParametersNotebook">
-            <property name="tab-pos">top</property>
-            <!-- Pages will be added dynamically -->
-            <child>
-              <object class="GtkNotebookPage">
-                <property name="child">
-                  <object class="GtkLabel">
-                    <property name="label">Tool parameters will be loaded here</property>
-                  </object>
-                </property>
-                <property name="tab">
-                  <object class="GtkLabel">
-                    <property name="label">Info</property>
-                  </object>
-                </property>
-              </object>
-            </child>
           </object>
         </child>
       </object>
