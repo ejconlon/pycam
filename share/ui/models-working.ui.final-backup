@@ -39,13 +39,9 @@
                     <child>
                       <object class="GtkCellRendererPixbuf" id="VisibleSymbol">
                       </object>
-                      <attributes>
-                        <attribute name="pixbuf">0</attribute>
-                      </attributes>
                     </child>
                   </object>
                 </child>
-
                 <child>
                   <object class="GtkTreeViewColumn" id="NameColumn">
                     <property name="title">Name</property>
@@ -53,9 +49,6 @@
                       <object class="GtkCellRendererText" id="NameCell">
                         <property name="editable">true</property>
                       </object>
-                      <attributes>
-                        <attribute name="text">1</attribute>
-                      </attributes>
                     </child>
                   </object>
                 </child>
@@ -63,7 +56,7 @@
             </child>
           </object>
         </child>
-
+        
         <!-- Model Controls -->
         <child>
           <object class="GtkBox">
@@ -97,7 +90,7 @@
             </child>
           </object>
         </child>
-
+        
         <!-- Help Link -->
         <child>
           <object class="GtkLinkButton" id="ModelTransformationsHelp">
@@ -107,7 +100,7 @@
         </child>
       </object>
     </child>
-
+    
     <!-- Right: Model Transformations -->
     <child>
       <object class="GtkNotebook" id="ModelHandlingNotebook">

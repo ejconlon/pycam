@@ -7,7 +7,19 @@
       "Read(/tmp/**)",
       "Bash(grep:*)",
       "Bash(timeout:*)",
-      "Bash(find:*)"
+      "Bash(find:*)",
+      "Bash(/dev/null)",
+      "Bash(exit_code=$?)",
+      "Bash(if [ $exit_code -eq 124 ])",
+      "Bash(then)",
+      "Bash(elif [ $exit_code -eq 0 ])",
+      "Bash(else)",
+      "Bash(echo:*)",
+      "Bash(fi)",
+      "Bash(xmllint:*)",
+      "Bash(for file in /Users/charolastra/hack/pycam/share/ui/*working*.ui)",
+      "Bash(do echo \"Checking $file\")",
+      "Bash(done)"
     ],
     "deny": [],
     "ask": []

@@ -102,16 +102,20 @@ class OpenGLWindow(pycam.Plugins.PluginBase):
             detail_box = self.gui.get_object("InfoBox")
 
             def clear_window():
-                for child in detail_box.get_children():
+                # GTK 4: Remove all children using new iteration method
+                child = detail_box.get_first_child()
+                while child:
+                    next_child = child.get_next_sibling()
                     detail_box.remove(child)
+                    child = next_child
 
             def add_widget_to_window(item, name):
-                if len(detail_box.get_children()) > 0:
-                    sep = self._gtk.HSeparator()
-                    detail_box.pack_start(sep, fill=True, expand=True, padding=0)
-                    sep.show()
-                detail_box.pack_start(item, fill=True, expand=True, padding=0)
-                item.show()
+                # GTK 4: Check children using iteration
+                has_children = detail_box.get_first_child() is not None
+                if has_children:
+                    sep = self._gtk.Separator(orientation=self._gtk.Orientation.HORIZONTAL)
+                    detail_box.append(sep)
+                detail_box.append(item)
 
             self.core.register_ui_section("opengl_window", add_widget_to_window, clear_window)
             self.core.register_ui("opengl_window", "Views", self.gui.get_object("ViewControls"),
@@ -146,7 +150,7 @@ class OpenGLWindow(pycam.Plugins.PluginBase):
             self.mouse = {"start_pos": None, "button": None, "event_timestamp": 0,
                           "last_timestamp": 0, "pressed_pos": None, "pressed_timestamp": 0,
                           "pressed_button": None}
-            self.window.connect("delete-event", self.destroy)
+            self.window.connect("close-request", self.destroy)
             self.window.set_default_size(560, 400)
             for obj_name, view in (("ResetView", "reset"),
                                    ("LeftView", "left"),
@@ -178,7 +182,7 @@ class OpenGLWindow(pycam.Plugins.PluginBase):
                 (self.area, "motion-notify-event", self.mouse_handler),
                 (self.area, "button-release-event", self.context_menu_handler),
                 (self.area, "scroll-event", self.scroll_handler)))
-            self.gui.get_object("OpenGLBox").pack_end(self.area, fill=True, expand=True, padding=0)
+            self.gui.get_object("OpenGLBox").append(self.area)
 
             def get_area_allocation(self=self):
                 allocation = self.area.get_allocation()
@@ -320,17 +324,24 @@ class OpenGLWindow(pycam.Plugins.PluginBase):
     def _rebuild_display_items(self):
         pref_box = self.gui.get_object("PreferencesVisibleItemsBox")
         toolbar = self.gui.get_object("ViewItems")
-        for parent in pref_box, self.context_menu, toolbar:
-            for child in parent.get_children():
+        
+        # GTK 4: Clear children using new iteration method
+        for parent in (pref_box, self.context_menu, toolbar):
+            child = parent.get_first_child()
+            while child:
+                next_child = child.get_next_sibling()
                 parent.remove(child)
+                child = next_child
+                
         items = list(self._display_items.values())
         items.sort(key=lambda item: item["weight"])
         for item in items:
-            pref_box.pack_start(item["widgets"][0], expand=True, fill=True, padding=0)
-            toolbar.add(item["widgets"][1])
-            self.context_menu.add(item["widgets"][2])
+            # GTK 4: Use append instead of pack_start, add for toolbar
+            pref_box.append(item["widgets"][0])
+            toolbar.append(item["widgets"][1])  # toolbar.add should still work
+            self.context_menu.append(item["widgets"][2])
+            
         for parent in (pref_box, toolbar, self.context_menu):
-            parent.show_all()
             parent.insert_action_group(self.core.get("gtk_action_group_prefix"),
                                        self.core.get("gtk_action_group"))
 
@@ -375,8 +386,12 @@ class OpenGLWindow(pycam.Plugins.PluginBase):
 
     def _rebuild_color_settings(self):
         color_table = self.gui.get_object("ColorTable")
-        for child in color_table.get_children():
+        # GTK 4: Clear children using new iteration method  
+        child = color_table.get_first_child()
+        while child:
+            next_child = child.get_next_sibling()
             color_table.remove(child)
+            child = next_child
         items = list(self._color_settings.values())
         items.sort(key=lambda item: item["weight"])
         for index, item in enumerate(items):
@@ -386,7 +401,6 @@ class OpenGLWindow(pycam.Plugins.PluginBase):
             label.set_xalign(0.0)  # GTK 4: Use set_xalign instead of set_alignment
             color_table.attach(label, 0, index, 1, 1)
             color_table.attach(item["widget"], 1, index, 1, 1)
-        color_table.show_all()
 
     def toggle_3d_view(self, widget=None, value=None):
         current_state = self.is_visible
@@ -599,7 +613,8 @@ class OpenGLWindow(pycam.Plugins.PluginBase):
                 and (abs(event.y - self.mouse["pressed_pos"][1]) < 3)):
             # A quick press/release cycle with the right mouse button
             # -> open the context menu.
-            self.context_menu.popup(None, None, None, None, event.button, int(event.get_time()))
+            # GTK 4: Use popup_at_pointer instead of deprecated popup
+            self.context_menu.popup_at_pointer(event)
 
     def scroll_handler(self, widget, event):
         """ handle events of the scroll wheel

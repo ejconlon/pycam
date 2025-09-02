@@ -57,9 +57,6 @@
                       <object class="GtkCellRendererText" id="NameCell">
                         <property name="editable">true</property>
                       </object>
-                      <attributes>
-                        <attribute name="text">0</attribute>
-                      </attributes>
                     </child>
                   </object>
                 </child>
@@ -76,6 +73,7 @@
             </child>
           </object>
         </child>
+        
         <!-- Process Controls -->
         <child>
           <object class="GtkBox">
@@ -104,7 +102,7 @@
             </child>
           </object>
         </child>
-
+        
         <!-- Strategy Selector -->
         <child>
           <object class="GtkBox" id="ProcessSelectorBox">
@@ -129,9 +127,9 @@
             </child>
           </object>
         </child>
-
       </object>
     </child>
+    
     <!-- Right: Process Parameters -->
     <child>
       <object class="GtkBox" id="ProcessSettingsControlsBox">

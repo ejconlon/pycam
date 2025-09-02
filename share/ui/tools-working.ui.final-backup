@@ -61,13 +61,9 @@
                       <object class="GtkCellRendererText" id="IDCell">
                         <property name="editable">true</property>
                       </object>
-                      <attributes>
-                        <attribute name="text">0</attribute>
-                      </attributes>
                     </child>
                   </object>
                 </child>
-
                 <child>
                   <object class="GtkTreeViewColumn" id="NameColumn">
                     <property name="title">Name</property>
@@ -75,22 +71,15 @@
                       <object class="GtkCellRendererText" id="NameCell">
                         <property name="editable">true</property>
                       </object>
-                      <attributes>
-                        <attribute name="text">1</attribute>
-                      </attributes>
                     </child>
                   </object>
                 </child>
-
                 <child>
                   <object class="GtkTreeViewColumn" id="ShapeColumn">
                     <property name="title">Shape</property>
                     <child>
                       <object class="GtkCellRendererText" id="ShapeCell">
                       </object>
-                      <attributes>
-                        <attribute name="text">2</attribute>
-                      </attributes>
                     </child>
                   </object>
                 </child>
@@ -98,7 +87,7 @@
             </child>
           </object>
         </child>
-
+        
         <!-- Tool Controls -->
         <child>
           <object class="GtkBox">
@@ -134,7 +123,7 @@
         </child>
       </object>
     </child>
-
+    
     <!-- Right: Tool Parameters -->
     <child>
       <object class="GtkBox" id="ToolSettingsControlsBox">
@@ -186,7 +175,7 @@
             </child>
           </object>
         </child>
-
+        
         <!-- Tool Parameter Box for dynamic widgets -->
         <child>
           <object class="GtkBox" id="ToolParameterBox">

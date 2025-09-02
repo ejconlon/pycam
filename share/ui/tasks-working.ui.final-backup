@@ -75,6 +75,7 @@
             </child>
           </object>
         </child>
+        
         <!-- Task Controls -->
         <child>
           <object class="GtkBox">
@@ -112,7 +113,7 @@
             </child>
           </object>
         </child>
-
+        
         <!-- Help Link -->
         <child>
           <object class="GtkLinkButton" id="TaskHelp">
@@ -122,6 +123,7 @@
         </child>
       </object>
     </child>
+    
     <!-- Right: Task Parameters -->
     <child>
       <object class="GtkBox" id="TaskDetails">
@@ -155,7 +157,7 @@
             </child>
           </object>
         </child>
-
+        
         <!-- Task Parameters -->
         <child>
           <object class="GtkBox" id="TaskParameterBox">
