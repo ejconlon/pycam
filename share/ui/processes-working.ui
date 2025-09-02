@@ -57,9 +57,6 @@
                       <object class="GtkCellRendererText" id="NameCell">
                         <property name="editable">true</property>
                       </object>
-                      <attributes>
-                        <attribute name="text">0</attribute>
-                      </attributes>
                     </child>
                   </object>
                 </child>

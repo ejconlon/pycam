@@ -61,9 +61,6 @@
                       <object class="GtkCellRendererText" id="IDCell">
                         <property name="editable">true</property>
                       </object>
-                      <attributes>
-                        <attribute name="text">0</attribute>
-                      </attributes>
                     </child>
                   </object>
                 </child>
@@ -75,9 +72,6 @@
                       <object class="GtkCellRendererText" id="NameCell">
                         <property name="editable">true</property>
                       </object>
-                      <attributes>
-                        <attribute name="text">1</attribute>
-                      </attributes>
                     </child>
                   </object>
                 </child>
@@ -88,9 +82,6 @@
                     <child>
                       <object class="GtkCellRendererText" id="ShapeCell">
                       </object>
-                      <attributes>
-                        <attribute name="text">2</attribute>
-                      </attributes>
                     </child>
                   </object>
                 </child>

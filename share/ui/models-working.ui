@@ -39,9 +39,6 @@
                     <child>
                       <object class="GtkCellRendererPixbuf" id="VisibleSymbol">
                       </object>
-                      <attributes>
-                        <attribute name="pixbuf">0</attribute>
-                      </attributes>
                     </child>
                   </object>
                 </child>
@@ -53,9 +50,6 @@
                       <object class="GtkCellRendererText" id="NameCell">
                         <property name="editable">true</property>
                       </object>
-                      <attributes>
-                        <attribute name="text">1</attribute>
-                      </attributes>
                     </child>
                   </object>
                 </child>
