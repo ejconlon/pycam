@@ -151,9 +151,9 @@ class ProjectGui(pycam.Gui.BaseUI):
             if gtkrc_file:
                 Gtk.rc_add_default_file(gtkrc_file)
                 Gtk.rc_reparse_all_for_settings(Gtk.settings_get_default(), True)
-        action_group = Gio.SimpleActionGroup()
-        self.settings.set("gtk_action_group_prefix", "pycam")
-        self.settings.set("gtk_action_group", action_group)
+        # Use the MenuManager's action group instead of creating a new empty one
+        self.settings.set("gtk_action_group_prefix", "app")
+        # The action group will be set when MenuManager is created
         self.window = self.gui.get_object("ProjectWindow")
         print("DEBUG: Checkpoint 2 - ProjectWindow obtained")
         self.window.insert_action_group(
@@ -173,8 +173,9 @@ class ProjectGui(pycam.Gui.BaseUI):
         self.menu_manager.create_actions()
         print("DEBUG: Checkpoint 7 - Actions created")
         
-        # Add menu actions to window
+        # Add menu actions to window and store in settings for other windows
         menu_action_group = self.menu_manager.get_action_group()
+        self.settings.set("gtk_action_group", menu_action_group)
         self.window.insert_action_group("app", menu_action_group)
         
         # Set the menu model on the menubar widget
@@ -720,18 +721,31 @@ class ProjectGui(pycam.Gui.BaseUI):
 
     @gui_activity_guard
     def toggle_preferences_window(self, widget=None, event=None, state=None):
+        if self.preferences_window is None:
+            print("DEBUG: Preferences window is None, cannot toggle")
+            return True
+            
         if state is None:
             # the "delete-event" issues the additional "event" argument
             state = event
         if state is None:
             state = not self._preferences_window_visible
+        
         if state:
-            if self._preferences_window_position:
-                self.preferences_window.move(*self._preferences_window_position)
-            self.preferences_window.show()
+            # GTK 4: move() method was removed, skip positioning for now
+            # TODO: Implement proper positioning with GTK 4 methods if needed
+            # if self._preferences_window_position:
+            #     self.preferences_window.move(*self._preferences_window_position)
+            
+            # GTK 4: Use present() for dialogs to ensure they appear on top
+            self.preferences_window.present()
         else:
-            self._preferences_window_position = self.preferences_window.get_position()
+            # GTK 4: get_position() may not exist, skip for now
+            # TODO: Implement proper position saving with GTK 4 methods if needed
+            # self._preferences_window_position = self.preferences_window.get_position()
+            
             self.preferences_window.hide()
+            
         self._preferences_window_visible = state
         # don't close the window - just hide it (for "delete-event")
         return True

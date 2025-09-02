@@ -167,4 +167,73 @@ Copyright © 2010-2011 Lars Kruse</property>
     </action-widgets>
   </object>
 
+  <!-- Preferences Tab Objects -->
+  
+  <!-- General Settings Tab -->
+  <object class="GtkFrame" id="GeneralSettingsPrefTab">
+    <property name="margin-start">10</property>
+    <property name="margin-end">10</property>
+    <property name="margin-top">10</property>
+    <property name="margin-bottom">10</property>
+    <child>
+      <object class="GtkBox">
+        <property name="orientation">vertical</property>
+        <property name="spacing">10</property>
+        <property name="margin-start">15</property>
+        <property name="margin-end">15</property>
+        <property name="margin-top">15</property>
+        <property name="margin-bottom">15</property>
+        
+        <child>
+          <object class="GtkLabel">
+            <property name="label">General application settings will be available here.</property>
+            <property name="wrap">true</property>
+            <property name="justify">center</property>
+          </object>
+        </child>
+        
+        <!-- Placeholder for future general preferences -->
+        <child>
+          <object class="GtkCheckButton" id="ExampleCheckButton">
+            <property name="label">Enable example feature</property>
+            <property name="active">true</property>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+
+  <!-- Programs Settings Tab -->
+  <object class="GtkFrame" id="ProgramsPrefTab">
+    <property name="margin-start">10</property>
+    <property name="margin-end">10</property>
+    <property name="margin-top">10</property>
+    <property name="margin-bottom">10</property>
+    <child>
+      <object class="GtkBox">
+        <property name="orientation">vertical</property>
+        <property name="spacing">10</property>
+        <property name="margin-start">15</property>
+        <property name="margin-end">15</property>
+        <property name="margin-top">15</property>
+        <property name="margin-bottom">15</property>
+        
+        <child>
+          <object class="GtkLabel">
+            <property name="label">External program settings will be available here.</property>
+            <property name="wrap">true</property>
+            <property name="justify">center</property>
+          </object>
+        </child>
+        
+        <!-- Placeholder for future program preferences -->
+        <child>
+          <object class="GtkEntry" id="ExampleProgramPath">
+            <property name="placeholder-text">Path to external program...</property>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+
 </interface>

@@ -20,6 +20,11 @@ class MenuManager:
     def create_menubar(self):
         """Create the main menubar using GMenu"""
         print("DEBUG: Creating menubar...")
+        
+        # First create all the actions
+        print("DEBUG: Creating actions...")
+        self.create_actions()
+        
         self.menubar = Gio.Menu()
         
         # Create main menu sections
