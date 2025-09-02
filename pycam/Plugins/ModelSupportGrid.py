@@ -51,7 +51,8 @@ class ModelSupportGrid(pycam.Plugins.PluginBase):
             self.core.add_item("support_grid_distance_x", grid_distance_x.get_value,
                                grid_distance_x.set_value)
             grid_distance_square = self.gui.get_object("SupportGridDistanceSquare")
-            self._gtk_handlers.append((grid_distance_square, "clicked",
+            # GTK 4: CheckButton uses "toggled" instead of "clicked"
+            self._gtk_handlers.append((grid_distance_square, "toggled",
                                        self.update_support_controls))
             grid_distance_y = self.gui.get_object("SupportGridDistanceY")
             self._gtk_handlers.append((grid_distance_y, "value-changed", support_model_changed))

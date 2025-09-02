@@ -56,9 +56,12 @@ class ModelSupport(pycam.Plugins.PluginBase):
                     model.clear()
 
             def clear_support_model_settings():
-                children = container.get_children()
-                for child in children:
+                # GTK 4: Replace get_children() with child iteration
+                child = container.get_first_child()
+                while child:
+                    next_child = child.get_next_sibling()
                     container.remove(child)
+                    child = next_child
 
             def get_support_model_type():
                 index = support_model_type_selector.get_active()
@@ -83,7 +86,8 @@ class ModelSupport(pycam.Plugins.PluginBase):
             container = self.gui.get_object("SupportAddOnContainer")
             self.core.register_ui_section(
                 "support_model_settings",
-                lambda obj, name: container.pack_start(obj, expand=False, fill=False, padding=0),
+                # GTK 4: Replace pack_start with append
+                lambda obj, name: container.append(obj),
                 clear_support_model_settings)
             # TODO: remove public settings
             self.core.add_item("support_model_type", get_support_model_type,

@@ -37,19 +37,24 @@ class ModelScaling(pycam.Plugins.PluginBase):
             scale_percent.set_value(100)
             scale_dimension_button = self.gui.get_object("ScaleAllAxesButton")
             scale_dimension_control = self.gui.get_object("ScaleDimensionControl")
+            # GTK 4: Use EventControllerFocus instead of focus-enter/focus-leave signals
+            scale_percent_focus = self._gtk.EventControllerFocus.new()
+            scale_percent_focus.connect("enter", lambda controller: scale_button.grab_default())
+            scale_percent_focus.connect("leave", lambda controller: 
+                scale_box.get_root().set_default_widget(None) if scale_box.get_root() else None)
+            scale_percent.add_controller(scale_percent_focus)
+            
+            scale_dimension_focus = self._gtk.EventControllerFocus.new()
+            scale_dimension_focus.connect("enter", lambda controller: scale_dimension_button.grab_default())
+            scale_dimension_focus.connect("leave", lambda controller: 
+                scale_box.get_root().set_default_widget(None) if scale_box.get_root() else None)
+            scale_dimension_control.add_controller(scale_dimension_focus)
+            
             self._gtk_handlers = []
             self._gtk_handlers.extend((
-                (scale_percent, "focus-enter",
-                 lambda widget, data: scale_button.grab_default()),
-                (scale_percent, "focus-leave",
-                 lambda widget, data: scale_box.get_toplevel().set_default(None)),
                 (scale_button, "clicked", self._scale_model),
                 (self.gui.get_object("ScaleDimensionAxis"), "changed",
                  lambda widget=None: self.core.emit_event("model-change-after")),
-                (scale_dimension_control, "focus-enter",
-                 lambda widget, data: scale_dimension_button.grab_default()),
-                (scale_dimension_control, "focus-leave",
-                 lambda widget, data: scale_box.get_toplevel().set_default(None)),
                 (scale_dimension_button, "clicked",
                  lambda widget: self._scale_model_axis_fit(proportionally=True)),
                 (self.gui.get_object("ScaleSelectedAxisButton"), "clicked",

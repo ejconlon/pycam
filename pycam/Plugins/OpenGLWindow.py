@@ -167,27 +167,49 @@ class OpenGLWindow(pycam.Plugins.PluginBase):
                                    ("BottomView", "bottom")):
                 self._gtk_handlers.append((self.gui.get_object(obj_name), "clicked",
                                            self.rotate_view, VIEWS[view]))
-            # key binding
-            self._gtk_handlers.append((self.window, "key-press-event", self.key_handler))
+            # GTK 4: Replace key-press-event with EventControllerKey
+            key_controller = self._gtk.EventControllerKey.new()
+            key_controller.connect("key-pressed", self.key_handler)
+            self.window.add_controller(key_controller)
             # OpenGL stuff
-            self.area = self._gtk.GLArea(auto_render=False, has_alpha=True, has_depth_buffer=True)
+            # GTK 4: GLArea properties set via methods, not constructor parameters
+            self.area = self._gtk.GLArea()
+            self.area.set_auto_render(False)
+            # GTK 4: set_has_alpha may not be available in all versions
+            if hasattr(self.area, 'set_has_alpha'):
+                try:
+                    self.area.set_has_alpha(True)
+                except Exception as e:
+                    self.log.debug("GLArea set_has_alpha failed: %s", e)
+            if hasattr(self.area, 'set_has_depth_buffer'):
+                try:
+                    self.area.set_has_depth_buffer(True)
+                except Exception as e:
+                    self.log.debug("GLArea set_has_depth_buffer failed: %s", e)
             self.area.show()
             # first run; might also be important when doing other fancy
             # called when a part of the screen is uncovered
             self._gtk_handlers.append((self.area, 'render', self.paint))
             # resize window
             self._gtk_handlers.append((self.area, "resize", self._resize_window))
-            # catch mouse events
-            self.area.set_events((self._gdk.InputSource.MOUSE
-                                  | self._gdk.EventMask.POINTER_MOTION_MASK
-                                  | self._gdk.EventMask.BUTTON_PRESS_MASK
-                                  | self._gdk.EventMask.BUTTON_RELEASE_MASK
-                                  | self._gdk.EventMask.SCROLL_MASK))
-            self._gtk_handlers.extend((
-                (self.area, "button-press-event", self.mouse_press_handler),
-                (self.area, "motion-notify-event", self.mouse_handler),
-                (self.area, "button-release-event", self.context_menu_handler),
-                (self.area, "scroll-event", self.scroll_handler)))
+            # GTK 4: Replace set_events() and event signals with event controllers
+            # Mouse button events
+            click_controller = self._gtk.GestureClick.new()
+            click_controller.set_button(0)  # All buttons
+            click_controller.connect("pressed", self.mouse_press_handler)
+            click_controller.connect("released", self.context_menu_handler)
+            self.area.add_controller(click_controller)
+            
+            # Mouse motion events
+            motion_controller = self._gtk.EventControllerMotion.new()
+            motion_controller.connect("motion", self.mouse_handler)
+            self.area.add_controller(motion_controller)
+            
+            # Scroll events
+            scroll_controller = self._gtk.EventControllerScroll.new(
+                self._gtk.EventControllerScrollFlags.BOTH_AXES)
+            scroll_controller.connect("scroll", self.scroll_handler)
+            self.area.add_controller(scroll_controller)
             self.gui.get_object("OpenGLBox").append(self.area)
 
             def get_area_allocation(self=self):

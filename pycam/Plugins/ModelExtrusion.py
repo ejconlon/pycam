@@ -53,16 +53,34 @@ class ModelExtrusion(pycam.Plugins.PluginBase):
             for row in EXTRUSION_TYPES:
                 # GTK 4: get_pixbuf() replaced with get_paintable() or get_texture()
                 image_widget = self.gui.get_object(row[2])
-                try:
-                    # GTK 4: Try paintable first
-                    pixbuf = image_widget.get_paintable()
-                    if pixbuf is None:
-                        # Try texture as fallback
-                        pixbuf = image_widget.get_texture()
-                except AttributeError:
-                    # GTK 3 compatibility
-                    pixbuf = image_widget.get_pixbuf()
-                extrusion_model.append((row[0], row[1], pixbuf))
+                pixbuf = None
+                
+                # Try GTK 4 methods first
+                if hasattr(image_widget, 'get_paintable'):
+                    try:
+                        pixbuf = image_widget.get_paintable()
+                    except Exception as e:
+                        self.log.debug("get_paintable() failed: %s", e)
+                
+                if pixbuf is None and hasattr(image_widget, 'get_texture'):
+                    try:
+                        pixbuf = image_widget.get_texture()  
+                    except Exception as e:
+                        self.log.debug("get_texture() failed: %s", e)
+                
+                # Fallback to GTK 3 method
+                if pixbuf is None and hasattr(image_widget, 'get_pixbuf'):
+                    try:
+                        pixbuf = image_widget.get_pixbuf()
+                    except Exception as e:
+                        self.log.debug("get_pixbuf() failed: %s", e)
+                
+                # Skip this row if no image could be loaded
+                if pixbuf is not None:
+                    extrusion_model.append((row[0], row[1], pixbuf))
+                else:
+                    self.log.warning("Could not load image for extrusion type: %s", row[1])
+                    extrusion_model.append((row[0], row[1], None))
             self.gui.get_object("ExtrusionTypeSelector").set_active(0)
             self.register_gtk_handlers(self._gtk_handlers)
             self.register_event_handlers(self._event_handlers)

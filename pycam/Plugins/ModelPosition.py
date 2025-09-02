@@ -37,21 +37,25 @@ class ModelPosition(pycam.Plugins.PluginBase):
             self._gtk_handlers.append((shift_button, "clicked", self._shift_model))
             align_button = self.gui.get_object("AlignPositionButton")
             self._gtk_handlers.append((align_button, "clicked", self._align_model))
+            # GTK 4: Use EventControllerFocus instead of focus-in/focus-out signals
             # grab default button for shift/align controls
             for axis in "XYZ":
                 obj = self.gui.get_object("ShiftPosition%s" % axis)
-                self._gtk_handlers.extend((
-                    (obj, "focus-in", lambda widget, data: shift_button.grab_default()),
-                    (obj, "focus-out",
-                     lambda widget, data: shift_button.get_toplevel().set_default(None))))
+                focus_controller = self._gtk.EventControllerFocus.new()
+                focus_controller.connect("enter", lambda controller: shift_button.grab_default())
+                focus_controller.connect("leave", lambda controller: 
+                    shift_button.get_root().set_default_widget(None) if shift_button.get_root() else None)
+                obj.add_controller(focus_controller)
+                
             for axis in "XYZ":
                 for name_template in ("AlignPosition%s", "AlignPosition%sMin",
                                       "AlignPosition%sCenter", "AlignPosition%sMax"):
                     obj = self.gui.get_object(name_template % axis)
-                    self._gtk_handlers.extend((
-                        (obj, "focus-in", lambda widget, data: align_button.grab_default()),
-                        (obj, "focus-out",
-                         lambda widget, data: align_button.get_toplevel().set_default(None))))
+                    focus_controller = self._gtk.EventControllerFocus.new()
+                    focus_controller.connect("enter", lambda controller: align_button.grab_default())
+                    focus_controller.connect("leave", lambda controller: 
+                        align_button.get_root().set_default_widget(None) if align_button.get_root() else None)
+                    obj.add_controller(focus_controller)
             self._event_handlers = (("model-selection-changed", self._update_position_widgets), )
             self.register_gtk_handlers(self._gtk_handlers)
             self.register_event_handlers(self._event_handlers)
