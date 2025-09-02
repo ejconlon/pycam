@@ -237,7 +237,7 @@
     </child>
     <child>
       <object class="GtkLinkButton" id="3DViewHelp">
-        <property name="label">gtk-help</property>
+        <property name="icon_name">help-browser</property>
         <property name="visible">True</property>
         <property name="can_focus">True</property>
         <property name="receives_default">True</property>

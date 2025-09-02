@@ -104,8 +104,13 @@
       <object class="GtkNotebook" id="ToolpathHandlingNotebook">
         <property name="visible">True</property>
         <property name="can_focus">True</property>
-        <property name="tab_pos">left</property>
-      </object>
+        <property name="tab-pos">left</property>
+        <property name="width-request">200</property>
+      
+    <property name="show-tabs">true</property>
+    <property name="scrollable">true</property>
+    <property name="enable-popup">true</property>
+</object>
     </child>
   </object>
 </interface>

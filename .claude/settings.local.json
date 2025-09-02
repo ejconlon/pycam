@@ -23,7 +23,10 @@
       "Bash(/Users/charolastra/hack/pycam/validate_ui_files.sh)",
       "Bash(git checkout:*)",
       "Bash(for file in /Users/charolastra/hack/pycam/share/ui/*.ui)",
-      "Bash(do if xmllint --noout \"$file\")"
+      "Bash(do if xmllint --noout \"$file\")",
+      "Bash(for file in share/ui/pycam-project-functional.ui share/ui/models.ui share/ui/toolpaths.ui share/ui/export_settings.ui share/ui/models-working.ui share/ui/pycam-project-minimal.ui)",
+      "Bash(do echo \"Validating $file\")",
+      "Bash(./validate_ui_files.sh:*)"
     ],
     "deny": [],
     "ask": []

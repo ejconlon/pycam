@@ -22,6 +22,11 @@
         <child>
           <object class="GtkNotebook" id="MainTabs">
             <property name="vexpand">true</property>
+            <property name="width-request">200</property>
+    <property name="show-tabs">true</property>
+    <property name="scrollable">true</property>
+    <property name="enable-popup">true</property>
+
             <child>
               <object class="GtkNotebookPage">
                 <property name="child">
@@ -32,7 +37,8 @@
                 <property name="tab">
                   <object class="GtkLabel">
                     <property name="label">Models</property>
-                  </object>
+                  
+                    <property name="width-request">50</property></object>
                 </property>
               </object>
             </child>
@@ -46,7 +52,8 @@
                 <property name="tab">
                   <object class="GtkLabel">
                     <property name="label">Tools</property>
-                  </object>
+                  
+                    <property name="width-request">50</property></object>
                 </property>
               </object>
             </child>

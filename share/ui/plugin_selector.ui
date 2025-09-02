@@ -158,7 +158,6 @@
                     <property name="sort_column_id">2</property>
                     <child>
                       <object class="GtkCellRendererToggle" id="PluginsEnabledCell">
-                        <property name="xpad">1</property>
                       </object>
                       <attributes>
                         <attribute name="sensitive">4</attribute>

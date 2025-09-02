@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Generated with glade 3.18.3 -->
 <interface>
-  <requires lib="gtk+" version="3.12"/>
+  <requires lib="gtk" version="4.0"/>
   <object class="GtkGrid" id="DimensionTable">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
@@ -11,12 +11,7 @@
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="label" translatable="yes">Model corners:</property>
-        <property name="xalign">0</property>
       </object>
-      <packing>
-        <property name="left_attach">0</property>
-        <property name="top_attach">1</property>
-      </packing>
     </child>
     <child>
       <object class="GtkSeparator" id="separator16">
@@ -24,10 +19,6 @@
         <property name="can_focus">False</property>
         <property name="orientation">vertical</property>
       </object>
-      <packing>
-        <property name="left_attach">2</property>
-        <property name="top_attach">0</property>
-      </packing>
     </child>
     <child>
       <object class="GtkSeparator" id="separator17">
@@ -35,10 +26,6 @@
         <property name="can_focus">False</property>
         <property name="orientation">vertical</property>
       </object>
-      <packing>
-        <property name="left_attach">4</property>
-        <property name="top_attach">0</property>
-      </packing>
     </child>
     <child>
       <object class="GtkBox" id="box42">
@@ -51,11 +38,6 @@
             <property name="can_focus">False</property>
             <property name="label" translatable="yes">xmin</property>
           </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">0</property>
-          </packing>
         </child>
         <child>
           <object class="GtkLabel" id="ModelCornerXSpaces">
@@ -63,11 +45,6 @@
             <property name="can_focus">False</property>
             <property name="label" translatable="yes">..</property>
           </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">1</property>
-          </packing>
         </child>
         <child>
           <object class="GtkLabel" id="ModelCornerXMax">
@@ -75,17 +52,8 @@
             <property name="can_focus">False</property>
             <property name="label" translatable="yes">xmax</property>
           </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">2</property>
-          </packing>
         </child>
       </object>
-      <packing>
-        <property name="left_attach">1</property>
-        <property name="top_attach">1</property>
-      </packing>
     </child>
     <child>
       <object class="GtkBox" id="box44">
@@ -98,11 +66,6 @@
             <property name="can_focus">False</property>
             <property name="label" translatable="yes">zmin</property>
           </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">0</property>
-          </packing>
         </child>
         <child>
           <object class="GtkLabel" id="ModelCornerZSpaces">
@@ -110,11 +73,6 @@
             <property name="can_focus">False</property>
             <property name="label" translatable="yes">..</property>
           </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">1</property>
-          </packing>
         </child>
         <child>
           <object class="GtkLabel" id="ModelCornerZMax">
@@ -122,29 +80,15 @@
             <property name="can_focus">False</property>
             <property name="label" translatable="yes">zmax</property>
           </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">2</property>
-          </packing>
         </child>
       </object>
-      <packing>
-        <property name="left_attach">5</property>
-        <property name="top_attach">1</property>
-      </packing>
     </child>
     <child>
       <object class="GtkLabel" id="DimensionLabel">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="label" translatable="yes">Bounding Box:</property>
-        <property name="xalign">0</property>
       </object>
-      <packing>
-        <property name="left_attach">0</property>
-        <property name="top_attach">0</property>
-      </packing>
     </child>
     <child>
       <object class="GtkBox" id="box40">
@@ -156,32 +100,15 @@
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="label" translatable="yes">Δx:</property>
-            <property name="xalign">0</property>
           </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">0</property>
-          </packing>
         </child>
         <child>
           <object class="GtkLabel" id="model_dim_x">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="single_line_mode">True</property>
-            <property name="xalign">0</property>
           </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">1</property>
-          </packing>
         </child>
       </object>
-      <packing>
-        <property name="left_attach">1</property>
-        <property name="top_attach">0</property>
-      </packing>
     </child>
     <child>
       <object class="GtkBox" id="box41">
@@ -193,32 +120,15 @@
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="label" translatable="yes">Δz:</property>
-            <property name="xalign">0</property>
           </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">0</property>
-          </packing>
         </child>
         <child>
           <object class="GtkLabel" id="model_dim_z">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="single_line_mode">True</property>
-            <property name="xalign">0</property>
           </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">1</property>
-          </packing>
         </child>
       </object>
-      <packing>
-        <property name="left_attach">5</property>
-        <property name="top_attach">0</property>
-      </packing>
     </child>
     <child>
       <object class="GtkBox" id="box43">
@@ -230,32 +140,15 @@
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="label" translatable="yes">Δy:</property>
-            <property name="xalign">0</property>
           </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">0</property>
-          </packing>
         </child>
         <child>
           <object class="GtkLabel" id="model_dim_y">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="single_line_mode">True</property>
-            <property name="xalign">0</property>
           </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">1</property>
-          </packing>
         </child>
       </object>
-      <packing>
-        <property name="left_attach">3</property>
-        <property name="top_attach">0</property>
-      </packing>
     </child>
     <child>
       <object class="GtkBox" id="box45">
@@ -268,11 +161,6 @@
             <property name="can_focus">False</property>
             <property name="label" translatable="yes">ymin</property>
           </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">0</property>
-          </packing>
         </child>
         <child>
           <object class="GtkLabel" id="ModelCornerYSpaces">
@@ -280,11 +168,6 @@
             <property name="can_focus">False</property>
             <property name="label" translatable="yes">..</property>
           </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">1</property>
-          </packing>
         </child>
         <child>
           <object class="GtkLabel" id="ModelCornerYMax">
@@ -292,17 +175,8 @@
             <property name="can_focus">False</property>
             <property name="label" translatable="yes">ymax</property>
           </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">2</property>
-          </packing>
         </child>
       </object>
-      <packing>
-        <property name="left_attach">3</property>
-        <property name="top_attach">1</property>
-      </packing>
     </child>
     <child>
       <placeholder/>

@@ -1,7 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.18.3 -->
+<?xml version='1.0' encoding='UTF-8'?>
 <interface>
-  <requires lib="gtk+" version="3.12"/>
+  <requires lib="gtk" version="4.0"/>
   <object class="GtkAdjustment" id="SupportGridAverageDistance">
     <property name="lower">0.01</property>
     <property name="upper">500</property>
@@ -24,13 +23,8 @@
         <property name="visible">True</property>
         <property name="can_focus">True</property>
         <child>
-          <object class="GtkAlignment" id="alignment3">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="left_padding">30</property>
-            <child>
-              <object class="GtkGrid" id="grid12">
-                <property name="visible">True</property>
+          <object class="GtkGrid" id="grid12">
+                <property name="margin-start">30</property><property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="row_spacing">2</property>
                 <property name="column_spacing">3</property>
@@ -38,80 +32,48 @@
                   <object class="GtkSpinButton" id="GridMinBridgesPerPolygon">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
-                    <property name="invisible_char">●</property>
                     <property name="adjustment">SupportGridMinBridgesPerPolygon</property>
                   </object>
-                  <packing>
-                    <property name="left_attach">1</property>
-                    <property name="top_attach">1</property>
-                  </packing>
                 </child>
                 <child>
                   <object class="GtkLabel" id="GridMinBridgesPerPolygonLabel">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="label" translatable="yes">Minimum bridges per polygon:</property>
-                    <property name="xalign">0</property>
                   </object>
-                  <packing>
-                    <property name="left_attach">0</property>
-                    <property name="top_attach">1</property>
-                  </packing>
                 </child>
                 <child>
                   <object class="GtkSpinButton" id="GridAverageDistance">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
-                    <property name="invisible_char">●</property>
                     <property name="adjustment">SupportGridAverageDistance</property>
                     <property name="digits">2</property>
                   </object>
-                  <packing>
-                    <property name="left_attach">1</property>
-                    <property name="top_attach">0</property>
-                  </packing>
                 </child>
                 <child>
                   <object class="GtkLabel" id="GridAverageDistanceLabel">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="label" translatable="yes">Average distance between bridges:</property>
-                    <property name="xalign">0</property>
                   </object>
-                  <packing>
-                    <property name="left_attach">0</property>
-                    <property name="top_attach">0</property>
-                  </packing>
                 </child>
                 <child>
                   <object class="GtkLabel" id="GridLengthLabel">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="label" translatable="yes">Length of each bridge:</property>
-                    <property name="xalign">0</property>
                   </object>
-                  <packing>
-                    <property name="left_attach">0</property>
-                    <property name="top_attach">2</property>
-                  </packing>
                 </child>
                 <child>
                   <object class="GtkSpinButton" id="GridLengthControl">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
-                    <property name="invisible_char">●</property>
                     <property name="adjustment">SupportGridLength</property>
                     <property name="digits">2</property>
                   </object>
-                  <packing>
-                    <property name="left_attach">1</property>
-                    <property name="top_attach">2</property>
-                  </packing>
                 </child>
               </object>
             </child>
-          </object>
-        </child>
         <child type="label">
           <object class="GtkLabel" id="GridAverageDistanceExpanderLabel">
             <property name="visible">True</property>

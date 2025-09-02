@@ -27,6 +27,11 @@
               <object class="GtkNotebook" id="MainTabs">
                 <property name="vexpand">true</property>
                 <property name="hexpand">true</property>
+                <property name="width-request">200</property>
+    <property name="show-tabs">true</property>
+    <property name="scrollable">true</property>
+    <property name="enable-popup">true</property>
+
                 <!-- Tabs will be added dynamically by plugins -->
               </object>
             </child>
@@ -159,7 +164,12 @@ Copyright © 2010-2011 Lars Kruse</property>
         <child>
           <object class="GtkNotebook" id="PreferencesNotebook">
             <property name="vexpand">true</property>
+            <property name="width-request">200</property>
             <!-- Pages will be added dynamically by plugins -->
+    <property name="show-tabs">true</property>
+    <property name="scrollable">true</property>
+    <property name="enable-popup">true</property>
+
             <child>
               <object class="GtkNotebookPage">
                 <property name="child">
@@ -170,7 +180,8 @@ Copyright © 2010-2011 Lars Kruse</property>
                 <property name="tab">
                   <object class="GtkLabel">
                     <property name="label">General</property>
-                  </object>
+                  
+                    <property name="width-request">50</property></object>
                 </property>
               </object>
             </child>
@@ -283,7 +294,6 @@ Copyright © 2010-2011 Lars Kruse</property>
               <object class="GtkLabel">
                 <property name="label">Inkscape:</property>
                 <property name="width-chars">12</property>
-                <property name="xalign">0</property>
               </object>
             </child>
             <child>
@@ -317,7 +327,6 @@ Copyright © 2010-2011 Lars Kruse</property>
               <object class="GtkLabel">
                 <property name="label">pstoedit:</property>
                 <property name="width-chars">12</property>
-                <property name="xalign">0</property>
               </object>
             </child>
             <child>

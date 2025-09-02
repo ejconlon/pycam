@@ -191,7 +191,6 @@
                 <child>
                   <object class="GtkCheckButton" id="TypeCustom">
                     <property name="label">Custom Boundary</property>
-                    <property name="group">TypeRelativeMargin</property>
                   </object>
                 </child>
 
@@ -200,14 +199,12 @@
                   <object class="GtkLabel" id="MarginTypeRelativeLabel">
                     <property name="label">Define boundaries as margins relative to the model size</property>
                     <property name="wrap">true</property>
-                    <property name="xalign">0</property>
                   </object>
                 </child>
                 <child>
                   <object class="GtkLabel" id="MarginTypeCustomLabel">
                     <property name="label">Define custom absolute boundary coordinates</property>
                     <property name="wrap">true</property>
-                    <property name="xalign">0</property>
                   </object>
                 </child>
               </object>
@@ -238,7 +235,6 @@
                 <child>
                   <object class="GtkLabel">
                     <property name="label">X Min:</property>
-                    <property name="xalign">0</property>
                   </object></child>
                 <child>
                   <object class="GtkSpinButton" id="BoundaryLowX">
@@ -248,7 +244,6 @@
                 <child>
                   <object class="GtkLabel">
                     <property name="label">X Max:</property>
-                    <property name="xalign">0</property>
                   </object></child>
                 <child>
                   <object class="GtkSpinButton" id="BoundaryHighX">
@@ -260,7 +255,6 @@
                 <child>
                   <object class="GtkLabel">
                     <property name="label">Y Min:</property>
-                    <property name="xalign">0</property>
                   </object></child>
                 <child>
                   <object class="GtkSpinButton" id="BoundaryLowY">
@@ -270,7 +264,6 @@
                 <child>
                   <object class="GtkLabel">
                     <property name="label">Y Max:</property>
-                    <property name="xalign">0</property>
                   </object></child>
                 <child>
                   <object class="GtkSpinButton" id="BoundaryHighY">
@@ -282,7 +275,6 @@
                 <child>
                   <object class="GtkLabel">
                     <property name="label">Z Min:</property>
-                    <property name="xalign">0</property>
                   </object></child>
                 <child>
                   <object class="GtkSpinButton" id="BoundaryLowZ">
@@ -292,7 +284,6 @@
                 <child>
                   <object class="GtkLabel">
                     <property name="label">Z Max:</property>
-                    <property name="xalign">0</property>
                   </object></child>
                 <child>
                   <object class="GtkSpinButton" id="BoundaryHighZ">
@@ -380,7 +371,6 @@
                     <property name="model">RelativeUnitModel</property>
                     <child>
                       <object class="GtkCellRendererText">
-                        <property name="xalign">0.5</property>
                       </object>
                       <attributes>
                         <attribute name="text">0</attribute>

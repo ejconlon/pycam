@@ -110,7 +110,6 @@
             <child>
               <object class="GtkLabel">
                 <property name="label">Strategy:</property>
-                <property name="xalign">0</property>
               </object>
             </child>
             <child>

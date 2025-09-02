@@ -79,9 +79,6 @@
               <object class="GtkEntry" id="CommandInput">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
-                <property name="has_focus">True</property>
-                <property name="events">GDK_KEY_PRESS_MASK | GDK_STRUCTURE_MASK</property>
-                <property name="invisible_char">●</property>
               </object>
             </child>
             <child>
