@@ -117,6 +117,10 @@ class Log(pycam.Plugins.PluginBase):
 
     def toggle_log_window(self, widget=None, value=None, action=None):
         toggle_log_checkbox = self.gui.get_object("ToggleLogWindow")
+        if toggle_log_checkbox is None:
+            # Plugin may be shutting down or widget not found
+            self.log.debug("ToggleLogWindow widget not found - plugin may be shutting down")
+            return
         checkbox_state = toggle_log_checkbox.get_active()
         if value is None:
             new_state = checkbox_state
