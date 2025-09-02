@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <requires lib="gtk" version="4.0"/>
+  
+  <!-- Data Models -->
+  <object class="GtkListStore" id="TaskList">
+    <columns>
+      <column type="gchararray"/>
+    </columns>
+  </object>
+  
+  <!-- Main Tasks Tab Content -->
+  <object class="GtkPaned" id="TaskBox">
+    <property name="orientation">horizontal</property>
+    <property name="position">300</property>
+    
+    <!-- Left: Task List and Controls -->
+    <child>
+      <object class="GtkBox">
+        <property name="orientation">vertical</property>
+        <property name="spacing">5</property>
+        <property name="margin-start">5</property>
+        <property name="margin-end">5</property>
+        <property name="margin-top">5</property>
+        <property name="margin-bottom">5</property>
+        
+        <!-- Task List -->
+        <child>
+          <object class="GtkScrolledWindow">
+            <property name="vexpand">true</property>
+            <property name="hscrollbar-policy">never</property>
+            <child>
+              <object class="GtkTreeView" id="TaskView">
+                <property name="model">TaskList</property>
+                <property name="headers-visible">false</property>
+                <child>
+                  <object class="GtkTreeViewColumn" id="TaskNameColumn">
+                    <property name="title">Name</property>
+                    <child>
+                      <object class="GtkCellRendererText" id="TaskNameCell">
+                        <property name="editable">true</property>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+        
+        <!-- Task Controls -->
+        <child>
+          <object class="GtkBox">
+            <property name="orientation">horizontal</property>
+            <property name="homogeneous">true</property>
+            <property name="spacing">5</property>
+            <child>
+              <object class="GtkButton" id="TaskDelete">
+                <property name="label">Delete</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkButton" id="TaskDeleteAll">
+                <property name="label">Clear</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkButton" id="TaskGenerate">
+                <property name="label">Generate</property>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+    
+    <!-- Right: Task Parameters -->
+    <child>
+      <object class="GtkNotebook" id="TaskParametersNotebook">
+        <property name="tab-pos">top</property>
+        <!-- Pages will be added dynamically -->
+        <child>
+          <object class="GtkNotebookPage">
+            <property name="child">
+              <object class="GtkLabel">
+                <property name="label">Task parameters will be loaded here</property>
+              </object>
+            </property>
+            <property name="tab">
+              <object class="GtkLabel">
+                <property name="label">Info</property>
+              </object>
+            </property>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>

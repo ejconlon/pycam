@@ -54,7 +54,10 @@ class Toolpaths(pycam.Plugins.ListPluginBase):
                     toolpath_handling_obj.remove_page(0)
 
             def add_toolpath_handling_item(item, name):
-                toolpath_handling_obj.append_page(item, self._gtk.Label(name))
+                # GTK 4: Create label without arguments and set text separately
+                label = self._gtk.Label()
+                label.set_text(name)
+                toolpath_handling_obj.append_page(item, label)
 
             self.core.register_ui_section("toolpath_handling", add_toolpath_handling_item,
                                           clear_toolpath_handling_obj)

@@ -51,7 +51,10 @@ class GtkMainLoop:
             return
         self._is_running = True
         try:
-            self._gtk.main()
+            # GTK 4: Use GLib MainLoop instead of Gtk.main()
+            from gi.repository import GLib
+            self._main_loop = GLib.MainLoop()
+            self._main_loop.run()
         except KeyboardInterrupt:
             pass
         self._is_running = False
@@ -59,7 +62,9 @@ class GtkMainLoop:
     def stop(self):
         if self._is_running:
             log.debug("Stopping main loop")
-            self._gtk.main_quit()
+            # GTK 4: Use GLib MainLoop instead of Gtk.main_quit()
+            if hasattr(self, '_main_loop') and self._main_loop:
+                self._main_loop.quit()
         else:
             log.info("Main loop was stopped before")
 

@@ -380,8 +380,10 @@ class OpenGLWindow(pycam.Plugins.PluginBase):
         items = list(self._color_settings.values())
         items.sort(key=lambda item: item["weight"])
         for index, item in enumerate(items):
-            label = self._gtk.Label("%s:" % item["label"])
-            label.set_alignment(0.0, 0.5)
+            # GTK 4: Create label without arguments and set text separately
+            label = self._gtk.Label()
+            label.set_text("%s:" % item["label"])
+            label.set_xalign(0.0)  # GTK 4: Use set_xalign instead of set_alignment
             color_table.attach(label, 0, index, 1, 1)
             color_table.attach(item["widget"], 1, index, 1, 1)
         color_table.show_all()

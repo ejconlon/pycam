@@ -27,15 +27,27 @@ class OpenGLViewTool(pycam.Plugins.PluginBase):
 
     def setup(self):
         self.core.register_event("visualize-items", self.draw_tool)
-        self.core.get("register_display_item")("show_tool", "Show Tool", 70)
-        self.core.get("register_color")("color_tool", "Tool", 50)
+        
+        # Make plugin resilient to missing core systems
+        register_display_item = self.core.get("register_display_item")
+        if register_display_item is not None:
+            register_display_item("show_tool", "Show Tool", 70)
+        
+        register_color = self.core.get("register_color")
+        if register_color is not None:
+            register_color("color_tool", "Tool", 50)
+            
         self.core.emit_event("visual-item-updated")
         return True
 
     def teardown(self):
         self.core.unregister_event("visualize-items", self.draw_tool)
-        self.core.get("unregister_display_item")("show_tool")
-        self.core.get("unregister_color")("color_tool")
+        unregister_display_item = self.core.get("unregister_display_item")
+        if unregister_display_item is not None:
+            unregister_display_item("show_tool")
+        unregister_color = self.core.get("unregister_color")
+        if unregister_color is not None:
+            unregister_color("color_tool")
         self.core.emit_event("visual-item-updated")
 
     def draw_tool(self):

@@ -26,7 +26,7 @@ class Processes(pycam.Plugins.ListPluginBase):
 
     DEPENDS = ["ParameterGroupManager"]
     CATEGORIES = ["Process"]
-    UI_FILE = "processes.ui"
+    UI_FILE = "processes-working.ui"
     COLLECTION_ITEM_TYPE = pycam.workspace.data_models.Process
 
     def setup(self):
@@ -49,7 +49,9 @@ class Processes(pycam.Plugins.ListPluginBase):
             parameters_box = self.gui.get_object("ProcessParametersBox")
 
             def clear_parameter_widgets():
-                parameters_box.foreach(parameters_box.remove)
+                # GTK 4: Use iteration instead of foreach  
+                while parameters_box.get_first_child():
+                    parameters_box.remove(parameters_box.get_first_child())
 
             def add_parameter_widget(item, name):
                 # create a frame with an align and the item inside

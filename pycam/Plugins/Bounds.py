@@ -30,7 +30,7 @@ _RELATIVE_UNIT = ("%", "mm")
 
 class Bounds(pycam.Plugins.ListPluginBase):
 
-    UI_FILE = "bounds.ui"
+    UI_FILE = "bounds-working.ui"
     DEPENDS = ["Models"]
     CATEGORIES = ["Bounds"]
     COLLECTION_ITEM_TYPE = Boundary

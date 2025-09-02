@@ -72,21 +72,43 @@ class ModelExport(pycam.Plugins.PluginBase):
         self.core.call_chain("model_export", self.core.get("models").get_selected())
 
     def _update_widgets(self):
-        models = self.core.get("models").get_selected()
-        save_as_possible = len(models) > 0
-        self.gui.get_object("SaveAsModel").set_sensitive(save_as_possible)
-        # TODO: fix this
-        save_possible = False and bool(self.core.last_model_uri
-                                       and save_as_possible
-                                       and self.core.last_model_uri.is_writable())
-        # TODO: fix this dirty hack to avoid silent overwrites of PS/DXF files as SVG
-        if save_possible:
-            extension = os.path.splitext(self.core.last_model_uri.get_path())[-1].lower()
-            # TODO: fix these hard-coded file extensions
-            if extension[1:] in ("eps", "ps", "dxf"):
-                # can't save 2D formats except SVG
-                save_possible = False
-        self.gui.get_object("SaveModel").set_sensitive(save_possible)
+        # Make plugin resilient to missing models system and UI objects
+        try:
+            models_manager = self.core.get("models")
+            if models_manager is None:
+                return  # Models system not ready yet
+            
+            models = models_manager.get_selected()
+            if models is None:
+                save_as_possible = False
+            else:
+                save_as_possible = len(models) > 0
+            
+            # Update SaveAsModel button if it exists
+            save_as_button = self.gui.get_object("SaveAsModel")
+            if save_as_button is not None:
+                save_as_button.set_sensitive(save_as_possible)
+            
+            # TODO: fix this
+            save_possible = False and bool(self.core.last_model_uri
+                                           and save_as_possible
+                                           and self.core.last_model_uri.is_writable())
+            # TODO: fix this dirty hack to avoid silent overwrites of PS/DXF files as SVG
+            if save_possible:
+                extension = os.path.splitext(self.core.last_model_uri.get_path())[-1].lower()
+                # TODO: fix these hard-coded file extensions
+                if extension[1:] in ("eps", "ps", "dxf"):
+                    # can't save 2D formats except SVG
+                    save_possible = False
+            
+            # Update SaveModel button if it exists
+            save_button = self.gui.get_object("SaveModel")
+            if save_button is not None:
+                save_button.set_sensitive(save_possible)
+                
+        except (AttributeError, TypeError, Exception) as e:
+            # Plugin system not fully initialized yet, skip widget updates
+            self.log.debug("Skipping widget update in %s: %s", self.name, str(e))
 
 
 class ModelExportTrimesh(pycam.Plugins.PluginBase):

@@ -56,7 +56,10 @@ class ExportSettings(pycam.Plugins.ListPluginBase):
                     self.item_details_container.remove_page(0)
 
             def add_item_details_container(item, name):
-                self.item_details_container.append_page(item, self._gtk.Label(name))
+                # GTK 4: Create label without arguments and set text separately
+                label = self._gtk.Label()
+                label.set_text(name)
+                self.item_details_container.append_page(item, label)
 
             self.core.register_ui_section("export_settings_handling", add_item_details_container,
                                           clear_item_details_container)

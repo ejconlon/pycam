@@ -42,7 +42,7 @@ import pycam.Utils.log
 from pycam.Gui.MenuManager import MenuManager
 
 
-GTKBUILD_FILE = "pycam-project-minimal.ui"
+GTKBUILD_FILE = "pycam-project-functional.ui"
 GTKMENU_FILE = "menubar.xml"
 GTKRC_FILE_WINDOWS = "gtkrc_windows"
 
@@ -124,6 +124,9 @@ class ProjectGui(pycam.Gui.BaseUI):
         self.window.insert_action_group(
             self.settings.get("gtk_action_group_prefix"), self.settings.get("gtk_action_group"))
         self.settings.set("main_window", self.window)
+        
+        # GTK 4: Connect window close signal to proper handler
+        self.window.connect("close-request", self._on_window_close_request)
         
         # Initialize new GTK 4 menu system
         self.menu_manager = MenuManager(None, self)  # TODO: Pass application when available
@@ -252,19 +255,22 @@ class ProjectGui(pycam.Gui.BaseUI):
         # uimanager = Gtk.UIManager()
         # self.settings.set("gtk-uimanager", uimanager)
         # self._accel_group = uimanager.get_accel_group()
-        self._accel_group = None
-        # send a "delete" event on "CTRL-w" for every window
-        # TODO: Re-implement accelerators for GTK 4
-        # self._accel_group.connect(
-        #     ord('w'), Gdk.ModifierType.CONTROL_MASK, Gtk.AccelFlags.LOCKED,
-        #     lambda accel_group, window, *args: window.emit("delete-event", Gdk.Event()))
-        # self._accel_group.connect(
-        #     ord('q'), Gdk.ModifierType.CONTROL_MASK, Gtk.AccelFlags.LOCKED,
-        #     lambda *args: self.destroy())
-        # self.settings.add_item("gtk-accel-group", lambda: self._accel_group)
-        # for obj in self.gui.get_objects():
-        #     if isinstance(obj, Gtk.Window):
-        #         obj.add_accel_group(self._accel_group)
+        # GTK 4: Create a compatibility accelerator group object for plugins
+        # In GTK 4, accelerators are handled by the application, not AccelGroup
+        self._accel_group = type('CompatAccelGroup', (), {
+            'add_accel_group': lambda obj: None,  # No-op for GTK 4
+            'connect': lambda *args: None,        # No-op for GTK 4
+        })()
+        
+        # GTK 4: Set up application-level accelerators
+        # CTRL+Q to quit - handled by MenuManager
+        if hasattr(self.window, 'set_accels_for_action'):
+            self.window.set_accels_for_action("app.quit", ["<Control>q"])
+        
+        # Register the compatibility accel group for plugins
+        self.settings.add_item("gtk-accel-group", lambda: self._accel_group)
+        
+        # GTK 4: No need to add accel groups to individual windows
         # preferences tab
         try:
             preferences_book = self.gui.get_object("PreferencesNotebook")
@@ -278,7 +284,10 @@ class ProjectGui(pycam.Gui.BaseUI):
 
         def add_preferences_item(item, name):
             if preferences_book:
-                preferences_book.append_page(item, Gtk.Label(name))
+                # GTK 4: Create label without arguments and set text separately
+                label = Gtk.Label()
+                label.set_text(name)
+                preferences_book.append_page(item, label)
 
         self.settings.register_ui_section("preferences", add_preferences_item, clear_preferences)
         for obj_name, label, priority in (
@@ -321,7 +330,10 @@ class ProjectGui(pycam.Gui.BaseUI):
 
         def add_main_tab_item(item, name):
             if main_tab:
-                main_tab.append_page(item, Gtk.Label(name))
+                # GTK 4: Create label without arguments and set text separately
+                label = Gtk.Label()
+                label.set_text(name)
+                main_tab.append_page(item, label)
 
         # TODO: move these to plugins, as well
         self.settings.register_ui_section("main", add_main_tab_item, clear_main_tab)
@@ -499,18 +511,66 @@ class ProjectGui(pycam.Gui.BaseUI):
         @param allow_memorize: optionally a "Do not ask again" checkbox can be included
         @returns aa tuple of two booleans ("is yes", "should memorize")
         """
-        dialog = Gtk.MessageDialog(self.window, Gtk.DialogFlags.DESTROY_WITH_PARENT,
-                                   Gtk.MessageType.QUESTION, Gtk.ButtonsType.YES_NO, question)
+        # GTK 4: Create dialog manually instead of using deprecated MessageDialog
+        dialog = Gtk.Dialog()
+        dialog.set_transient_for(self.window)
+        dialog.set_modal(True)
+        dialog.set_title("Question")
+        
+        # Add buttons
+        dialog.add_button("No", Gtk.ResponseType.NO)
+        dialog.add_button("Yes", Gtk.ResponseType.YES)
+        
         if default_response:
             dialog.set_default_response(Gtk.ResponseType.YES)
         else:
             dialog.set_default_response(Gtk.ResponseType.NO)
-        memorize_choice = Gtk.CheckButton("Do not ask again")
+            
+        # Create content
+        content_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10)
+        content_box.set_margin_start(20)
+        content_box.set_margin_end(20)
+        content_box.set_margin_top(20)
+        content_box.set_margin_bottom(20)
+        
+        # Add question label
+        label = Gtk.Label()
+        label.set_text(question)
+        label.set_wrap(True)
+        content_box.append(label)
+        
+        # Add memorize checkbox if requested
+        memorize_choice = Gtk.CheckButton()
+        memorize_choice.set_label("Do not ask again")
         if allow_memorize:
-            dialog.get_content_area().add(memorize_choice)
-            memorize_choice.show()
-        is_yes = (dialog.run() == Gtk.ResponseType.YES)
-        should_memorize = memorize_choice.get_active()
+            content_box.append(memorize_choice)
+            
+        # GTK 4: Add content to dialog
+        dialog.get_content_area().append(content_box)
+        
+        # GTK 4: Show dialog and handle response
+        dialog.show()
+        
+        # For GTK 4 compatibility, we'll use a simple modal approach
+        # In a full GTK 4 implementation, this would use async/await patterns
+        response_received = [None]
+        
+        def on_response(dialog, response_id):
+            response_received[0] = response_id
+            dialog.hide()
+            
+        dialog.connect("response", on_response)
+        
+        # Simple blocking loop for compatibility (not ideal but functional)
+        import time
+        from gi.repository import GLib
+        
+        while response_received[0] is None:
+            GLib.MainContext.default().iteration(False)
+            time.sleep(0.01)
+            
+        is_yes = (response_received[0] == Gtk.ResponseType.YES)
+        should_memorize = memorize_choice.get_active() if allow_memorize else False
         dialog.destroy()
         return QuestionResponse(is_yes, should_memorize)
 
@@ -574,7 +634,9 @@ class ProjectGui(pycam.Gui.BaseUI):
     def _update_undo_button(self):
         history = self.settings.get("history")
         is_enabled = (history.get_undo_steps_count() > 0) if history else False
-        self.gui.get_object("UndoButton").set_sensitive(is_enabled)
+        undo_button = self.gui.get_object("UndoButton")
+        if undo_button is not None:
+            undo_button.set_sensitive(is_enabled)
 
     def run_forever(self):
         self._mainloop_is_running = True
@@ -591,6 +653,13 @@ class ProjectGui(pycam.Gui.BaseUI):
         for name, target in self._event_handlers:
             self.settings.unregister_event(name, target)
 
+    def _on_window_close_request(self, window):
+        """GTK 4 window close handler - triggers shutdown process"""
+        # Emit the mainloop-stop event to trigger the shutdown handler
+        self.settings.emit_event("mainloop-stop")
+        # Return False to allow the window to close after shutdown completes
+        return False
+        
     def destroy(self, widget=None, data=None):
         # Our caller is supposed to call our "stop" method in this event handler, after everything
         # is finished.

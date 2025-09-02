@@ -7,7 +7,6 @@
       <!-- column-name uuid -->
       <column type="gchararray"/>
     </columns>
-  </object>
   <object class="GtkListStore" id="StrategyModel">
     <columns>
       <!-- column-name label -->
@@ -21,7 +20,6 @@
         <col id="1" translatable="yes">slicing</col>
       </row>
     </data>
-  </object>
   <object class="GtkPaned" id="ProcessBox">
     <property name="visible">True</property>
     <property name="can_focus">True</property>
@@ -46,17 +44,12 @@
                 <property name="search_column">0</property>
                 <child internal-child="selection">
                   <object class="GtkTreeSelection" id="treeview-selection1"/>
-
                 <child>
                   <object class="GtkTreeViewColumn" id="NameColumn">
                     <property name="title">Name</property>
                     <child>
                       <object class="GtkCellRendererText" id="NameCell">
                         <property name="editable">True</property>
-                      </object>
-
-                  </object>
-
                 <child>
                   <object class="GtkTreeViewColumn" id="DescriptionColumn">
                     <property name="visible">False</property>
@@ -64,13 +57,6 @@
                     <property name="expand">True</property>
                     <child>
                       <object class="GtkCellRendererText" id="DescriptionCell"/>
-
-                  </object>
-
-              </object>
-
-          </object>
-
         <child>
           <object class="GtkBox" id="box20">
       <property name="orientation">vertical</property>
@@ -87,34 +73,24 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
-                                  </object>
-
                 <child>
                   <object class="GtkButton" id="ProcessDelete">
                     <property name="label">Delete</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
-                                  </object>
-
                 <child>
                   <object class="GtkButton" id="ProcessMoveUp">
                     <property name="label">↑</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
-                                  </object>
-
                 <child>
                   <object class="GtkButton" id="ProcessMoveDown">
                     <property name="label">↓</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
-                                  </object>
-
-              </object>
-
             <child>
               <object class="GtkLinkButton" id="ProcessHelp">
                 <property name="label">gtk-help</property>
@@ -123,12 +99,6 @@
                 <property name="receives_default">True</property>
                 <property name="relief">none</property>
                             <property name="uri">http://pycam.sourceforge.net/process-settings</property>
-              </object>
-
-          </object>
-
-      </object>
-
     <child>
       <object class="GtkBox" id="ProcessSettingsControlsBox">
       <property name="orientation">vertical</property>
@@ -136,7 +106,6 @@
         <property name="can_focus">False</property>
         <property name="spacing">4</property>
         <child>
-
                 <child>
                   <object class="GtkComboBox" id="StrategySelector">
                     <property name="visible">True</property>
@@ -147,13 +116,6 @@
                       <attributes>
                         <attribute name="text">0</attribute>
                       </attributes>
-
-                  </object>
-
-              </object>
-
-          </object>
-
         <child>
           <object class="GtkBox" id="ProcessParametersBox">
       <property name="orientation">vertical</property>
@@ -161,10 +123,4 @@
             <property name="can_focus">False</property>
             <child>
               <placeholder/>
-
-          </object>
-
-      </object>
-
-  </object>
 </interface>

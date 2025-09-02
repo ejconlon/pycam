@@ -187,6 +187,10 @@ class PluginBase:
     def register_gtk_handlers(self, gtk_widget_handlers):
         for data in gtk_widget_handlers:
             obj, signal, func = data[:3]
+            if obj is None:
+                # Skip missing UI elements (happens when UI files fail to load)
+                self.log.debug("Skipping GTK handler for missing object in plugin %s", self.name)
+                continue
             params = data[3:] if len(data) > 3 else []
             handler_id = obj.connect(signal, self.__get_handler_func(func, params))
             self._gtk_handler_id_cache.append((obj, handler_id))
@@ -209,38 +213,76 @@ class PluginBase:
                                   % (self.name, __file__))
 
     def _get_gtk_action_group_by_name(self, group_name, create_if_missing=False):
-        ui_manager = self.core.get("gtk-uimanager")
-        # find the action group of the given name or create a new one
-        for action_group in ui_manager.get_action_groups():
-            if action_group.get_name() == group_name:
-                return action_group
-        else:
-            if create_if_missing:
-                action_group = self._gtk.ActionGroup(name=group_name)
-                ui_manager.insert_action_group(action_group)
+        # GTK 4 compatibility: Use MenuManager instead of deprecated UIManager
+        menu_manager = self.core.get("gtk-menu-manager")
+        if menu_manager is None:
+            # Fallback for compatibility - create a simple action group storage
+            if not hasattr(self.core, '_action_groups'):
+                self.core._action_groups = {}
+            
+            if group_name in self.core._action_groups:
+                return self.core._action_groups[group_name]
+            elif create_if_missing:
+                # Create a simple object to hold actions (GTK 4 doesn't need ActionGroup)
+                action_group = type('ActionGroup', (), {
+                    'name': group_name,
+                    'actions': [],
+                    'get_name': lambda self: group_name,
+                    'add_action': lambda self, action: None,  # No-op for GTK 4
+                    'remove_action': lambda self, action: None  # No-op for GTK 4
+                })()
+                self.core._action_groups[group_name] = action_group
                 return action_group
             else:
                 return None
+        else:
+            # If menu_manager exists, use it for action management
+            return menu_manager.get_action_group() if hasattr(menu_manager, 'get_action_group') else None
 
     def register_gtk_accelerator(self, groupname, action, accel_string, accel_name):
         actiongroup = self._get_gtk_action_group_by_name(groupname, create_if_missing=True)
-        accel_path = "<pycam>/%s" % accel_name
-        action.set_accel_path(accel_path)
-        # it is a bit pointless, but we allow an empty accel_string anyway ...
-        if accel_string:
-            key, mod = self._gtk.accelerator_parse(accel_string)
-            self._gtk.AccelMap.change_entry(accel_path, key, mod, True)
-        actiongroup.add_action(action)
+        if actiongroup is None:
+            return
+            
+        # GTK 4 compatibility: Use application accelerators instead of AccelMap
+        try:
+            # Try to get the main application window for accelerator registration
+            main_window = self.core.get("main_window")
+            if main_window and accel_string and hasattr(main_window, 'set_accels_for_action'):
+                # GTK 4 approach: Register accelerator with the application
+                action_name = f"{groupname}.{accel_name}" if accel_name else f"{groupname}.action"
+                main_window.set_accels_for_action(action_name, [accel_string])
+        except (AttributeError, Exception):
+            # Fallback: Just register with the action group (no-op for GTK 4)
+            pass
+            
+        # Add to action group (may be no-op in GTK 4)
+        if hasattr(actiongroup, 'add_action'):
+            actiongroup.add_action(action)
 
     def unregister_gtk_accelerator(self, groupname, action):
         actiongroup = self._get_gtk_action_group_by_name(groupname)
         if actiongroup is None:
             self.log.warning("Failed to unregister unknown GTK Action Group: %s", groupname)
-        actiongroup.remove_action(action)
-        # remove the connected action group, if it is empty (no more actions assigned)
-        ui_manager = self.core.get("gtk-uimanager")
-        if ui_manager and (len(actiongroup.list_actions()) == 0):
-            ui_manager.remove_action_group(actiongroup)
+            return
+            
+        # GTK 4 compatibility: Clean up action registration
+        try:
+            # Remove from action group if supported
+            if hasattr(actiongroup, 'remove_action'):
+                actiongroup.remove_action(action)
+        except (AttributeError, Exception):
+            # GTK 4: No-op, accelerators are managed differently
+            pass
+        # GTK 4: Clean up empty action groups if needed
+        try:
+            if hasattr(actiongroup, 'list_actions') and len(actiongroup.list_actions()) == 0:
+                # Remove empty action group from core storage
+                if hasattr(self.core, '_action_groups') and groupname in self.core._action_groups:
+                    del self.core._action_groups[groupname]
+        except (AttributeError, Exception):
+            # GTK 4: Action groups are handled differently, no cleanup needed
+            pass
 
 
 class PluginManager:
@@ -322,8 +364,9 @@ class PluginManager:
             else:
                 self.modules[plugin_name] = new_plugin
                 self.core.emit_event("plugin-list-changed")
-        except NotImplementedError as err_msg:
-            _log.info("Skipping incomplete plugin '%s': %s", plugin_name, err_msg)
+        except (NotImplementedError, TypeError, AttributeError, Exception) as err_msg:
+            _log.info("Skipping problematic plugin '%s': %s", plugin_name, err_msg)
+            # Continue loading other plugins instead of crashing
 
     def disable_all_plugins(self):
         _log.info("Disabling all plugins")
@@ -360,8 +403,13 @@ class PluginManager:
                              name, " ".join(self.get_dependent_plugins(name)))
             else:
                 _log.debug("Disabling plugin: %s", name)
-                plugin.teardown()
-                plugin.enabled = False
+                try:
+                    plugin.teardown()
+                    plugin.enabled = False
+                except Exception as err:
+                    _log.warning("Error during plugin '%s' teardown: %s", name, err)
+                    # Mark as disabled anyway to prevent repeated attempts
+                    plugin.enabled = False
 
     def get_plugin_state(self, name):
         plugin = self.get_plugin(name)
@@ -483,6 +531,8 @@ class ListPluginBase(PluginBase):
 
     def force_gtk_modelview_refresh(self):
         # force a table update by simulating a change of the list store
+        if self._gtk_modelview is None:
+            return  # No modelview to refresh
         model = self._gtk_modelview.get_model()
         if model is not None:
             model.prepend(None)

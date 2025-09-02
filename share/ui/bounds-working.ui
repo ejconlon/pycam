@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <requires lib="gtk" version="4.0"/>
+  
+  <!-- Data Models -->
+  <object class="GtkListStore" id="BoundsList">
+    <columns>
+      <column type="gchararray"/>
+    </columns>
+  </object>
+  
+  <!-- Main Bounds Tab Content -->
+  <object class="GtkPaned" id="BoundsBox">
+    <property name="orientation">horizontal</property>
+    <property name="position">300</property>
+    
+    <!-- Left: Bounds List and Controls -->
+    <child>
+      <object class="GtkBox">
+        <property name="orientation">vertical</property>
+        <property name="spacing">5</property>
+        <property name="margin-start">5</property>
+        <property name="margin-end">5</property>
+        <property name="margin-top">5</property>
+        <property name="margin-bottom">5</property>
+        
+        <!-- Bounds List -->
+        <child>
+          <object class="GtkScrolledWindow">
+            <property name="vexpand">true</property>
+            <property name="hscrollbar-policy">never</property>
+            <child>
+              <object class="GtkTreeView" id="BoundsView">
+                <property name="model">BoundsList</property>
+                <property name="headers-visible">false</property>
+                <child>
+                  <object class="GtkTreeViewColumn" id="BoundsNameColumn">
+                    <property name="title">Name</property>
+                    <child>
+                      <object class="GtkCellRendererText" id="BoundsNameCell">
+                        <property name="editable">true</property>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+        
+        <!-- Bounds Controls -->
+        <child>
+          <object class="GtkBox">
+            <property name="orientation">horizontal</property>
+            <property name="homogeneous">true</property>
+            <property name="spacing">5</property>
+            <child>
+              <object class="GtkButton" id="BoundsDelete">
+                <property name="label">Delete</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkButton" id="BoundsDeleteAll">
+                <property name="label">Clear</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkButton" id="BoundsMoveUp">
+                <property name="label">↑</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkButton" id="BoundsMoveDown">
+                <property name="label">↓</property>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+    
+    <!-- Right: Bounds Parameters -->
+    <child>
+      <object class="GtkBox">
+        <property name="orientation">vertical</property>
+        <property name="spacing">10</property>
+        <property name="margin-start">10</property>
+        <property name="margin-end">10</property>
+        <property name="margin-top">10</property>
+        <property name="margin-bottom">10</property>
+        
+        <!-- Bounds Settings -->
+        <child>
+          <object class="GtkFrame">
+            <property name="label">Bounds Settings</property>
+            <child>
+              <object class="GtkGrid">
+                <property name="row-spacing">5</property>
+                <property name="column-spacing">5</property>
+                <property name="margin-start">10</property>
+                <property name="margin-end">10</property>
+                <property name="margin-top">10</property>
+                <property name="margin-bottom">10</property>
+                
+                <!-- X Bounds -->
+                <child>
+                  <object class="GtkLabel">
+                    <property name="label">X Min:</property>
+                    <property name="xalign">0</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkSpinButton" id="BoundsXMin">
+                    <property name="digits">3</property>
+                  </object>
+                </child>
+                
+                <child>
+                  <object class="GtkLabel">
+                    <property name="label">X Max:</property>
+                    <property name="xalign">0</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkSpinButton" id="BoundsXMax">
+                    <property name="digits">3</property>
+                  </object>
+                </child>
+                
+                <!-- Y Bounds -->
+                <child>
+                  <object class="GtkLabel">
+                    <property name="label">Y Min:</property>
+                    <property name="xalign">0</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkSpinButton" id="BoundsYMin">
+                    <property name="digits">3</property>
+                  </object>
+                </child>
+                
+                <child>
+                  <object class="GtkLabel">
+                    <property name="label">Y Max:</property>
+                    <property name="xalign">0</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkSpinButton" id="BoundsYMax">
+                    <property name="digits">3</property>
+                  </object>
+                </child>
+                
+                <!-- Z Bounds -->
+                <child>
+                  <object class="GtkLabel">
+                    <property name="label">Z Min:</property>
+                    <property name="xalign">0</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkSpinButton" id="BoundsZMin">
+                    <property name="digits">3</property>
+                  </object>
+                </child>
+                
+                <child>
+                  <object class="GtkLabel">
+                    <property name="label">Z Max:</property>
+                    <property name="xalign">0</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkSpinButton" id="BoundsZMax">
+                    <property name="digits">3</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>

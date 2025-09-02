@@ -309,8 +309,10 @@ class ParameterSection(WidgetBaseClass):
                                    yoptions=Gtk.Align.FILL)
             else:
                 # spinbutton, combobox, ...
-                label = Gtk.Label("%s:" % widget.label)
-                label.set_alignment(0.0, 0.5)
+                # GTK 4: Create label without arguments and set text separately
+                label = Gtk.Label()
+                label.set_text("%s:" % widget.label)
+                label.set_xalign(0.0)  # GTK 4: Use set_xalign instead of set_alignment
                 self._table.attach(label, 0, 1, index, index + 1, xoptions=Gtk.Align.FILL,
                                    yoptions=Gtk.Align.FILL)
                 self._table.attach(widget.widget, 1, 2, index, index + 1, xoptions=Gtk.Align.FILL,

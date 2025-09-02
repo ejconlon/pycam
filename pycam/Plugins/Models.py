@@ -27,7 +27,7 @@ import pycam.workspace.data_models
 
 class Models(pycam.Plugins.ListPluginBase):
 
-    UI_FILE = "models.ui"
+    UI_FILE = "models-working.ui"
     CATEGORIES = ["Model"]
     ICONS = {"visible": "visible.svg", "hidden": "visible_off.svg"}
     FALLBACK_COLOR = {"red": 0.5, "green": 0.5, "blue": 1.0, "alpha": 1.0}
@@ -45,7 +45,10 @@ class Models(pycam.Plugins.ListPluginBase):
                     model_handling_obj.remove_page(0)
 
             def add_model_handling_item(item, name):
-                model_handling_obj.append_page(item, self._gtk.Label(name))
+                # GTK 4: Create label without arguments and set text separately
+                label = self._gtk.Label()
+                label.set_text(name)
+                model_handling_obj.append_page(item, label)
 
             self.core.register_ui_section("model_handling", add_model_handling_item,
                                           clear_model_handling_obj)

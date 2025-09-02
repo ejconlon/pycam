@@ -29,7 +29,7 @@ import pycam.workspace.data_models
 
 class Tasks(pycam.Plugins.ListPluginBase):
 
-    UI_FILE = "tasks.ui"
+    UI_FILE = "tasks-working.ui"
     CATEGORIES = ["Task"]
     DEPENDS = ["Models", "Tools", "Processes", "Bounds", "Toolpaths"]
     COLLECTION_ITEM_TYPE = pycam.workspace.data_models.Task
@@ -52,7 +52,9 @@ class Tasks(pycam.Plugins.ListPluginBase):
             parameters_box = self.gui.get_object("TaskParameterBox")
 
             def clear_parameter_widgets():
-                parameters_box.foreach(parameters_box.remove)
+                # GTK 4: Use iteration instead of foreach
+                while parameters_box.get_first_child():
+                    parameters_box.remove(parameters_box.get_first_child())
 
             def add_parameter_widget(item, name):
                 # create a frame within an alignment and the item inside

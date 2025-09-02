@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(.venv/bin/python:*)",
+      "Bash(cp:*)",
+      "Read(/private/tmp/**)",
+      "Read(/private/tmp/**)",
+      "Bash(grep:*)",
+      "Bash(timeout:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

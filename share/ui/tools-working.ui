@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <requires lib="gtk" version="4.0"/>
+  
+  <!-- Data Models -->
+  <object class="GtkListStore" id="ToolList">
+    <columns>
+      <column type="gchararray"/>
+    </columns>
+  </object>
+  
+  <!-- Main Tools Tab Content -->
+  <object class="GtkPaned" id="ToolBox">
+    <property name="orientation">horizontal</property>
+    <property name="position">300</property>
+    
+    <!-- Left: Tool List and Controls -->
+    <child>
+      <object class="GtkBox">
+        <property name="orientation">vertical</property>
+        <property name="spacing">5</property>
+        <property name="margin-start">5</property>
+        <property name="margin-end">5</property>
+        <property name="margin-top">5</property>
+        <property name="margin-bottom">5</property>
+        
+        <!-- Tool List -->
+        <child>
+          <object class="GtkScrolledWindow">
+            <property name="vexpand">true</property>
+            <property name="hscrollbar-policy">never</property>
+            <child>
+              <object class="GtkTreeView" id="ToolTable">
+                <property name="model">ToolList</property>
+                <property name="headers-visible">false</property>
+                <child>
+                  <object class="GtkTreeViewColumn" id="IDColumn">
+                    <property name="title">Tool ID</property>
+                    <child>
+                      <object class="GtkCellRendererText" id="IDCell">
+                        <property name="editable">true</property>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkTreeViewColumn" id="NameColumn">
+                    <property name="title">Name</property>
+                    <child>
+                      <object class="GtkCellRendererText" id="NameCell">
+                        <property name="editable">true</property>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkTreeViewColumn" id="ShapeColumn">
+                    <property name="title">Shape</property>
+                    <child>
+                      <object class="GtkCellRendererText" id="ShapeCell">
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+        
+        <!-- Tool Controls -->
+        <child>
+          <object class="GtkBox">
+            <property name="orientation">horizontal</property>
+            <property name="homogeneous">true</property>
+            <property name="spacing">5</property>
+            <child>
+              <object class="GtkButton" id="ToolNew">
+                <property name="label">New</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkButton" id="ToolDelete">
+                <property name="label">Delete</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkButton" id="ToolDeleteAll">
+                <property name="label">Clear</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkButton" id="ToolMoveUp">
+                <property name="label">↑</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkButton" id="ToolMoveDown">
+                <property name="label">↓</property>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+    
+    <!-- Right: Tool Parameters -->
+    <child>
+      <object class="GtkBox">
+        <property name="orientation">vertical</property>
+        <property name="spacing">5</property>
+        <child>
+          <object class="GtkBox" id="ToolParameterBox">
+            <property name="orientation">vertical</property>
+            <property name="spacing">5</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkNotebook" id="ToolParametersNotebook">
+            <property name="tab-pos">top</property>
+            <!-- Pages will be added dynamically -->
+            <child>
+              <object class="GtkNotebookPage">
+                <property name="child">
+                  <object class="GtkLabel">
+                    <property name="label">Tool parameters will be loaded here</property>
+                  </object>
+                </property>
+                <property name="tab">
+                  <object class="GtkLabel">
+                    <property name="label">Info</property>
+                  </object>
+                </property>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>
