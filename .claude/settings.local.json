@@ -4,10 +4,9 @@
       "Bash(.venv/bin/python:*)",
       "Bash(cp:*)",
       "Read(/private/tmp/**)",
-      "Read(/private/tmp/**)",
+      "Read(/tmp/**)",
       "Bash(grep:*)",
       "Bash(timeout:*)",
-      "Read(/private/tmp/**)",
       "Bash(find:*)"
     ],
     "deny": [],

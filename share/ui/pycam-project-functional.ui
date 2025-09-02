@@ -48,6 +48,35 @@
           </object>
         </child>
         
+        <!-- Toolbar -->
+        <child>
+          <object class="GtkBox" id="ToolbarArea">
+            <property name="orientation">horizontal</property>
+            <property name="margin-start">5</property>
+            <property name="margin-end">5</property>
+            <property name="margin-top">2</property>
+            <property name="margin-bottom">2</property>
+            <property name="spacing">5</property>
+            <child>
+              <object class="GtkButton" id="UndoButton">
+                <property name="label">Undo</property>
+                <property name="tooltip-text">Undo the last action</property>
+                <property name="sensitive">false</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkSeparator">
+                <property name="orientation">vertical</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkLabel">
+                <property name="hexpand">true</property>
+              </object>
+            </child>
+          </object>
+        </child>
+        
         <!-- Status Bar -->
         <child>
           <object class="GtkStatusbar" id="StatusBar">
@@ -186,17 +215,34 @@ Copyright © 2010-2011 Lars Kruse</property>
         
         <child>
           <object class="GtkLabel">
-            <property name="label">General application settings will be available here.</property>
+            <property name="label">General PyCAM application settings</property>
             <property name="wrap">true</property>
             <property name="justify">center</property>
+            <property name="margin-bottom">15</property>
           </object>
         </child>
         
-        <!-- Placeholder for future general preferences -->
+        <!-- General Settings Options -->
         <child>
-          <object class="GtkCheckButton" id="ExampleCheckButton">
-            <property name="label">Enable example feature</property>
+          <object class="GtkCheckButton" id="GeneralAutoLoadLastModel">
+            <property name="label">Automatically load last opened model on startup</property>
+            <property name="tooltip-text">Reload the previously opened model when PyCAM starts</property>
+          </object>
+        </child>
+        
+        <child>
+          <object class="GtkCheckButton" id="GeneralShowTooltips">
+            <property name="label">Show tooltips and help text</property>
             <property name="active">true</property>
+            <property name="tooltip-text">Display helpful tooltips throughout the interface</property>
+          </object>
+        </child>
+        
+        <child>
+          <object class="GtkCheckButton" id="GeneralConfirmOperations">
+            <property name="label">Confirm potentially destructive operations</property>
+            <property name="active">true</property>
+            <property name="tooltip-text">Ask for confirmation before operations that might lose work</property>
           </object>
         </child>
       </object>
@@ -220,16 +266,106 @@ Copyright © 2010-2011 Lars Kruse</property>
         
         <child>
           <object class="GtkLabel">
-            <property name="label">External program settings will be available here.</property>
+            <property name="label">Configure external programs for 2D vector import</property>
             <property name="wrap">true</property>
             <property name="justify">center</property>
+            <property name="margin-bottom">15</property>
           </object>
         </child>
         
-        <!-- Placeholder for future program preferences -->
+        <!-- Inkscape Configuration -->
         <child>
-          <object class="GtkEntry" id="ExampleProgramPath">
-            <property name="placeholder-text">Path to external program...</property>
+          <object class="GtkBox">
+            <property name="orientation">horizontal</property>
+            <property name="spacing">10</property>
+            <property name="margin-bottom">10</property>
+            <child>
+              <object class="GtkLabel">
+                <property name="label">Inkscape:</property>
+                <property name="width-chars">12</property>
+                <property name="xalign">0</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkEntry" id="ExternalProgramInkscapeControl">
+                <property name="hexpand">true</property>
+                <property name="placeholder-text">Path to inkscape executable...</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkButton" id="ExternalProgramInkscapeAuto">
+                <property name="label">Detect</property>
+                <property name="tooltip-text">Automatically detect Inkscape installation</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkButton" id="ExternalProgramInkscapeBrowse">
+                <property name="label">Browse</property>
+                <property name="tooltip-text">Browse for Inkscape executable</property>
+              </object>
+            </child>
+          </object>
+        </child>
+        
+        <!-- pstoedit Configuration -->
+        <child>
+          <object class="GtkBox">
+            <property name="orientation">horizontal</property>
+            <property name="spacing">10</property>
+            <property name="margin-bottom">10</property>
+            <child>
+              <object class="GtkLabel">
+                <property name="label">pstoedit:</property>
+                <property name="width-chars">12</property>
+                <property name="xalign">0</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkEntry" id="ExternalProgramPstoeditControl">
+                <property name="hexpand">true</property>
+                <property name="placeholder-text">Path to pstoedit executable...</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkButton" id="ExternalProgramPstoeditAuto">
+                <property name="label">Detect</property>
+                <property name="tooltip-text">Automatically detect pstoedit installation</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkButton" id="ExternalProgramPstoeditBrowse">
+                <property name="label">Browse</property>
+                <property name="tooltip-text">Browse for pstoedit executable</property>
+              </object>
+            </child>
+          </object>
+        </child>
+        
+        <!-- Help Links -->
+        <child>
+          <object class="GtkBox">
+            <property name="orientation">horizontal</property>
+            <property name="spacing">10</property>
+            <property name="margin-top">15</property>
+            <child>
+              <object class="GtkLinkButton" id="ExternalProgramPstoeditLink">
+                <property name="label">pstoedit website</property>
+                <property name="tooltip-text">pstoedit is a postscript conversion tool for converting 2D SVG files into DXF contour models</property>
+                <property name="uri">http://www.pstoedit.net/pstoedit</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkSeparator">
+                <property name="orientation">vertical</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkLinkButton" id="ExternalProgramsHelp">
+                <property name="label">External Programs Help</property>
+                <property name="tooltip-text">PyCAM external programs documentation</property>
+                <property name="uri">http://pycam.sourceforge.net/requirements/#optional-external-programs</property>
+              </object>
+            </child>
           </object>
         </child>
       </object>
