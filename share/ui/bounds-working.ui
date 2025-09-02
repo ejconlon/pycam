@@ -102,14 +102,24 @@
             <child>
               <object class="GtkTreeView" id="BoundsTable">
                 <property name="model">BoundsList</property>
-                <property name="headers-visible">false</property>
+                <property name="headers-visible">true</property>
                 <child>
-                  <object class="GtkTreeViewColumn" id="BoundsNameColumn">
+                  <object class="GtkTreeViewColumn" id="NameColumn">
                     <property name="title">Name</property>
+                    <property name="expand">true</property>
                     <child>
-                      <object class="GtkCellRendererText" id="BoundsNameCell">
+                      <object class="GtkCellRendererText" id="NameCell">
                         <property name="editable">true</property>
                       </object>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkTreeViewColumn" id="SizeColumn">
+                    <property name="title">Size</property>
+                    <property name="expand">true</property>
+                    <child>
+                      <object class="GtkCellRendererText" id="SizeCell"/>
                     </child>
                   </object>
                 </child>
@@ -184,23 +194,45 @@
                     <property name="group">TypeRelativeMargin</property>
                   </object>
                 </child>
+                
+                <!-- Descriptive Labels -->
+                <child>
+                  <object class="GtkLabel" id="MarginTypeRelativeLabel">
+                    <property name="label">Define boundaries as margins relative to the model size</property>
+                    <property name="wrap">true</property>
+                    <property name="xalign">0</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="MarginTypeCustomLabel">
+                    <property name="label">Define custom absolute boundary coordinates</property>
+                    <property name="wrap">true</property>
+                    <property name="xalign">0</property>
+                  </object>
+                </child>
               </object>
             </child>
           </object>
         </child>
         
-        <!-- Bounds Settings -->
+        <!-- Bounds Settings Controls Box -->
         <child>
-          <object class="GtkFrame">
-            <property name="label">Bounds Settings</property>
+          <object class="GtkBox" id="BoundsSettingsControlsBox">
+            <property name="orientation">vertical</property>
+            <property name="spacing">10</property>
+            
+            <!-- Bounds Settings -->
             <child>
-              <object class="GtkGrid">
-                <property name="row-spacing">5</property>
-                <property name="column-spacing">5</property>
-                <property name="margin-start">10</property>
-                <property name="margin-end">10</property>
-                <property name="margin-top">10</property>
-                <property name="margin-bottom">10</property>
+              <object class="GtkFrame">
+                <property name="label">Bounds Settings</property>
+                <child>
+                  <object class="GtkGrid">
+                    <property name="row-spacing">5</property>
+                    <property name="column-spacing">5</property>
+                    <property name="margin-start">10</property>
+                    <property name="margin-end">10</property>
+                    <property name="margin-top">10</property>
+                    <property name="margin-bottom">10</property>
                 
                 <!-- X Bounds -->
                 <child>
@@ -287,6 +319,26 @@
           </object>
         </child>
         
+        <!-- Margin Controls -->
+        <child>
+          <object class="GtkBox" id="MarginControlsX">
+            <property name="orientation">horizontal</property>
+            <property name="spacing">5</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkBox" id="MarginControlsY">
+            <property name="orientation">horizontal</property>
+            <property name="spacing">5</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkBox" id="MarginControlsZ">
+            <property name="orientation">horizontal</property>
+            <property name="spacing">5</property>
+          </object>
+        </child>
+        
         <!-- Tool Limit Mode -->
         <child>
           <object class="GtkFrame">
@@ -351,6 +403,25 @@
                     </child>
                   </object>
                 </child>
+              </object>
+            </child>
+          </object>
+        </child>
+          </object>
+        </child>
+        
+        <!-- Models Integration Frame -->
+        <child>
+          <object class="GtkFrame" id="ModelsTableFrame">
+            <property name="label">Models</property>
+            <child>
+              <object class="GtkBox" id="ModelsViewPort">
+                <property name="orientation">vertical</property>
+                <property name="spacing">5</property>
+                <property name="margin-start">10</property>
+                <property name="margin-end">10</property>
+                <property name="margin-top">10</property>
+                <property name="margin-bottom">10</property>
               </object>
             </child>
           </object>

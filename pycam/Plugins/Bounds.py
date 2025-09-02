@@ -66,7 +66,8 @@ class Bounds(pycam.Plugins.ListPluginBase):
             # model selector
             self.models_control = pycam.Gui.ControlsGTK.InputTable(
                 [], change_handler=lambda *args: self.core.emit_event("bounds-control-changed"))
-            self.gui.get_object("ModelsViewPort").add(self.models_control.get_widget())
+            # GTK 4: Use append instead of add for Box containers
+            self.gui.get_object("ModelsViewPort").append(self.models_control.get_widget())
             # quickly adjust the bounds via buttons
             for obj_name in ("MarginIncreaseX", "MarginIncreaseY", "MarginIncreaseZ",
                              "MarginDecreaseX", "MarginDecreaseY", "MarginDecreaseZ",

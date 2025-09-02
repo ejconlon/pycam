@@ -134,32 +134,40 @@
         <property name="margin-top">10</property>
         <property name="margin-bottom">10</property>
         
-        <!-- Tool Shape Selector -->
+        <!-- Tool Selector Box (can be hidden when < 2 tools) -->
         <child>
-          <object class="GtkFrame">
-            <property name="label">Tool Shape</property>
+          <object class="GtkBox" id="ToolSelectorBox">
+            <property name="orientation">vertical</property>
+            <property name="spacing">5</property>
+            
+            <!-- Tool Shape Selector -->
             <child>
-              <object class="GtkBox">
-                <property name="orientation">horizontal</property>
-                <property name="spacing">10</property>
-                <property name="margin-start">10</property>
-                <property name="margin-end">10</property>
-                <property name="margin-top">10</property>
-                <property name="margin-bottom">10</property>
+              <object class="GtkFrame">
+                <property name="label">Tool Shape</property>
                 <child>
-                  <object class="GtkLabel">
-                    <property name="label">Shape:</property>
-                  </object>
-                </child>
-                <child>
-                  <object class="GtkComboBox" id="ToolShapeSelector">
-                    <property name="model">ToolShapeList</property>
-                    <property name="hexpand">true</property>
+                  <object class="GtkBox">
+                    <property name="orientation">horizontal</property>
+                    <property name="spacing">10</property>
+                    <property name="margin-start">10</property>
+                    <property name="margin-end">10</property>
+                    <property name="margin-top">10</property>
+                    <property name="margin-bottom">10</property>
                     <child>
-                      <object class="GtkCellRendererText"/>
-                      <attributes>
-                        <attribute name="text">0</attribute>
-                      </attributes>
+                      <object class="GtkLabel">
+                        <property name="label">Shape:</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkComboBox" id="ToolShapeSelector">
+                        <property name="model">ToolShapeList</property>
+                        <property name="hexpand">true</property>
+                        <child>
+                          <object class="GtkCellRendererText"/>
+                          <attributes>
+                            <attribute name="text">0</attribute>
+                          </attributes>
+                        </child>
+                      </object>
                     </child>
                   </object>
                 </child>

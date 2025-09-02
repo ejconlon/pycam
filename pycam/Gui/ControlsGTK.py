@@ -208,11 +208,13 @@ class InputTable(InputChoice):
             self._values.append(value)
         renderer = Gtk.CellRendererText()
         self.control = Gtk.ScrolledWindow()
-        self.control.show()
-        self._treeview = Gtk.TreeView(self.model)
-        self._treeview.show()
-        self.control.add(self._treeview)
-        self.control.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)
+        # GTK 4: Create TreeView without arguments
+        self._treeview = Gtk.TreeView()
+        self._treeview.set_model(self.model)
+        # GTK 4: Use set_child instead of add
+        self.control.set_child(self._treeview)
+        # GTK 4: set_shadow_type doesn't exist - removed
+        # GTK 4: Set scrollbar policies
         self.control.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
         # Sadly there seems to be no way to adjust the size of the ScrolledWindow to its content.
         # The default size of the ScrolledWindow is too small (making it hard to select the model).

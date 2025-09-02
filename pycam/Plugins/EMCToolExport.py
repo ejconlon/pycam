@@ -36,9 +36,12 @@ class LinuxCNCToolExport(pycam.Plugins.PluginBase):
         self._last_emc_tool_file = None
         if self.gui:
             self.export_action = self.gui.get_object("ExportLinuxCNCToolDefinition")
-            self.register_gtk_accelerator("export", self.export_action, None,
-                                          "ExportLinuxCNCToolDefinition")
-            self._gtk_handlers = ((self.export_action, "activate", self.export_emc_tools), )
+            if self.export_action:
+                self.register_gtk_accelerator("export", self.export_action, None,
+                                              "ExportLinuxCNCToolDefinition")
+                self._gtk_handlers = ((self.export_action, "activate", self.export_emc_tools), )
+            else:
+                self._gtk_handlers = []
             self.core.register_ui("export_menu", "ExportLinuxCNCToolDefinition",
                                   self.export_action, 80)
             self._event_handlers = (("tool-selection-changed", self._update_emc_tool_button), )
@@ -51,12 +54,14 @@ class LinuxCNCToolExport(pycam.Plugins.PluginBase):
         if self.gui:
             self.unregister_event_handlers(self._event_handlers)
             self.unregister_gtk_handlers(self._gtk_handlers)
-            self.core.unregister_ui("export_menu", self.export_action)
-            self.unregister_gtk_accelerator("export", self.export_action)
+            if self.export_action:
+                self.core.unregister_ui("export_menu", self.export_action)
+                self.unregister_gtk_accelerator("export", self.export_action)
 
     def _update_emc_tool_button(self, widget=None):
         exportable = len(pycam.workspace.data_models.Tool.get_collection()) > 0
-        self.export_action.set_sensitive(exportable)
+        if self.export_action:
+            self.export_action.set_sensitive(exportable)
 
     def export_emc_tools(self, widget=None, filename=None):
         if callable(filename):
