@@ -18,6 +18,7 @@ along with PyCAM.  If not, see <http://www.gnu.org/licenses/>.
 """
 
 import collections
+from typing import Protocol
 
 from gi.repository import Gtk
 from gi.repository import GObject
@@ -30,6 +31,17 @@ _log = pycam.Utils.log.get_logger()
 
 ParameterSectionWidget = collections.namedtuple("ParameterSectionWidget",
                                                 ("widget", "label", "weight", "signal_handlers"))
+
+
+class ControlWidget(Protocol):
+    """Protocol for GTK control widgets used in WidgetBaseClass"""
+    def set_value(self, value) -> None: ...
+    def get_value(self): ...
+    def set_text(self, text: str) -> None: ...
+    def get_text(self) -> str: ...
+    def set_active(self, active: bool) -> None: ...
+    def show(self) -> None: ...
+    def hide(self) -> None: ...
 
 
 def _input_conversion(func):
@@ -53,6 +65,9 @@ def _output_conversion(func):
 
 
 class WidgetBaseClass:
+    
+    # Abstract attribute that must be provided by subclasses  
+    control: ControlWidget
 
     def get_widget(self):
         return self.control

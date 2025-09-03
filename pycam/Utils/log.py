@@ -40,7 +40,7 @@ def init_logger(log, logfilename=None):
     if logfilename:
         datetime_format = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
         logfile_handler = logging.FileHandler(logfilename)
-        logfile_handler.setFormatter(datetime_format)
+        logfile_handler.setFormatter(logging.Formatter(datetime_format))
         logfile_handler.addFilter(RepetitionsFilter(logfile_handler, log))
         log.addHandler(logfile_handler)
     console_output = logging.StreamHandler()
@@ -97,7 +97,7 @@ class RepetitionsFilter(logging.Filter):
     def __init__(self, handler, logger, **kwargs):
         logging.Filter.__init__(self, **kwargs)
         self._logger = logger
-        self._last_timestamp = 0
+        self._last_timestamp = 0.0
         self._last_record = None
         # Every handler needs its own "filter" instance - this is not really
         # a clean style.
@@ -122,7 +122,7 @@ class RepetitionsFilter(logging.Filter):
             self._suppressed_messages_counter += 1
             return False
         else:
-            if self._suppressed_messages_counter > 0:
+            if self._suppressed_messages_counter > 0 and self._last_record is not None:
                 # inject a message regarding the previously suppressed messages
                 self._last_record.msg = "*** skipped %d %s message(s) ***"
                 self._last_record.args = (self._suppressed_messages_counter, similarity)

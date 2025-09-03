@@ -65,6 +65,14 @@ class DimensionalObject:
     """
 
     __slots__ = ()
+    
+    # Abstract attributes that must be provided by subclasses
+    minx: float
+    miny: float 
+    minz: float
+    maxx: float
+    maxy: float
+    maxz: float
 
     def get_diagonal(self):
         return Vector3D(self.maxx - self.minx, self.maxy - self.miny, self.maxz - self.minz)

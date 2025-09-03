@@ -277,6 +277,11 @@ class MenuManager:
     def _populate_view_menu(self, core):
         """Populate View menu from view_menu UI registrations"""
         try:
+            # Check if menubar exists first
+            if self.menubar is None:
+                print("DEBUG: No menubar available for view menu population")
+                return
+                
             # Get registered view_menu items from core
             if hasattr(core, 'ui_sections') and 'view_menu' in core.ui_sections:
                 view_section = core.ui_sections['view_menu']
@@ -324,6 +329,11 @@ class MenuManager:
     def _populate_export_menu(self, core):
         """Populate Export menu from export-related UI registrations"""  
         try:
+            # Check if menubar exists first
+            if self.menubar is None:
+                print("DEBUG: No menubar available for export menu population")
+                return
+                
             # Add some basic export options
             export_submenu = None
             

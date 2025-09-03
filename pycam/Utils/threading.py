@@ -57,11 +57,13 @@ DEFAULT_PORT = 1250
 
 # TODO: create one or two classes for these functions (to get rid of the globals)
 
+from typing import Union, Optional, Any
+
 # possible values:
 #   None: not initialized
 #   False: no threading
 #   multiprocessing: the multiprocessing module is imported and enabled later
-__multiprocessing = None
+__multiprocessing: Optional[Union[bool, Any]] = None
 
 # needs to be initialized, if multiprocessing is enabled
 __num_of_processes = None
@@ -69,8 +71,8 @@ __num_of_processes = None
 __manager = None
 __closing = None
 __task_source_uuid = None
-__finished_jobs = []
-__issued_warnings = []
+__finished_jobs: list[str] = []
+__issued_warnings: list[str] = []
 
 
 def run_in_parallel(*args, **kwargs):
@@ -146,7 +148,7 @@ def get_pool_statistics():
 
 def get_task_statistics():
     global __manager
-    result = {}
+    result: dict[str, int] = {}
     if __manager is not None:
         try:
             result["tasks"] = __manager.tasks().qsize()
@@ -349,13 +351,13 @@ def cleanup():
             log.debug("Connection to manager lost during cleanup")
         # Only managers that were started via ".start()" implement a "shutdown".
         # Managers started via ".connect" may skip this.
-        if hasattr(__manager, "shutdown"):
+        if __manager is not None and hasattr(__manager, "shutdown"):
             # wait for the spawner and the worker threads to go down
             time.sleep(2.5)
             # __manager.shutdown()
             time.sleep(0.1)
             # check if it is still alive and kill it if necessary
-            if __manager._process.is_alive():
+            if hasattr(__manager, '_process') and __manager._process.is_alive():
                 __manager._process.terminate()
     __manager = None
     __closing = None
@@ -377,7 +379,7 @@ def _spawn_daemon(manager, number_of_processes, worker_uuid_list):
     # use only the hostname (for brevity) - no domain part
     hostname = platform.node().split(".", 1)[0]
     try:
-        while not __closing.get():
+        while __closing is not None and not __closing.get():
             # check the expire timeout of the cache from time to time
             if last_cache_update + 30 < time.time():
                 cache.expire_cache_items()
@@ -386,11 +388,12 @@ def _spawn_daemon(manager, number_of_processes, worker_uuid_list):
                 workers = []
                 for task_id in worker_uuid_list:
                     task_name = "%s-%s" % (hostname, task_id)
-                    worker = __multiprocessing.Process(name=task_name, target=_handle_tasks,
+                    if __multiprocessing and hasattr(__multiprocessing, 'Process'):
+                        worker = __multiprocessing.Process(name=task_name, target=_handle_tasks,
                                                        args=(tasks, results, stats, cache,
                                                              pending_tasks, __closing))
-                    worker.start()
-                    workers.append(worker)
+                        worker.start()
+                        workers.append(worker)
                 # wait until all workers are finished
                 for worker in workers:
                     worker.join()
@@ -400,7 +403,8 @@ def _spawn_daemon(manager, number_of_processes, worker_uuid_list):
         log.info("Spawner daemon killed by keyboard interrupt")
         # set the "closing" flag and just exit
         try:
-            __closing.set(True)
+            if __closing is not None:
+                __closing.set(True)
         except (IOError, EOFError):
             pass
     except (IOError, EOFError):
@@ -410,11 +414,14 @@ def _spawn_daemon(manager, number_of_processes, worker_uuid_list):
 
 def _handle_tasks(tasks, results, stats, cache, pending_tasks, closing):
     global __multiprocessing
-    name = __multiprocessing.current_process().name
+    if __multiprocessing and hasattr(__multiprocessing, 'current_process'):
+        name = __multiprocessing.current_process().name
+    else:
+        name = "unknown"
     local_cache = ProcessDataCache()
     timeout_limit = 60
     timeout_counter = 0
-    last_worker_notification = 0
+    last_worker_notification = 0.0
     log.debug("Worker thread started: %s" % name)
     try:
         while (timeout_counter < timeout_limit) and not closing.get():
@@ -478,7 +485,7 @@ def run_in_parallel_remote(func, args_list, unordered=False, disable_multiproces
     if __multiprocessing is None:
         # threading was not configured before
         init_threading()
-    if __multiprocessing and not disable_multiprocessing:
+    if __multiprocessing and not disable_multiprocessing and __manager is not None:
         job_id = str(uuid.uuid1())
         log.debug("Starting parallel tasks: %s", job_id)
         tasks_queue = __manager.tasks()

@@ -25,7 +25,7 @@ import sys
 import traceback
 import urllib
 from urllib.parse import urlparse
-from urllib.request import url2pathname
+from urllib.request import url2pathname, urlopen, urlretrieve
 # this is imported below on demand
 # import win32com
 # import win32api
@@ -39,7 +39,7 @@ except ImportError:
     setproctitle = lambda name: None
 
 
-__application_key = []
+__application_key: list[str] = []
 
 
 class OSPlatform(enum.IntEnum):
@@ -131,6 +131,8 @@ class URIHandler:
         if self.is_local():
             return self.get_local_path()
         else:
+            if self._uri is None:
+                return ""
             return self._uri.geturl()
 
     def set_location(self, location):
@@ -148,7 +150,7 @@ class URIHandler:
                                      + os.path.realpath(os.path.abspath(location)))
 
     def is_local(self):
-        return bool(self and (not self._uri.scheme or (self._uri.scheme == "file")))
+        return bool(self and self._uri and (not self._uri.scheme or (self._uri.scheme == "file")))
 
     def get_local_path(self):
         if self.is_local():
@@ -157,6 +159,8 @@ class URIHandler:
             return None
 
     def get_path(self):
+        if self._uri is None:
+            return ""
         encoded_path = self._uri.path
         if get_platform() == OSPlatform.WINDOWS:
             # prepend "netloc" (the drive letter - e.g. "c:")
@@ -165,13 +169,17 @@ class URIHandler:
         return url2pathname(encoded_path)
 
     def get_url(self):
+        if self._uri is None:
+            return ""
         return self._uri.geturl()
 
     def open(self):
         if self.is_local():
             return open(self.get_local_path(), "rb")
         else:
-            return urllib.urlopen(self._uri.geturl())
+            if self._uri is None:
+                raise ValueError("URI not initialized")
+            return urlopen(self._uri.geturl())
 
     def retrieve_remote_file(self, destination, callback=None):
         if callback:
@@ -179,7 +187,7 @@ class URIHandler:
         else:
             download_callback = None
         try:
-            urllib.urlretrieve(self.get_url(), destination, download_callback)
+            urlretrieve(self.get_url(), destination, download_callback)
             return True
         except IOError:
             return False
@@ -189,6 +197,8 @@ class URIHandler:
             return self == URIHandler(other)
         elif self.__class__ == other.__class__:
             if self.is_local() and other.is_local():
+                if self._uri is None or other._uri is None:
+                    return False
                 return self._uri.path == other._uri.path
             else:
                 return tuple(self) == tuple(other)
@@ -307,7 +317,7 @@ class MultiLevelDictionaryAccess:
             keys = key_or_keys
         else:
             # single-level dictionary access
-            keys = [key_or_keys]
+            keys = (key_or_keys,)
         # recursively access the single- or multi-level target dictionary
         target_dict = self._data
         for key in keys[:-1]:

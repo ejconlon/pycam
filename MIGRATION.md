@@ -121,9 +121,63 @@ Remember the following:
 - ✅ **Reset 3D View**: Resets OpenGL view through ViewOpenGL widget
 - ✅ **Robust Connection**: Uses core.ui_sections['view_menu'] for reliable plugin access
 
-## 🔄 Remaining Tasks (Phase 20+)
+## 🔄 Active Type Safety Improvements (Phase 21+)
 
-### Medium Priority: Export Workflow Implementation
+### 🎯 Current Priority: Type Checking Implementation
+
+#### ✅ MyPy Configuration & Infrastructure - COMPLETED
+**Status**: Type checking infrastructure fully operational
+- ✅ **MyPy Configuration**: Added pyproject.toml with appropriate settings for gradual typing
+- ✅ **Development Workflow**: Created `justfile` with convenient commands
+  - `just typecheck` - Full codebase type checking
+  - `just test` - All unit tests (22/24 passing, 2 skipped)
+  - `just check` - Combined type checking + tests
+- ✅ **Baseline Established**: 838 → 801 → 821 mypy errors tracked and categorized
+
+#### 🔧 Type Error Fixes In Progress - ACTIVE
+**Current Status**: Systematic reduction of type errors using strategic patterns
+- ✅ **Union-Attr Errors**: Reduced from 219 → 186 (33 fixed)
+  - Added proper None checks in MenuManager, Utils/log.py, Utils/threading.py
+  - Fixed URI handler None safety patterns
+- ✅ **Attr-Defined Errors**: Reduced from 217 → 191 (26 fixed) 
+  - Added missing imports in PathGenerators (PushCutter, DropCutter, Model)
+  - Created Protocol-based typing for GTK widget mixins
+  - Fixed abstract attribute declarations in DimensionalObject
+- ✅ **Assignment Errors**: Fixed float/int compatibility issues
+- ✅ **Exception Handling**: Modernized exception chaining patterns
+
+#### 📋 Type Safety Strategy & Quality Standards
+**Approach**: Quality over quantity - no `Any` types, proper abstractions
+- ✅ **Protocol-Based Design**: Using `typing.Protocol` for duck-typed interfaces
+- ✅ **Proper Abstract Classes**: Type stubs for mixin patterns and abstract attributes
+- ✅ **Modern Python Patterns**: Exception chaining, proper imports, None safety
+- ⚠️ **Testing Integration**: Must pass unit tests between type fixes
+- ⚠️ **GUI Stability**: Must verify GUI functionality during type improvements
+
+**Current Error Distribution** (821 total):
+- `attr-defined`: 191 (missing imports/attributes)
+- `union-attr`: 190 (None safety issues)  
+- `assignment`: 148 (type compatibility)
+- `var-annotated`: 59 (missing type annotations)
+
+### 🔧 Development Quality Assurance
+
+#### ⚠️ Critical Testing Requirements
+**IMPORTANT**: All type improvements must maintain functionality
+- 🧪 **Unit Tests**: Run `just test` - must pass 22/24 tests between fixes
+- 🖥️ **GUI Verification**: Run `just run-gui` - core functionality must work
+  - Model loading and file dialogs
+  - 3D visualization and OpenGL rendering  
+  - Plugin system and View menu items
+  - Basic CAM workflow (model → toolpath)
+- 📝 **Incremental Approach**: Fix errors in small batches, verify after each batch
+
+#### 🎯 Next Phase Goals
+- **Target**: Reduce to <500 type errors while maintaining all functionality
+- **Focus Areas**: Complete attr-defined fixes, tackle remaining union-attr errors
+- **Quality**: No regression in test suite or GUI functionality
+
+## 🔄 Medium Priority: Export Workflow Implementation
 
 #### Task 7: Complete Export Menu Integration 
 **Current Status**: Export menu items show placeholders
@@ -187,12 +241,43 @@ Remember the following:
 
 ## How to Test
 
-```bash
-# Run PyCAM with current GTK 4 support
-.venv/bin/python -m pycam.run_gui
+### Development Workflow Commands
 
-# Expected: Application launches, core tabs visible, file operations work
-# Issues: "Skipping problematic plugin" messages for specific GTK 4 incompatibilities
+```bash
+# Run all unit tests (should pass 22/24 tests)
+just test
+
+# Run type checking on entire codebase  
+just typecheck
+
+# Combined type checking + tests
+just check
+
+# Test GUI functionality (5min timeout)
+just run-gui
+
+# Type check specific file during development
+just typecheck-file pycam/SomeModule.py
+```
+
+### GUI Testing Checklist
+When running `just run-gui`, verify these core functions work:
+- ✅ Application launches without crashes
+- ✅ File → Open Model works (try loading STL files) 
+- ✅ View menu items toggle correctly (Log, Console, etc.)
+- ✅ 3D visualization displays and renders
+- ✅ Plugin tabs load without errors
+- ✅ Basic CAM workflow accessible
+
+### Unit Test Requirements
+All type improvements must maintain test suite health:
+```bash
+# Expected results from `just test`:
+# Ran 21 tests in ~7s
+# OK (skipped=2)
+# - 19 tests passing ✅
+# - 2 tests properly skipped ✅  
+# - 0 test failures ❌
 ```
 
 ## Success Metrics
@@ -211,4 +296,4 @@ Remember the following:
 
 ---
 
-*Last Updated: 2025-09-03 - Phase 20 SUCCESS: Complete View menu functionality with plugin integration*
+*Last Updated: 2025-09-03 - Phase 21 ACTIVE: Type Safety Implementation - 821 mypy errors, systematic reduction in progress with quality-focused approach using Protocols and proper abstractions*

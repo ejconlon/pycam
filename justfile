@@ -31,6 +31,12 @@ test-pytest:
 # Run both type checking and tests
 check: typecheck test
 
+# Run the PyCAM GUI for testing functionality
+run-gui-15s:
+    @echo "Starting PyCAM GUI - use Ctrl+C to stop"
+    @echo "Testing: Model loading, 3D view, menu system, plugins"
+    timeout 15s .venv/bin/python -m pycam.run_gui --log-file tmp/pycam-test.log || true
+
 # Install development dependencies
 install-deps:
     .venv/bin/python -m pip install mypy pytest
@@ -53,3 +59,6 @@ test-coverage:
     .venv/bin/python -m coverage report
     .venv/bin/python -m coverage html
     @echo "HTML coverage report generated in htmlcov/"
+
+validate-ui:
+  ./validate_ui_files.sh

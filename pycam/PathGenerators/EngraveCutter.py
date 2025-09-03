@@ -19,6 +19,9 @@ along with PyCAM.  If not, see <http://www.gnu.org/licenses/>.
 """
 
 import pycam.Utils.log
+import pycam.Geometry.Model
+import pycam.PathGenerators.PushCutter
+import pycam.PathGenerators.DropCutter
 
 log = pycam.Utils.log.get_logger()
 

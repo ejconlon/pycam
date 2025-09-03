@@ -237,8 +237,8 @@ def _set_parser_context(description):
                 result = func(self, *args, **kwargs)
             except PycamBaseException as exc:
                 # add a prefix to exceptions
-                exc.message = "{} -> {}".format(self._current_parser_context, exc)
-                raise exc
+                new_message = "{} -> {}".format(self._current_parser_context, exc)
+                raise type(exc)(new_message) from exc
             if original_description is None:
                 delattr(self, "_current_parser_context")
             else:
@@ -396,7 +396,7 @@ class BaseDataContainer:
             return raw_value
         elif key in self.attribute_converters:
             value = self.attribute_converters[key](raw_value)
-            if hasattr(value, "set_related_collection"):
+            if hasattr(value, "set_related_collection") and hasattr(self, 'collection_name'):
                 # special case for Source: we need the original collection for "copy"
                 value.set_related_collection(self.collection_name)
             return value

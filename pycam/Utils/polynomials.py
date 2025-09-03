@@ -91,8 +91,8 @@ def poly3_roots(a, b, c, d):
         return (2 * s - c1_3, -s - c1_3, -s - c1_3, )
     else:
         if a > 0:
-            fact = 0
-            phi = 0
+            fact = 0.0
+            phi = 0.0
             cs_phi = 1.0
             sn_phi_s3 = 0.0
         else:
@@ -100,7 +100,7 @@ def poly3_roots(a, b, c, d):
             fact = sqrt(a)
             f = -b * INV_2 / (a * fact)
             if f >= 1.0:
-                phi = 0
+                phi = 0.0
                 cs_phi = 1.0
                 sn_phi_s3 = 0.0
             elif f <= -1.0:

@@ -259,7 +259,7 @@ class GCodeGenerator:
         @value rapid: is this a rapid move?
         @type rapid: bool
         """
-        new_pos = []
+        new_pos: list[str] = []
         for index, attr in enumerate("xyz"):
             conv = self._axes_formatter[index][1]
             if hasattr(position, attr):
