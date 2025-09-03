@@ -6,8 +6,21 @@ This replaces the old GtkAction/UIManager system with GTK 4's GMenu/GSimpleActio
 """
 
 from gi.repository import Gio, GLib
+from typing import Protocol, runtime_checkable, Optional
 
 
+@runtime_checkable
+class WindowToggleable(Protocol):
+    def toggle_window(self) -> None: ...
+
+@runtime_checkable 
+class LogToggleable(Protocol):
+    def toggle_log_window(self) -> None: ...
+    
+@runtime_checkable
+class ConsoleToggleable(Protocol):
+    def toggle_console_window(self) -> None: ...
+    
 class MenuManager:
     """Manages the application menu system for GTK 4"""
     
@@ -233,11 +246,11 @@ class MenuManager:
                 print(f"DEBUG: Found {len(plugins)} loaded plugins:")
                 for name, plugin in plugins.items():
                     print(f"DEBUG: - {name}: {type(plugin).__name__}")
-                    if hasattr(plugin, 'toggle_window'):
+                    if isinstance(plugin, WindowToggleable):
                         print(f"DEBUG:   + has toggle_window method")
-                    if hasattr(plugin, 'toggle_log_window'):
+                    if isinstance(plugin, LogToggleable):
                         print(f"DEBUG:   + has toggle_log_window method")
-                    if hasattr(plugin, 'toggle_console_window'):
+                    if isinstance(plugin, ConsoleToggleable):
                         print(f"DEBUG:   + has toggle_console_window method")
             else:
                 print("DEBUG: core has no _plugins attribute")
@@ -391,7 +404,7 @@ class MenuManager:
                 if 'Log' in plugins:
                     log_plugin = plugins['Log']
                     print(f"DEBUG: Found Log plugin directly: {log_plugin}")
-                    if hasattr(log_plugin, 'toggle_log_window'):
+                    if isinstance(log_plugin, LogToggleable):
                         print(f"DEBUG: Calling toggle_log_window on Log plugin")
                         log_plugin.toggle_log_window()
                         return
@@ -399,7 +412,7 @@ class MenuManager:
                 # Look for loaded plugins
                 for name, plugin_instance in plugins.items():
                     print(f"DEBUG: Checking plugin {name}: {type(plugin_instance).__name__}")
-                    if hasattr(plugin_instance, 'toggle_log_window'):
+                    if isinstance(plugin_instance, LogToggleable):
                         print(f"DEBUG: Found Log plugin, calling toggle_log_window")
                         plugin_instance.toggle_log_window()
                         return
@@ -445,7 +458,7 @@ class MenuManager:
                 
                 # Look for loaded plugins
                 for name, plugin_instance in plugins.items():
-                    if hasattr(plugin_instance, 'toggle_window') and type(plugin_instance).__name__ == 'MemoryAnalyzer':
+                    if isinstance(plugin_instance, WindowToggleable) and type(plugin_instance).__name__ == 'MemoryAnalyzer':
                         print(f"DEBUG: Found MemoryAnalyzer plugin, calling toggle_window")
                         plugin_instance.toggle_window()
                         return
@@ -479,7 +492,7 @@ class MenuManager:
                 for plugin_instance in getattr(core, '_plugins', {}).values():
                     if type(plugin_instance).__name__ == 'PluginSelector':
                         print(f"DEBUG: Found PluginSelector plugin")
-                        if hasattr(plugin_instance, 'toggle_window'):
+                        if isinstance(plugin_instance, WindowToggleable):
                             print(f"DEBUG: Calling toggle_window")
                             plugin_instance.toggle_window()
                         elif hasattr(plugin_instance, 'toggle_plugin_window'):
@@ -505,7 +518,7 @@ class MenuManager:
                 for plugin_instance in getattr(core, '_plugins', {}).values():
                     if type(plugin_instance).__name__ == 'GtkConsole':
                         print(f"DEBUG: Found GtkConsole plugin")
-                        if hasattr(plugin_instance, 'toggle_console_window'):
+                        if isinstance(plugin_instance, ConsoleToggleable):
                             print(f"DEBUG: Calling toggle_console_window")
                             plugin_instance.toggle_console_window()
                         elif hasattr(plugin_instance, 'toggle_window'):

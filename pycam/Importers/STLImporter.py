@@ -21,6 +21,8 @@ along with PyCAM.  If not, see <http://www.gnu.org/licenses/>.
 from io import BufferedReader, BytesIO, TextIOWrapper
 import re
 from struct import unpack
+from typing import Union
+from os import PathLike
 
 from pycam.errors import AbortOperationException, LoadFileError
 from pycam.Geometry import epsilon
@@ -87,7 +89,7 @@ def get_facet_count_if_binary_format(source):
         return facet_count
 
 
-def import_model(filename, use_kdtree=True, callback=None, **kwargs):
+def import_model(filename: Union[str, PathLike, BufferedReader], use_kdtree: bool = True, callback=None, **kwargs):
     global vertices, edges, kdtree
     vertices = 0
     edges = 0
@@ -95,11 +97,11 @@ def import_model(filename, use_kdtree=True, callback=None, **kwargs):
 
     normal_conflict_warning_seen = False
 
-    if hasattr(filename, "read"):
+    if isinstance(filename, (BufferedReader, TextIOWrapper, BytesIO)):
         # make sure that the input stream can seek and has ".len"
-        f = BufferedReader(filename)
+        f = BufferedReader(filename) if not isinstance(filename, BufferedReader) else filename
         # useful for later error messages
-        filename = "input stream"
+        filename_str = "input stream"
     else:
         try:
             url_file = pycam.Utils.URIHandler(filename).open()
@@ -109,6 +111,7 @@ def import_model(filename, use_kdtree=True, callback=None, **kwargs):
             url_file.close()
         except IOError as exc:
             raise LoadFileError("STLImporter: Failed to read file ({}): {}".format(filename, exc))
+        filename_str = str(filename)
 
     # the facet count is only available for the binary format
     facet_count = get_facet_count_if_binary_format(f)
@@ -168,7 +171,7 @@ def import_model(filename, use_kdtree=True, callback=None, **kwargs):
             elif dotcross < 0:
                 if not normal_conflict_warning_seen:
                     log.warn("Inconsistent normal/vertices found in facet definition %d of '%s'. "
-                             "Please validate the STL file!", i, filename)
+                             "Please validate the STL file!", i, filename_str)
                     normal_conflict_warning_seen = True
                 t = Triangle(p1, p2, p3)
             else:
@@ -242,7 +245,7 @@ def import_model(filename, use_kdtree=True, callback=None, **kwargs):
             if m:
                 if None in (p1, p2, p3):
                     log.warn("Invalid facet definition in line %d of '%s'. Please validate the "
-                             "STL file!", current_line, filename)
+                             "STL file!", current_line, filename_str)
                     n, p1, p2, p3 = None, None, None, None
                     continue
                 if not n:
@@ -264,7 +267,7 @@ def import_model(filename, use_kdtree=True, callback=None, **kwargs):
                 elif dotcross < 0:
                     if not normal_conflict_warning_seen:
                         log.warn("Inconsistent normal/vertices found in line %d of '%s'. Please "
-                                 "validate the STL file!", current_line, filename)
+                                 "validate the STL file!", current_line, filename_str)
                         normal_conflict_warning_seen = True
                     t = Triangle(p1, p2, p3, n)
                 else:

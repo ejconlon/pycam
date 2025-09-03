@@ -23,6 +23,9 @@ along with PyCAM.  If not, see <http://www.gnu.org/licenses/>.
 import os
 import subprocess
 import tempfile
+from typing import Union
+from os import PathLike
+from io import TextIOWrapper
 
 from pycam.errors import AbortOperationException, LoadFileError
 import pycam.Importers.DXFImporter
@@ -94,10 +97,11 @@ def convert_eps2dxf(eps_filename, dxf_filename, location=None, unit="mm"):
                             .format(eps_filename, dxf_filename, process.stderr.read()))
 
 
-def import_model(filename, program_locations=None, unit="mm", callback=None, **kwargs):
+def import_model(filename: Union[str, PathLike, TextIOWrapper], program_locations=None, unit: str = "mm", callback=None, **kwargs):
     local_file = False
-    if hasattr(filename, "read"):
+    if isinstance(filename, TextIOWrapper):
         infile = filename
+        filename_str = "input stream"
         svg_file_handle, svg_file_name = tempfile.mkstemp(suffix=".svg")
         try:
             temp_file = os.fdopen(svg_file_handle, "w")
@@ -108,7 +112,9 @@ def import_model(filename, program_locations=None, unit="mm", callback=None, **k
                       svg_file_name, err_msg)
             return
         filename = svg_file_name
+        filename_str = svg_file_name
     else:
+        filename_str = str(filename)
         uri = pycam.Utils.URIHandler(filename)
         if not uri.exists():
             log.error("SVGImporter: file (%s) does not exist", filename)

@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+
+[tool.mypy]
+python_version = "3.9"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = false
+disallow_incomplete_defs = false
+check_untyped_defs = true
+disallow_untyped_decorators = false
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+warn_unreachable = true
+strict_equality = true
+show_error_codes = true
+
+# Start with more permissive settings, can be tightened later
+ignore_missing_imports = true
+follow_imports = "silent"
+
+[tool.flake8]
+max-line-length = 99
+# flake8 defaults: E121,E123,E126,E226,E24,E704,W503,W504
+# custom additions:
+#   E731: sometimes we like lambda
+#   E741: tolerate short names
+#   N806: TODO: fix these non-standard naming exceptions
+ignore = ["E121", "E123", "E126", "E226", "E24", "E704", "W503", "W504", "E731", "E741", "N806"]

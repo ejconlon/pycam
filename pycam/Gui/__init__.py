@@ -1,6 +1,8 @@
 from configparser import ConfigParser
 import enum
 import json
+from typing import Optional
+from gi.repository import Gtk
 
 from pycam.errors import PycamBaseException
 import pycam.Gui.Settings
@@ -146,6 +148,11 @@ class BaseUI:
     def __init__(self, event_manager):
         self.settings = event_manager
         self.last_workspace_uri = None
+        self.last_model_uri = None
+        # Optional attributes that may be defined in subclasses
+        self.gui: Optional[Gtk.Builder] = None
+        self.window: Optional[Gtk.Window] = None
+        self.menu_manager = None  # type: Optional[MenuManager]
 
     def reset_preferences(self, widget=None):
         """ reset all preferences to their default values """
@@ -163,7 +170,7 @@ class BaseUI:
         """Ensure the File menu is properly set up - workaround for initialization issues"""
         try:
             # Only do this if we have a gui object (ProjectGui has it)
-            if not hasattr(self, 'gui'):
+            if self.gui is None:
                 print("DEBUG: No gui object, skipping menu setup")
                 return
                 
@@ -173,14 +180,14 @@ class BaseUI:
             from pycam.Gui.MenuManager import MenuManager
             
             # Create menu manager if it doesn't exist
-            if not hasattr(self, 'menu_manager') or self.menu_manager is None:
+            if self.menu_manager is None:
                 print("DEBUG: Creating MenuManager")
                 self.menu_manager = MenuManager(None, self)
                 menubar = self.menu_manager.create_menubar()
                 self.menu_manager.create_actions()
                 
                 # Add menu actions to window
-                if hasattr(self, 'window'):
+                if self.window is not None:
                     menu_action_group = self.menu_manager.get_action_group()
                     self.window.insert_action_group("app", menu_action_group)
                     print("DEBUG: Action group added to window")

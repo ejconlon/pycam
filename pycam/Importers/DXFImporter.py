@@ -22,6 +22,9 @@ along with PyCAM.  If not, see <http://www.gnu.org/licenses/>.
 import math
 import re
 import os
+from typing import Union
+from os import PathLike
+from io import TextIOWrapper
 
 from pycam.errors import AbortOperationException, LoadFileError
 from pycam.Geometry.Triangle import Triangle
@@ -870,16 +873,18 @@ class DXFParser:
             return None
 
 
-def import_model(filename, color_as_height=False, fonts_cache=None, callback=None, **kwargs):
-    if hasattr(filename, "read"):
+def import_model(filename: Union[str, PathLike, TextIOWrapper], color_as_height: bool = False, fonts_cache=None, callback=None, **kwargs):
+    if isinstance(filename, TextIOWrapper):
         should_close = False
         infile = filename
+        filename_str = "input stream"
     else:
         should_close = True
         try:
             infile = pycam.Utils.URIHandler(filename).open()
         except IOError as exc:
             raise LoadFileError("DXFImporter: Failed to read file ({}): {}".format(filename, exc))
+        filename_str = str(filename)
 
     result = DXFParser(infile, color_as_height=color_as_height, fonts_cache=fonts_cache,
                        callback=callback)

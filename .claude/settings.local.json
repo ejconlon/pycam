@@ -28,7 +28,11 @@
       "Bash(do echo \"Validating $file\")",
       "Bash(./validate_ui_files.sh:*)",
       "Read(/private/tmp/**)",
-      "Bash(git grep:*)"
+      "Bash(git grep:*)",
+      "Bash(just)",
+      "Bash(just test-pytest:*)",
+      "Bash(just check)",
+      "Bash(just test:*)"
     ],
     "deny": [],
     "ask": []
