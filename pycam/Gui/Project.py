@@ -571,6 +571,12 @@ class ProjectGui(pycam.Gui.BaseUI):
         self._ensure_final_menu_setup()
         print("DEBUG: _ensure_final_menu_setup completed")
         
+        # Populate dynamic menus after all plugins have loaded
+        print("DEBUG: Populating dynamic menus...")
+        if hasattr(self, 'menu_manager') and self.menu_manager:
+            self.menu_manager.populate_dynamic_menus(self)
+        print("DEBUG: Dynamic menu population completed")
+        
         # register a logging handler for displaying error messages
         pycam.Utils.log.add_gtk_gui(self.window, logging.ERROR)
         self.window.show()

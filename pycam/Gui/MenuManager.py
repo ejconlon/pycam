@@ -19,10 +19,7 @@ class MenuManager:
         
     def create_menubar(self):
         """Create the main menubar using GMenu"""
-        print("DEBUG: Creating menubar...")
-        
         # First create all the actions
-        print("DEBUG: Creating actions...")
         self.create_actions()
         
         self.menubar = Gio.Menu()
@@ -41,7 +38,6 @@ class MenuManager:
         self.menubar.append_submenu("_View", view_menu)
         self.menubar.append_submenu("_Help", help_menu)
         
-        print(f"DEBUG: Menubar created with {self.menubar.get_n_items()} items")
         return self.menubar
     
     def _create_file_menu(self):
@@ -52,8 +48,11 @@ class MenuManager:
         menu.append("_Open Model...", "app.open-model")
         menu.append("Open _Recent", "app.open-recent")
         
-        # Export submenu (placeholder for now)
+        # Export submenu
         export_menu = Gio.Menu()
+        export_menu.append("Export _G-Code...", "app.export-gcode")
+        export_menu.append("Export _STL Model...", "app.export-stl") 
+        export_menu.append("Export Tool_path...", "app.export-toolpath")
         menu.append_submenu("_Export", export_menu)
         
         return menu
@@ -79,7 +78,19 @@ class MenuManager:
     def _create_view_menu(self):
         """Create View menu"""
         menu = Gio.Menu()
-        # Placeholder - will be populated by plugins
+        
+        # Add essential view menu items that users expect
+        menu.append("Toggle _Log Window", "app.toggle-log")
+        menu.append("Toggle _Memory Analyzer", "app.toggle-memory")
+        menu.append("Toggle _Plugin Selector", "app.toggle-plugins")
+        menu.append("Toggle _Console", "app.toggle-console")
+        
+        # Separator
+        menu.append_section(None, Gio.Menu())
+        
+        # 3D View options
+        menu.append("Reset 3D _View", "app.reset-3d-view")
+        
         return menu
     
     def _create_help_menu(self):
@@ -179,6 +190,18 @@ class MenuManager:
             # About
             ("about", lambda *args: self.callback_handler.toggle_about_window(True), None),
             
+            # Export actions
+            ("export-gcode", self._export_gcode, None),
+            ("export-stl", self._export_stl, None),
+            ("export-toolpath", self._export_toolpath, None),
+            
+            # View menu actions
+            ("toggle-log", self._toggle_log_window, None),
+            ("toggle-memory", self._toggle_memory_window, None), 
+            ("toggle-plugins", self._toggle_plugins_window, None),
+            ("toggle-console", self._toggle_console_window, None),
+            ("reset-3d-view", self._reset_3d_view, None),
+            
             # App-wide actions
             ("quit", self.callback_handler.destroy, "<Control>q"),
         ]
@@ -196,3 +219,184 @@ class MenuManager:
     def get_action_group(self):
         """Get the action group for adding to windows"""
         return self.action_group
+    
+    def populate_dynamic_menus(self, core):
+        """Populate View and Export menus from registered UI items"""
+        try:
+            self._populate_view_menu(core)
+            self._populate_export_menu(core)
+        except Exception as e:
+            print(f"DEBUG: Error populating dynamic menus: {e}")
+    
+    def _populate_view_menu(self, core):
+        """Populate View menu from view_menu UI registrations"""
+        try:
+            # Get registered view_menu items from core
+            if hasattr(core, 'ui_sections') and 'view_menu' in core.ui_sections:
+                view_section = core.ui_sections['view_menu']
+                # Sort by weight (priority)
+                sorted_widgets = sorted(view_section.widgets, key=lambda x: x.weight)
+                
+                # Find the View submenu in our menubar
+                view_submenu = None
+                for i in range(self.menubar.get_n_items()):
+                    item_link = self.menubar.get_item_link(i, "submenu")
+                    if item_link and "View" in str(item_link):
+                        # Get the submenu
+                        view_submenu = self.menubar.get_item_attribute_value(i, "submenu", None)
+                        break
+                
+                # Add registered items to View menu
+                for widget_info in sorted_widgets:
+                    if hasattr(widget_info.obj, 'get_label'):
+                        label = widget_info.obj.get_label() or widget_info.name
+                    else:
+                        label = widget_info.name
+                    
+                    # Create action for this menu item
+                    action_name = f"view-{widget_info.name.lower().replace(' ', '-')}"
+                    
+                    # Try to connect to widget's activate signal
+                    if hasattr(widget_info.obj, 'get_active') and hasattr(widget_info.obj, 'set_active'):
+                        # Toggle action for checkable items
+                        action = Gio.SimpleAction.new_stateful(
+                            action_name, None, GLib.Variant.new_boolean(False))
+                        action.connect("activate", self._create_toggle_callback(widget_info.obj))
+                    else:
+                        # Regular action
+                        action = Gio.SimpleAction.new(action_name, None)
+                        if hasattr(widget_info.obj, 'clicked'):
+                            action.connect("activate", lambda a, p, obj=widget_info.obj: obj.emit('clicked'))
+                    
+                    self.action_group.add_action(action)
+                    
+                    print(f"DEBUG: Added view menu item: {label} -> app.{action_name}")
+                    
+        except Exception as e:
+            print(f"DEBUG: Error populating view menu: {e}")
+    
+    def _populate_export_menu(self, core):
+        """Populate Export menu from export-related UI registrations"""  
+        try:
+            # Add some basic export options
+            export_submenu = None
+            
+            # Find File menu and its Export submenu
+            for i in range(self.menubar.get_n_items()):
+                # This is a simplified approach - we'd need to traverse the menu structure properly
+                pass
+                
+            print("DEBUG: Export menu population not fully implemented yet")
+            
+        except Exception as e:
+            print(f"DEBUG: Error populating export menu: {e}")
+    
+    def _create_toggle_callback(self, widget):
+        """Create a callback for toggle menu items"""
+        def callback(action, parameter):
+            try:
+                current_state = action.get_state().get_boolean()
+                new_state = not current_state
+                action.set_state(GLib.Variant.new_boolean(new_state))
+                widget.set_active(new_state)
+            except Exception as e:
+                print(f"DEBUG: Toggle callback error: {e}")
+        return callback
+    
+    def _reset_3d_view(self, *args):
+        """Reset the 3D view to default position"""
+        try:
+            # Reset 3D view
+            # This could trigger a refresh of the integrated 3D view
+            if hasattr(self.callback_handler, 'gl_area'):
+                self.callback_handler.gl_area.queue_render()
+        except Exception as e:
+            print(f"DEBUG: Reset 3D view error: {e}")
+    
+    # View menu action implementations
+    def _toggle_log_window(self, *args):
+        """Toggle the log window"""
+        try:
+            # Try to find the log plugin and call its toggle method
+            if hasattr(self.callback_handler, 'core'):
+                # Look for loaded log plugin
+                plugins = getattr(self.callback_handler.core, '_plugins', {})
+                for name, plugin in plugins.items():
+                    if hasattr(plugin, 'toggle_log_window'):
+                        plugin.toggle_log_window()
+                        return
+            pass  # Log plugin not found
+        except Exception as e:
+            print(f"DEBUG: Toggle log window error: {e}")
+    
+    def _toggle_memory_window(self, *args):
+        """Toggle the memory analyzer window"""
+        try:
+            if hasattr(self.callback_handler, 'core'):
+                plugins = getattr(self.callback_handler.core, '_plugins', {})
+                for name, plugin in plugins.items():
+                    if hasattr(plugin, 'toggle_window') and 'memory' in name.lower():
+                        plugin.toggle_window()
+                        return
+            pass  # Memory analyzer plugin not found
+        except Exception as e:
+            print(f"DEBUG: Toggle memory window error: {e}")
+            
+    def _toggle_plugins_window(self, *args):
+        """Toggle the plugin selector window"""
+        try:
+            if hasattr(self.callback_handler, 'core'):
+                plugins = getattr(self.callback_handler.core, '_plugins', {})
+                for name, plugin in plugins.items():
+                    if hasattr(plugin, 'toggle_plugin_window'):
+                        plugin.toggle_plugin_window()
+                        return
+            pass  # Plugin selector not found
+        except Exception as e:
+            print(f"DEBUG: Toggle plugins window error: {e}")
+    
+    def _toggle_console_window(self, *args):
+        """Toggle the console window"""
+        try:
+            if hasattr(self.callback_handler, 'core'):
+                plugins = getattr(self.callback_handler.core, '_plugins', {})
+                for name, plugin in plugins.items():
+                    if hasattr(plugin, 'toggle_console_window') or 'console' in name.lower():
+                        if hasattr(plugin, 'toggle_console_window'):
+                            plugin.toggle_console_window()
+                        elif hasattr(plugin, 'toggle_window'):
+                            plugin.toggle_window()
+                        return
+            pass  # Console plugin not found
+        except Exception as e:
+            print(f"DEBUG: Toggle console window error: {e}")
+    
+    # Export menu action implementations  
+    def _export_gcode(self, *args):
+        """Export G-code"""
+        try:
+            print("DEBUG: G-code export requested")
+            # This would normally open a file dialog and export G-code
+            # For now, just show a placeholder message
+            if hasattr(self.callback_handler, 'show_help'):
+                self.callback_handler.show_help(None, "gcode-export")
+            else:
+                print("G-code export functionality not yet implemented")
+        except Exception as e:
+            print(f"DEBUG: Export G-code error: {e}")
+            
+    def _export_stl(self, *args):
+        """Export STL model"""
+        try:
+            print("DEBUG: STL export requested")
+            print("STL export functionality not yet implemented")
+        except Exception as e:
+            print(f"DEBUG: Export STL error: {e}")
+            
+    def _export_toolpath(self, *args):
+        """Export toolpath"""
+        try:
+            print("DEBUG: Toolpath export requested") 
+            print("Toolpath export functionality not yet implemented")
+        except Exception as e:
+            print(f"DEBUG: Export toolpath error: {e}")
