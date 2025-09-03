@@ -32,7 +32,8 @@
       "Bash(just)",
       "Bash(just test-pytest:*)",
       "Bash(just check)",
-      "Bash(just test:*)"
+      "Bash(just test:*)",
+      "Bash(../../.venv/bin/python -m unittest test_intersection.CircleIntersections.test_line -v)"
     ],
     "deny": [],
     "ask": []
