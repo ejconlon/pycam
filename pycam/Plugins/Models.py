@@ -27,7 +27,7 @@ import pycam.workspace.data_models
 
 class Models(pycam.Plugins.ListPluginBase):
 
-    UI_FILE = "models-working.ui"
+    UI_FILE = "models.ui"
     CATEGORIES = ["Model"]
     ICONS = {"visible": "visible.svg", "hidden": "visible_off.svg"}
     FALLBACK_COLOR = {"red": 0.5, "green": 0.5, "blue": 1.0, "alpha": 1.0}

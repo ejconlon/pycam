@@ -29,7 +29,7 @@ import pycam.workspace.data_models
 
 class Tasks(pycam.Plugins.ListPluginBase):
 
-    UI_FILE = "tasks-working.ui"
+    UI_FILE = "tasks.ui"
     CATEGORIES = ["Task"]
     DEPENDS = ["Models", "Tools", "Processes", "Bounds", "Toolpaths"]
     COLLECTION_ITEM_TYPE = pycam.workspace.data_models.Task

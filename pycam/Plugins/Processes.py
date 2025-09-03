@@ -26,7 +26,7 @@ class Processes(pycam.Plugins.ListPluginBase):
 
     DEPENDS = ["ParameterGroupManager"]
     CATEGORIES = ["Process"]
-    UI_FILE = "processes-working.ui"
+    UI_FILE = "processes.ui"
     COLLECTION_ITEM_TYPE = pycam.workspace.data_models.Process
 
     def setup(self):

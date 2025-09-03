@@ -26,7 +26,7 @@ class Tools(pycam.Plugins.ListPluginBase):
 
     DEPENDS = ["ParameterGroupManager"]
     CATEGORIES = ["Tool"]
-    UI_FILE = "tools-working.ui"
+    UI_FILE = "tools.ui"
     COLLECTION_ITEM_TYPE = pycam.workspace.data_models.Tool
 
     def setup(self):

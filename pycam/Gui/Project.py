@@ -42,7 +42,7 @@ import pycam.Utils.log
 from pycam.Gui.MenuManager import MenuManager
 
 
-GTKBUILD_FILE = "pycam-project-functional.ui"
+GTKBUILD_FILE = "pycam-project.ui"
 GTKMENU_FILE = "menubar.xml"
 GTKRC_FILE_WINDOWS = "gtkrc_windows"
 
