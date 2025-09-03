@@ -179,19 +179,23 @@ class ProjectGui(pycam.Gui.BaseUI):
         print("DEBUG: Checkpoint 6 - Menubar created, creating actions...")
         self.menu_manager.create_actions()
         print("DEBUG: Checkpoint 7 - Actions created")
+        print("🔥 MADE IT PAST create_actions() 🔥")
         
         # Add menu actions to window and store in settings for other windows
         menu_action_group = self.menu_manager.get_action_group()
         self.settings.set("gtk_action_group", menu_action_group)
+        print(f"🔥 ADDING ACTION GROUP TO WINDOW: {menu_action_group} 🔥")
         self.window.insert_action_group("app", menu_action_group)
+        print("🔥 ACTION GROUP ADDED! 🔥")
         
         # Set the menu model on the menubar widget
         try:
             menubar_widget = self.gui.get_object("MenuBar")
             print(f"DEBUG: MenuBar widget found: {menubar_widget}")
             if menubar_widget:
+                print(f"🔥 SETTING MENU MODEL ON MENUBAR: {menubar} 🔥")
                 menubar_widget.set_menu_model(menubar)
-                print("DEBUG: Menu model set on MenuBar widget")
+                print("🔥 MENU MODEL SET! Menu should now be visible! 🔥")
             else:
                 print("DEBUG: MenuBar widget is None")
         except AttributeError as e:

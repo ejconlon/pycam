@@ -362,12 +362,19 @@ class PluginManager:
         new_plugin = obj(self.core, plugin_name)
         try:
             if not new_plugin.setup():
-                _log.info("Failed to setup plugin '%s'", str(plugin_name))
+                error_msg = f"Failed to setup plugin '{plugin_name}'"
+                _log.error(error_msg)
+                print(f"❌ PLUGIN ERROR: {error_msg}")
             else:
                 self.modules[plugin_name] = new_plugin
                 self.core.emit_event("plugin-list-changed")
+                print(f"✅ Plugin loaded successfully: {plugin_name}")
         except (NotImplementedError, TypeError, AttributeError, Exception) as err_msg:
-            _log.info("Skipping problematic plugin '%s': %s", plugin_name, err_msg)
+            error_msg = f"Plugin '{plugin_name}' failed with error: {err_msg}"
+            _log.error(error_msg)
+            print(f"❌ PLUGIN ERROR: {error_msg}")
+            import traceback
+            traceback.print_exc()
             # Continue loading other plugins instead of crashing
 
     def disable_all_plugins(self):

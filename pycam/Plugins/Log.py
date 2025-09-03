@@ -37,32 +37,67 @@ class Log(pycam.Plugins.PluginBase):
             return False
         if self.gui:
             # menu item and shortcut
-            log_action = self.gui.get_object("ToggleLogWindow")
+            # GTK 4: We don't need a UI widget for the menu action
+            # The menu system will call toggle_log_window directly
             self._gtk_handlers = []
-            self._gtk_handlers.append((log_action, "toggled", self.toggle_log_window))
-            self.register_gtk_accelerator("log", log_action, "<Control>l", "ToggleLogWindow")
-            self.core.register_ui("view_menu", "ToggleLogWindow", log_action, 100)
+            
+            # Store a flag for window visibility
+            self.log_window_visible = False
             # status bar
-            self.status_bar = self.gui.get_object("StatusBar")
-            event_bar = self.gui.get_object("StatusBarEventBox")
+            try:
+                self.status_bar = self.gui.get_object("StatusBar")
+            except:
+                self.status_bar = None
+                print("DEBUG: StatusBar not found in UI")
+            
+            try:
+                event_bar = self.gui.get_object("StatusBarEventBox")
+            except:
+                event_bar = None
+                print("DEBUG: StatusBarEventBox not found in UI")
             # GTK 4: Use GestureClick instead of button-pressed event
-            click_gesture = self._gtk.GestureClick.new()
-            click_gesture.connect("pressed", lambda gesture, n_press, x, y: self.toggle_log_window())
-            event_bar.add_controller(click_gesture)
-            event_bar.unparent()
-            self.core.register_ui("main_window", "Status", event_bar, 100)
+            if event_bar:
+                click_gesture = self._gtk.GestureClick.new()
+                click_gesture.connect("pressed", lambda gesture, n_press, x, y: self.toggle_log_window())
+                event_bar.add_controller(click_gesture)
+                event_bar.unparent()
+                self.core.register_ui("main_window", "Status", event_bar, 100)
             # "log" window
-            self.log_window = self.gui.get_object("LogWindow")
-            self.log_window.set_default_size(500, 400)
-            hide_window = lambda *args: self.toggle_log_window(value=False)
-            self._gtk_handlers.extend([
-                (self.log_window, "close-request", hide_window),
-                (self.log_window, "destroy", hide_window),
-                (self.gui.get_object("LogWindowClose"), "clicked", hide_window),
-                (self.gui.get_object("LogWindowClear"), "clicked", self.clear_log_window),
-                (self.gui.get_object("LogWindowCopyToClipboard"), "clicked",
-                 self.copy_log_to_clipboard)])
-            self.log_model = self.gui.get_object("LogWindowList")
+            try:
+                self.log_window = self.gui.get_object("LogWindow")
+                self.log_window.set_default_size(500, 400)
+                hide_window = lambda *args: self.toggle_log_window(value=False)
+                self._gtk_handlers.extend([
+                    (self.log_window, "close-request", hide_window),
+                    (self.log_window, "destroy", hide_window)])
+                
+                # Try to get buttons, but don't fail if they don't exist
+                try:
+                    close_button = self.gui.get_object("LogWindowClose")
+                    self._gtk_handlers.append((close_button, "clicked", hide_window))
+                except:
+                    pass
+                    
+                try:
+                    clear_button = self.gui.get_object("LogWindowClear")
+                    self._gtk_handlers.append((clear_button, "clicked", self.clear_log_window))
+                except:
+                    pass
+                    
+                try:
+                    copy_button = self.gui.get_object("LogWindowCopyToClipboard")
+                    self._gtk_handlers.append((copy_button, "clicked", self.copy_log_to_clipboard))
+                except:
+                    pass
+            except Exception as e:
+                print(f"DEBUG: LogWindow not found, will create one when needed: {e}")
+                self.log_window = None
+            try:
+                self.log_model = self.gui.get_object("LogWindowList")
+            except:
+                print("DEBUG: LogWindowList not found, creating new ListStore")
+                # Create a new ListStore with timestamp, type, and message columns
+                self.log_model = self._gtk.ListStore(str, str, str)
             # window state
             self._log_window_position = None
             # register a callback for the log window
@@ -73,21 +108,25 @@ class Log(pycam.Plugins.PluginBase):
     def teardown(self):
         if self.gui:
             self.unregister_gtk_handlers(self._gtk_handlers)
-            self.log_window.hide()
-            log_action = self.gui.get_object("ToggleLogWindow")
-            self.core.unregister_ui("view_menu", log_action)
-            self.unregister_gtk_accelerator("log", log_action)
-            self.core.unregister_ui("main_window", self.gui.get_object("StatusBarEventBox"))
-            self.core.unregister_ui("view_menu", self.gui.get_object("ToggleLogWindow"))
+            if self.log_window:
+                self.log_window.hide()
+            # Clean up any registered UI elements
+            try:
+                event_bar = self.gui.get_object("StatusBarEventBox")
+                if event_bar:
+                    self.core.unregister_ui("main_window", event_bar)
+            except:
+                pass
             # TODO: disconnect the log handler
 
     def add_log_message(self, title, message, record=None):
         timestamp = datetime.datetime.fromtimestamp(record.created).strftime("%H:%M")
         # avoid the ugly character for a linefeed
         message = " ".join(message.splitlines())
-        self.log_model.append((timestamp, title, message))
+        if self.log_model:
+            self.log_model.append((timestamp, title, message))
         # update the status bar (if the GTK interface is still active)
-        if self.status_bar.get_parent() is not None:
+        if self.status_bar and self.status_bar.get_parent() is not None:
             # remove the last message from the stack (probably not necessary)
             self.status_bar.pop(0)
             # push the new message
@@ -112,35 +151,37 @@ class Log(pycam.Plugins.PluginBase):
         self.gui.get_object("StatusBarWarning").hide()
 
     def clear_log_window(self, widget=None):
-        self.log_model.clear()
-        self.gui.get_object("StatusBarWarning").hide()
+        if self.log_model:
+            self.log_model.clear()
+        try:
+            warning = self.gui.get_object("StatusBarWarning")
+            if warning:
+                warning.hide()
+        except:
+            pass
 
     def toggle_log_window(self, widget=None, value=None, action=None):
-        toggle_log_checkbox = self.gui.get_object("ToggleLogWindow")
-        if toggle_log_checkbox is None:
-            # Plugin may be shutting down or widget not found
-            self.log.debug("ToggleLogWindow widget not found - plugin may be shutting down")
-            return
-        checkbox_state = toggle_log_checkbox.get_active()
-        if value is None:
-            new_state = checkbox_state
-        elif isinstance(value, self._gdk.Event):
-            # someone clicked at the status bar -> toggle the window state
-            new_state = not checkbox_state
+        # GTK 4: Simplified toggle without checkbox dependency
+        if value is not None:
+            new_state = value
         else:
-            if action is None:
-                new_state = value
+            # Toggle current state
+            new_state = not getattr(self, 'log_window_visible', False)
+        
+        self.log_window_visible = new_state
+        
+        if self.log_window:
+            if new_state:
+                self.log_window.show()
             else:
-                new_state = action
-        if new_state:
-            # GTK 4: Window positioning is handled by the compositor
-            # The move() method has been removed, so we skip position restoration
-            self.log_window.show()
-        else:
-            # GTK 4: get_position() has been removed as windows are managed by compositor
-            # We no longer store/restore position manually
-            self.log_window.hide()
-        toggle_log_checkbox.set_active(new_state)
-        self.gui.get_object("StatusBarWarning").hide()
+                self.log_window.hide()
+        
+        # Hide warning icon if we have status bar
+        try:
+            warning_icon = self.gui.get_object("StatusBarWarning")
+            if warning_icon:
+                warning_icon.hide()
+        except:
+            pass
         # don't destroy the window with a "destroy" event
         return True

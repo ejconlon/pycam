@@ -130,8 +130,10 @@ def show_gui(workspace_filename=None):
         gui = gui_class(event_manager)
         # initialize plugins
         log.debug("Loading all available plugins")
+        print("🔥 LOADING PLUGINS! 🔥")
         plugin_manager = pycam.Plugins.PluginManager(core=event_manager)
         plugin_manager.import_plugins()
+        print(f"🔥 PLUGINS LOADED: {len(plugin_manager.modules)} modules 🔥")
         # Store plugin manager in settings so plugins can be accessed
         event_manager.set("plugin_manager", plugin_manager)
         # some more initialization

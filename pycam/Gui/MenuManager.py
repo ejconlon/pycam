@@ -148,6 +148,7 @@ class MenuManager:
     
     def create_actions(self):
         """Create all GSimpleActions for menu items"""
+        print("🔥 CREATING MENU ACTIONS! 🔥")
         actions = [
             # File menu
             ("open-model", self.callback_handler.load_model_file, "<Control>o"),
@@ -211,6 +212,7 @@ class MenuManager:
                 action = Gio.SimpleAction.new(action_name, None)
                 action.connect("activate", lambda action, param, cb=callback: cb())
                 self.action_group.add_action(action)
+                print(f"DEBUG: Created action '{action_name}' with callback {callback}")
                 
                 # Add keyboard accelerator if specified
                 if accelerator and self.application:
@@ -223,10 +225,41 @@ class MenuManager:
     def populate_dynamic_menus(self, core):
         """Populate View and Export menus from registered UI items"""
         try:
+            print(f"DEBUG: populate_dynamic_menus called with core: {core}")
+            
+            # Debug loaded plugins
+            if hasattr(core, '_plugins'):
+                plugins = core._plugins
+                print(f"DEBUG: Found {len(plugins)} loaded plugins:")
+                for name, plugin in plugins.items():
+                    print(f"DEBUG: - {name}: {type(plugin).__name__}")
+                    if hasattr(plugin, 'toggle_window'):
+                        print(f"DEBUG:   + has toggle_window method")
+                    if hasattr(plugin, 'toggle_log_window'):
+                        print(f"DEBUG:   + has toggle_log_window method")
+                    if hasattr(plugin, 'toggle_console_window'):
+                        print(f"DEBUG:   + has toggle_console_window method")
+            else:
+                print("DEBUG: core has no _plugins attribute")
+                
+            if hasattr(core, 'ui_sections'):
+                print(f"DEBUG: ui_sections available: {list(core.ui_sections.keys())}")
+                if 'view_menu' in core.ui_sections:
+                    section = core.ui_sections['view_menu']
+                    print(f"DEBUG: view_menu has {len(section.widgets)} widgets:")
+                    for w in section.widgets:
+                        print(f"DEBUG: - {w.name}: {type(w.obj)} (weight: {w.weight})")
+                else:
+                    print("DEBUG: view_menu not found in ui_sections")
+            else:
+                print("DEBUG: core has no ui_sections attribute")
+                
             self._populate_view_menu(core)
             self._populate_export_menu(core)
         except Exception as e:
             print(f"DEBUG: Error populating dynamic menus: {e}")
+            import traceback
+            traceback.print_exc()
     
     def _populate_view_menu(self, core):
         """Populate View menu from view_menu UI registrations"""
@@ -303,77 +336,194 @@ class MenuManager:
                 print(f"DEBUG: Toggle callback error: {e}")
         return callback
     
+    def _test_action(self, *args):
+        """Test action to see if menu system works at all"""
+        print("🎉🎉🎉 TEST ACTION TRIGGERED! MENU SYSTEM WORKS! 🎉🎉🎉")
+        import subprocess
+        subprocess.run(['say', 'Menu action triggered'], check=False)
+    
     def _reset_3d_view(self, *args):
         """Reset the 3D view to default position"""
         try:
-            # Reset 3D view
-            # This could trigger a refresh of the integrated 3D view
-            if hasattr(self.callback_handler, 'gl_area'):
-                self.callback_handler.gl_area.queue_render()
+            # Try to access the OpenGL view through registered UI widgets
+            if hasattr(self.callback_handler, 'settings'):
+                core = self.callback_handler.settings
+                if hasattr(core, 'ui_sections') and 'view_menu' in core.ui_sections:
+                    ui_section = core.ui_sections['view_menu']
+                    # Look for ViewOpenGL widget
+                    for widget_info in ui_section.widgets:
+                        if widget_info.name == 'ViewOpenGL':
+                            # Found the OpenGL view toggle - we can try to reset it
+                            if hasattr(widget_info.obj, 'emit'):
+                                # Toggle it off and on to reset
+                                widget_info.obj.set_active(False)
+                                widget_info.obj.set_active(True)
+                            return
+                
+                # Fallback: try to find the integrated GLArea directly
+                if hasattr(self.callback_handler, 'gl_area'):
+                    self.callback_handler.gl_area.queue_render()
+                    
         except Exception as e:
             print(f"DEBUG: Reset 3D view error: {e}")
     
     # View menu action implementations
     def _toggle_log_window(self, *args):
         """Toggle the log window"""
+        print("🔥 LOG MENU CLICKED! 🔥")
         try:
-            # Try to find the log plugin and call its toggle method
-            if hasattr(self.callback_handler, 'core'):
-                # Look for loaded log plugin
-                plugins = getattr(self.callback_handler.core, '_plugins', {})
-                for name, plugin in plugins.items():
-                    if hasattr(plugin, 'toggle_log_window'):
-                        plugin.toggle_log_window()
+            # Try to find and use the Log plugin
+            # The callback_handler is ProjectGui, which has settings (the event_manager)
+            if hasattr(self.callback_handler, 'settings'):
+                core = self.callback_handler.settings
+                
+                # Try to get plugins from plugin manager
+                plugin_manager = core.get("plugin_manager")
+                if plugin_manager:
+                    plugins = plugin_manager.modules
+                    print(f"DEBUG: Found {len(plugins)} plugins from plugin_manager: {list(plugins.keys())}")
+                else:
+                    # Fallback to _plugins attribute
+                    plugins = getattr(core, '_plugins', {})
+                    print(f"DEBUG: Found {len(plugins)} plugins from _plugins: {list(plugins.keys())}")
+                
+                # Look for Log plugin specifically
+                if 'Log' in plugins:
+                    log_plugin = plugins['Log']
+                    print(f"DEBUG: Found Log plugin directly: {log_plugin}")
+                    if hasattr(log_plugin, 'toggle_log_window'):
+                        print(f"DEBUG: Calling toggle_log_window on Log plugin")
+                        log_plugin.toggle_log_window()
                         return
-            pass  # Log plugin not found
+                
+                # Look for loaded plugins
+                for name, plugin_instance in plugins.items():
+                    print(f"DEBUG: Checking plugin {name}: {type(plugin_instance).__name__}")
+                    if hasattr(plugin_instance, 'toggle_log_window'):
+                        print(f"DEBUG: Found Log plugin, calling toggle_log_window")
+                        plugin_instance.toggle_log_window()
+                        return
+                
+            # If no plugin found, create a simple log window
+            print("DEBUG: No Log plugin found, creating simple window")
+            from gi.repository import Gtk
+            window = Gtk.Window(title="Log Window")
+            window.set_default_size(500, 400)
+            
+            # Add a simple text view
+            scrolled = Gtk.ScrolledWindow()
+            text_view = Gtk.TextView()
+            text_view.set_editable(False)
+            text_view.get_buffer().set_text("Log window placeholder\n\nThe Log plugin is not loaded.\nThis is a placeholder window.")
+            scrolled.set_child(text_view)
+            window.set_child(scrolled)
+            
+            window.show()
+            print("DEBUG: Simple log window shown")
+            
         except Exception as e:
             print(f"DEBUG: Toggle log window error: {e}")
+            import traceback
+            traceback.print_exc()
     
     def _toggle_memory_window(self, *args):
         """Toggle the memory analyzer window"""
+        print("🔥 MEMORY MENU CLICKED! 🔥")
         try:
-            if hasattr(self.callback_handler, 'core'):
-                plugins = getattr(self.callback_handler.core, '_plugins', {})
-                for name, plugin in plugins.items():
-                    if hasattr(plugin, 'toggle_window') and 'memory' in name.lower():
-                        plugin.toggle_window()
+            # Try to find and use the MemoryAnalyzer plugin
+            if hasattr(self.callback_handler, 'settings'):
+                core = self.callback_handler.settings
+                
+                # Try to get plugins from plugin manager
+                plugin_manager = core.get("plugin_manager")
+                if plugin_manager:
+                    plugins = plugin_manager.modules
+                    print(f"DEBUG: Found {len(plugins)} plugins from plugin_manager: {list(plugins.keys())}")
+                else:
+                    plugins = getattr(core, '_plugins', {})
+                    print(f"DEBUG: Found {len(plugins)} plugins from _plugins: {list(plugins.keys())}")
+                
+                # Look for loaded plugins
+                for name, plugin_instance in plugins.items():
+                    if hasattr(plugin_instance, 'toggle_window') and type(plugin_instance).__name__ == 'MemoryAnalyzer':
+                        print(f"DEBUG: Found MemoryAnalyzer plugin, calling toggle_window")
+                        plugin_instance.toggle_window()
                         return
-            pass  # Memory analyzer plugin not found
+            
+            # If no plugin found, create a simple memory window
+            print("DEBUG: No MemoryAnalyzer plugin found, creating simple window")
+            from gi.repository import Gtk
+            window = Gtk.Window(title="Memory Analyzer")
+            window.set_default_size(500, 400)
+            
+            # Add a simple label
+            label = Gtk.Label(label="Memory Analyzer\n\nThe MemoryAnalyzer plugin is not loaded.\nThis is a placeholder window.")
+            window.set_child(label)
+            
+            window.show()
+            print("DEBUG: Simple memory window shown")
+            
         except Exception as e:
             print(f"DEBUG: Toggle memory window error: {e}")
+            import traceback
+            traceback.print_exc()
             
     def _toggle_plugins_window(self, *args):
         """Toggle the plugin selector window"""
         try:
-            if hasattr(self.callback_handler, 'core'):
-                plugins = getattr(self.callback_handler.core, '_plugins', {})
-                for name, plugin in plugins.items():
-                    if hasattr(plugin, 'toggle_plugin_window'):
-                        plugin.toggle_plugin_window()
+            print(f"DEBUG: _toggle_plugins_window called")
+            # Find the PluginSelector plugin directly and call its toggle method
+            if hasattr(self.callback_handler, 'settings'):
+                core = self.callback_handler.settings
+                # Look for loaded plugins that have the right functionality  
+                for plugin_instance in getattr(core, '_plugins', {}).values():
+                    if type(plugin_instance).__name__ == 'PluginSelector':
+                        print(f"DEBUG: Found PluginSelector plugin")
+                        if hasattr(plugin_instance, 'toggle_window'):
+                            print(f"DEBUG: Calling toggle_window")
+                            plugin_instance.toggle_window()
+                        elif hasattr(plugin_instance, 'toggle_plugin_window'):
+                            print(f"DEBUG: Calling toggle_plugin_window")
+                            plugin_instance.toggle_plugin_window()
                         return
-            pass  # Plugin selector not found
+                print("DEBUG: No PluginSelector plugin found")
+            else:
+                print("DEBUG: No core found in callback_handler")
         except Exception as e:
             print(f"DEBUG: Toggle plugins window error: {e}")
+            import traceback
+            traceback.print_exc()
     
     def _toggle_console_window(self, *args):
         """Toggle the console window"""
         try:
-            if hasattr(self.callback_handler, 'core'):
-                plugins = getattr(self.callback_handler.core, '_plugins', {})
-                for name, plugin in plugins.items():
-                    if hasattr(plugin, 'toggle_console_window') or 'console' in name.lower():
-                        if hasattr(plugin, 'toggle_console_window'):
-                            plugin.toggle_console_window()
-                        elif hasattr(plugin, 'toggle_window'):
-                            plugin.toggle_window()
+            print(f"DEBUG: _toggle_console_window called")
+            # Find the GtkConsole plugin directly and call its toggle method
+            if hasattr(self.callback_handler, 'settings'):
+                core = self.callback_handler.settings
+                # Look for loaded plugins that have the right functionality  
+                for plugin_instance in getattr(core, '_plugins', {}).values():
+                    if type(plugin_instance).__name__ == 'GtkConsole':
+                        print(f"DEBUG: Found GtkConsole plugin")
+                        if hasattr(plugin_instance, 'toggle_console_window'):
+                            print(f"DEBUG: Calling toggle_console_window")
+                            plugin_instance.toggle_console_window()
+                        elif hasattr(plugin_instance, 'toggle_window'):
+                            print(f"DEBUG: Calling toggle_window")
+                            plugin_instance.toggle_window()
                         return
-            pass  # Console plugin not found
+                print("DEBUG: No GtkConsole plugin found")
+            else:
+                print("DEBUG: No core found in callback_handler")
         except Exception as e:
             print(f"DEBUG: Toggle console window error: {e}")
+            import traceback
+            traceback.print_exc()
     
     # Export menu action implementations  
     def _export_gcode(self, *args):
         """Export G-code"""
+        print("🔥 EXPORT G-CODE MENU CLICKED! 🔥")
         try:
             print("DEBUG: G-code export requested")
             # This would normally open a file dialog and export G-code

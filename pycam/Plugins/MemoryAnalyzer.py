@@ -37,14 +37,12 @@ class MemoryAnalyzer(pycam.Plugins.PluginBase):
         if not self._gtk:
             return False
         if self.gui:
-            # menu item and shortcut
-            self.toggle_action = self.gui.get_object("ToggleMemoryAnalyzerAction")
+            # GTK 4: We don't need a UI widget for the menu action
+            # The menu system will call toggle_window directly
             self._gtk_handlers = []
-            self._gtk_handlers.append((self.toggle_action, "toggled", self.toggle_window))
-            self.register_gtk_accelerator("memory_analyzer", self.toggle_action, None,
-                                          "ToggleMemoryAnalyzerAction")
-            self.core.register_ui("view_menu", "ToggleMemoryAnalyzerAction", self.toggle_action,
-                                  80)
+            
+            # Store a flag for window visibility
+            self.window_visible = False
             # the window
             self.window = self.gui.get_object("MemoryAnalyzerWindow")
             self.window.set_default_size(500, 400)
@@ -76,27 +74,23 @@ class MemoryAnalyzer(pycam.Plugins.PluginBase):
         if self.gui:
             self.unregister_gtk_handlers(self._gtk_handlers)
             self.window.hide()
-            self.core.unregister_ui("view_menu", self.toggle_action)
-            self.unregister_gtk_accelerator("memory_analyzer", self.toggle_action)
 
     def toggle_window(self, widget=None, value=None, action=None):
-        checkbox_state = self.toggle_action.get_active()
-        if value is None:
-            new_state = checkbox_state
-        elif action is None:
+        # GTK 4: Simplified toggle without checkbox dependency
+        if value is not None:
             new_state = value
         else:
-            new_state = action
+            # Toggle current state
+            new_state = not getattr(self, 'window_visible', False)
+        
+        self.window_visible = new_state
+        
         if new_state:
-            # GTK 4: Window positioning is handled by the compositor
-            # The move() method has been removed, so we skip position restoration
             self.refresh_memory_analyzer()
             self.window.show()
         else:
-            # GTK 4: get_position() has been removed as windows are managed by compositor
-            # We no longer store/restore position manually
             self.window.hide()
-        self.toggle_action.set_active(new_state)
+        
         # don't destroy the window with a "destroy" event
         return True
 
