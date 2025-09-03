@@ -467,7 +467,9 @@ class OpenGLWindow(pycam.Plugins.PluginBase):
         self.is_visible = True
         # GTK 4: Window positioning is handled by the compositor
         # The move() method has been removed, so we skip position restoration
-        self.window.show()
+        if self.window:
+            self.window.show()
+            self.window.present()  # GTK 4: Use present() to bring window to front
 
     def hide(self):
         self.is_visible = False
@@ -703,14 +705,41 @@ class OpenGLWindow(pycam.Plugins.PluginBase):
             return
         self.trigger_rendering()
 
-    def mouse_press_handler(self, widget, event):
-        self.mouse["pressed_timestamp"] = event.get_time()
-        self.mouse["pressed_button"] = event.button
-        self.mouse["pressed_pos"] = event.x, event.y
-        self.mouse_handler(widget, event)
+    def mouse_press_handler(self, gesture, n_press, x, y):
+        # GTK 4: GestureClick passes gesture, n_press, x, y
+        self.mouse["pressed_timestamp"] = 0  # GTK 4: get_time() not easily available
+        try:
+            button = gesture.get_current_button()
+        except:
+            button = 1  # Default to left button
+        self.mouse["pressed_button"] = button
+        self.mouse["pressed_pos"] = x, y
+        
+        # Create a minimal controller-like object for compatibility
+        class MotionController:
+            def __init__(self, widget):
+                self.widget = widget
+            def get_widget(self):
+                return self.widget
+        
+        fake_controller = MotionController(gesture.get_widget())
+        self.mouse_handler(fake_controller, x, y)
 
-    def mouse_handler(self, widget, event):
-        x, y, state = event.x, event.y, event.state
+    def mouse_handler(self, controller, x, y):
+        # GTK 4: EventControllerMotion passes controller, x, y
+        # We need to get the current modifier state from the controller
+        widget = controller.get_widget()
+        display = widget.get_display()
+        seat = display.get_default_seat()
+        device = seat.get_pointer()
+        
+        # Get current modifier state - this is a workaround for GTK 4
+        try:
+            surface = widget.get_native().get_surface()
+            _, _, state = device.get_surface_at_position(surface)
+        except:
+            # Fallback: assume no modifiers if we can't get the state
+            state = 0
         if self.mouse["button"] is None:
             if ((state & self.BUTTON_ZOOM)
                     or (state & self.BUTTON_ROTATE)
@@ -720,9 +749,15 @@ class OpenGLWindow(pycam.Plugins.PluginBase):
         else:
             # Don't try to create more than 25 frames per second (enough for
             # a decent visualization).
-            if event.get_time() - self.mouse["event_timestamp"] < 40:
+            import time
+            current_time = time.time() * 1000  # Convert to milliseconds
+            if current_time - self.mouse["event_timestamp"] < 40:
                 return
-            elif state & self.mouse["button"] & self.BUTTON_ZOOM:
+            
+            # Update timestamp for next frame
+            self.mouse["event_timestamp"] = current_time
+            
+            if state & self.mouse["button"] & self.BUTTON_ZOOM:
                 self._last_view = None
                 # the start button is still active: update the view
                 start_x, start_y = self.mouse["start_pos"]

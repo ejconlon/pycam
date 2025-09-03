@@ -149,6 +149,9 @@ class ProjectGui(pycam.Gui.BaseUI):
         # Load modern GTK 4 CSS styling
         self._load_modern_styling()
         
+        # Set up integrated 3D view
+        self._setup_integrated_3d_view()
+        
         print("DEBUG: Checkpoint 1 - UI file loading complete")
         if pycam.Utils.get_platform() == pycam.Utils.OSPlatform.WINDOWS:
             gtkrc_file = get_ui_file_location(GTKRC_FILE_WINDOWS)
@@ -602,6 +605,180 @@ class ProjectGui(pycam.Gui.BaseUI):
                 
         except Exception as e:
             log.debug("Failed to load modern styling: %s", e)
+
+    def _setup_integrated_3d_view(self):
+        """Set up integrated 3D view in the main window"""
+        try:
+            # Check if OpenGL is available
+            try:
+                import OpenGL.GL as GL
+                from gi.repository import Gtk
+            except ImportError:
+                log.info("OpenGL not available, using placeholder for 3D view")
+                return
+                
+            # Get the ViewArea and remove the placeholder
+            view_area = self.gui.get_object("ViewArea")
+            placeholder = self.gui.get_object("ViewPlaceholder")
+            
+            if view_area and placeholder:
+                # Remove the placeholder
+                view_area.remove(placeholder)
+                
+                # Create GLArea for 3D rendering
+                gl_area = Gtk.GLArea()
+                gl_area.set_vexpand(True)
+                gl_area.set_hexpand(True)
+                gl_area.set_auto_render(False)
+                
+                # Set up OpenGL context properties
+                if hasattr(gl_area, 'set_has_depth_buffer'):
+                    gl_area.set_has_depth_buffer(True)
+                if hasattr(gl_area, 'set_has_alpha'):
+                    gl_area.set_has_alpha(True)
+                
+                # Add render callback
+                gl_area.connect("render", self._on_3d_render)
+                gl_area.connect("resize", self._on_3d_resize)
+                
+                # Add to ViewArea
+                view_area.append(gl_area)
+                
+                # Create a label for model info
+                info_label = Gtk.Label()
+                info_label.set_text("3D View - Load a model to see visualization")
+                info_label.set_halign(Gtk.Align.CENTER)
+                info_label.set_margin_top(10)
+                view_area.append(info_label)
+                
+                # Store references
+                self.gl_area = gl_area
+                self.info_label = info_label
+                
+                log.info("Integrated 3D view set up successfully")
+            else:
+                log.warning("Could not find ViewArea or ViewPlaceholder for 3D view setup")
+                
+        except Exception as e:
+            log.debug("Failed to set up integrated 3D view: %s", e)
+
+    def _on_3d_render(self, gl_area, context):
+        """Render callback for 3D view"""
+        try:
+            import OpenGL.GL as GL
+            
+            # Clear the framebuffer
+            GL.glClearColor(0.2, 0.3, 0.4, 1.0)  # Nice blue-gray background
+            GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT)
+            
+            # Enable depth testing
+            GL.glEnable(GL.GL_DEPTH_TEST)
+            
+            # Set up basic lighting
+            GL.glEnable(GL.GL_LIGHTING)
+            GL.glEnable(GL.GL_LIGHT0)
+            GL.glLightfv(GL.GL_LIGHT0, GL.GL_POSITION, [1.0, 1.0, 1.0, 0.0])
+            
+            # Set up perspective projection
+            allocation = gl_area.get_allocation()
+            width, height = allocation.width, allocation.height
+            if height > 0:
+                aspect = width / height
+                GL.glMatrixMode(GL.GL_PROJECTION)
+                GL.glLoadIdentity()
+                import math
+                fov = 45.0 * math.pi / 180.0
+                f = 1.0 / math.tan(fov / 2.0)
+                GL.glFrustum(-aspect/f, aspect/f, -1/f, 1/f, 1.0, 100.0)
+                
+                # Set up model view
+                GL.glMatrixMode(GL.GL_MODELVIEW)
+                GL.glLoadIdentity()
+                GL.glTranslatef(0.0, 0.0, -5.0)
+                
+                # Draw a simple rotating cube as placeholder
+                self._draw_demo_cube()
+            
+            GL.glFlush()
+            return True
+            
+        except Exception as e:
+            log.debug("3D render error: %s", e)
+            return False
+
+    def _on_3d_resize(self, gl_area, width, height):
+        """Resize callback for 3D view"""
+        try:
+            import OpenGL.GL as GL
+            GL.glViewport(0, 0, width, height)
+        except Exception as e:
+            log.debug("3D resize error: %s", e)
+
+    def _draw_demo_cube(self):
+        """Draw a simple demo cube"""
+        try:
+            import OpenGL.GL as GL
+            import time
+            import math
+            
+            # Rotate based on time
+            angle = time.time() * 50  # degrees
+            GL.glRotatef(angle, 1.0, 1.0, 0.0)
+            
+            # Draw a colored cube
+            GL.glBegin(GL.GL_QUADS)
+            
+            # Front face (red)
+            GL.glColor3f(1.0, 0.0, 0.0)
+            GL.glVertex3f(-1.0, -1.0, 1.0)
+            GL.glVertex3f(1.0, -1.0, 1.0)
+            GL.glVertex3f(1.0, 1.0, 1.0)
+            GL.glVertex3f(-1.0, 1.0, 1.0)
+            
+            # Back face (green)
+            GL.glColor3f(0.0, 1.0, 0.0)
+            GL.glVertex3f(-1.0, -1.0, -1.0)
+            GL.glVertex3f(-1.0, 1.0, -1.0)
+            GL.glVertex3f(1.0, 1.0, -1.0)
+            GL.glVertex3f(1.0, -1.0, -1.0)
+            
+            # Top face (blue)
+            GL.glColor3f(0.0, 0.0, 1.0)
+            GL.glVertex3f(-1.0, 1.0, -1.0)
+            GL.glVertex3f(-1.0, 1.0, 1.0)
+            GL.glVertex3f(1.0, 1.0, 1.0)
+            GL.glVertex3f(1.0, 1.0, -1.0)
+            
+            # Bottom face (yellow)
+            GL.glColor3f(1.0, 1.0, 0.0)
+            GL.glVertex3f(-1.0, -1.0, -1.0)
+            GL.glVertex3f(1.0, -1.0, -1.0)
+            GL.glVertex3f(1.0, -1.0, 1.0)
+            GL.glVertex3f(-1.0, -1.0, 1.0)
+            
+            # Right face (purple)
+            GL.glColor3f(1.0, 0.0, 1.0)
+            GL.glVertex3f(1.0, -1.0, -1.0)
+            GL.glVertex3f(1.0, 1.0, -1.0)
+            GL.glVertex3f(1.0, 1.0, 1.0)
+            GL.glVertex3f(1.0, -1.0, 1.0)
+            
+            # Left face (cyan)
+            GL.glColor3f(0.0, 1.0, 1.0)
+            GL.glVertex3f(-1.0, -1.0, -1.0)
+            GL.glVertex3f(-1.0, -1.0, 1.0)
+            GL.glVertex3f(-1.0, 1.0, 1.0)
+            GL.glVertex3f(-1.0, 1.0, -1.0)
+            
+            GL.glEnd()
+            
+            # Schedule next frame
+            gl_area = getattr(self, 'gl_area', None)
+            if gl_area:
+                gl_area.queue_render()
+                
+        except Exception as e:
+            log.debug("Demo cube draw error: %s", e)
 
     def _ensure_final_menu_setup(self):
         """Final fallback to ensure File menu appears - called at end of __init__"""
