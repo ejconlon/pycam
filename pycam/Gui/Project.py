@@ -145,6 +145,10 @@ class ProjectGui(pycam.Gui.BaseUI):
         print("DEBUG: Loading UI file...")
         self.gui.add_from_file(gtk_build_file)
         print("DEBUG: UI file loaded successfully")
+        
+        # Load modern GTK 4 CSS styling
+        self._load_modern_styling()
+        
         print("DEBUG: Checkpoint 1 - UI file loading complete")
         if pycam.Utils.get_platform() == pycam.Utils.OSPlatform.WINDOWS:
             gtkrc_file = get_ui_file_location(GTKRC_FILE_WINDOWS)
@@ -569,6 +573,35 @@ class ProjectGui(pycam.Gui.BaseUI):
         self.window.show()
         if self.mainloop is not None:
             self.mainloop.update()
+
+    def _load_modern_styling(self):
+        """Load modern GTK 4 CSS styling"""
+        try:
+            from gi.repository import Gdk
+            
+            css_file = get_ui_file_location("pycam-modern.css")
+            if css_file is None:
+                log.debug("CSS file not found, skipping modern styling")
+                return
+            
+            # Create CSS provider
+            css_provider = Gtk.CssProvider()
+            css_provider.load_from_path(css_file)
+            
+            # Add CSS provider to default display
+            display = Gdk.Display.get_default()
+            if display is not None:
+                Gtk.StyleContext.add_provider_for_display(
+                    display, 
+                    css_provider, 
+                    Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
+                )
+                log.info("Loaded modern GTK 4 styling from %s", css_file)
+            else:
+                log.warning("Could not get default display for CSS styling")
+                
+        except Exception as e:
+            log.debug("Failed to load modern styling: %s", e)
 
     def _ensure_final_menu_setup(self):
         """Final fallback to ensure File menu appears - called at end of __init__"""

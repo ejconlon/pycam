@@ -19,15 +19,17 @@ along with PyCAM.  If not, see <http://www.gnu.org/licenses/>.
 
 
 import math
+import os
 
 import pycam.Plugins
+from gi.repository import GdkPixbuf
 
 
-EXTRUSION_TYPES = (("radius_up", "Radius (bulge)", "ExtrusionRadiusUpIcon"),
-                   ("radius_down", "Radius (valley)", "ExtrusionRadiusDownIcon"),
-                   ("skewed", "Chamfer", "ExtrusionChamferIcon"),
-                   ("sine", "Sine", "ExtrusionSineIcon"),
-                   ("sigmoid", "Sigmoid", "ExtrusionSigmoidIcon"))
+EXTRUSION_TYPES = (("radius_up", "Radius (bulge)", "extrusion_radius_up.png"),
+                   ("radius_down", "Radius (valley)", "extrusion_radius_down.png"),
+                   ("skewed", "Chamfer", "extrusion_chamfer.png"),
+                   ("sine", "Sine", "extrusion_sine.png"),
+                   ("sigmoid", "Sigmoid", "extrusion_sigmoidal.png"))
 
 
 class ModelExtrusion(pycam.Plugins.PluginBase):
@@ -51,31 +53,22 @@ class ModelExtrusion(pycam.Plugins.PluginBase):
             self.gui.get_object("ExtrusionGrid").set_value(0.5)
             extrusion_model = self.gui.get_object("ExtrusionTypeModel")
             for row in EXTRUSION_TYPES:
-                # GTK 4: get_pixbuf() replaced with get_paintable() or get_texture()
-                image_widget = self.gui.get_object(row[2])
                 pixbuf = None
+                image_filename = row[2]
                 
-                # Try GTK 4 methods first
-                if hasattr(image_widget, 'get_paintable'):
-                    try:
-                        pixbuf = image_widget.get_paintable()
-                    except Exception as e:
-                        self.log.debug("get_paintable() failed: %s", e)
+                # Try to load the image file from the UI directory
+                ui_dir = os.path.join(os.path.dirname(__file__), "..", "..", "share", "ui")
+                image_path = os.path.join(ui_dir, image_filename)
                 
-                if pixbuf is None and hasattr(image_widget, 'get_texture'):
-                    try:
-                        pixbuf = image_widget.get_texture()  
-                    except Exception as e:
-                        self.log.debug("get_texture() failed: %s", e)
+                try:
+                    if os.path.exists(image_path):
+                        pixbuf = GdkPixbuf.Pixbuf.new_from_file(image_path)
+                    else:
+                        self.log.debug("Image file not found: %s", image_path)
+                except Exception as e:
+                    self.log.debug("Failed to load image %s: %s", image_path, e)
                 
-                # Fallback to GTK 3 method
-                if pixbuf is None and hasattr(image_widget, 'get_pixbuf'):
-                    try:
-                        pixbuf = image_widget.get_pixbuf()
-                    except Exception as e:
-                        self.log.debug("get_pixbuf() failed: %s", e)
-                
-                # Skip this row if no image could be loaded
+                # Add the row to the model (with or without image)
                 if pixbuf is not None:
                     extrusion_model.append((row[0], row[1], pixbuf))
                 else:

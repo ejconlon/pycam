@@ -1,0 +1,170 @@
+solid "model1_support"; Produced by pycam (v999.0.0), 2025-09-02
+facet normal 0.000000 0.000000 -1.000000
+  outer loop
+    vertex -1.466072 41.000000 -2.932144
+    vertex 0.533928 59.000000 -2.932144
+    vertex 0.533928 41.000000 -2.932144
+  endloop
+endfacet
+facet normal -0.000000 0.000000 -1.000000
+  outer loop
+    vertex 0.533928 59.000000 -2.932144
+    vertex -1.466072 41.000000 -2.932144
+    vertex -1.466072 59.000000 -2.932144
+  endloop
+endfacet
+facet normal -0.000000 0.000000 1.000000
+  outer loop
+    vertex -1.466072 59.000000 -2.432144
+    vertex 0.533928 41.000000 -2.432144
+    vertex 0.533928 59.000000 -2.432144
+  endloop
+endfacet
+facet normal 0.000000 0.000000 1.000000
+  outer loop
+    vertex 0.533928 41.000000 -2.432144
+    vertex -1.466072 59.000000 -2.432144
+    vertex -1.466072 41.000000 -2.432144
+  endloop
+endfacet
+facet normal 0.000000 -1.000000 0.000000
+  outer loop
+    vertex -1.466072 41.000000 -2.932144
+    vertex 0.533928 41.000000 -2.432144
+    vertex -1.466072 41.000000 -2.432144
+  endloop
+endfacet
+facet normal 0.000000 -1.000000 -0.000000
+  outer loop
+    vertex 0.533928 41.000000 -2.432144
+    vertex -1.466072 41.000000 -2.932144
+    vertex 0.533928 41.000000 -2.932144
+  endloop
+endfacet
+facet normal 0.000000 1.000000 -0.000000
+  outer loop
+    vertex 0.533928 59.000000 -2.932144
+    vertex -1.466072 59.000000 -2.432144
+    vertex 0.533928 59.000000 -2.432144
+  endloop
+endfacet
+facet normal 0.000000 1.000000 0.000000
+  outer loop
+    vertex -1.466072 59.000000 -2.432144
+    vertex 0.533928 59.000000 -2.932144
+    vertex -1.466072 59.000000 -2.932144
+  endloop
+endfacet
+facet normal 1.000000 0.000000 0.000000
+  outer loop
+    vertex 0.533928 41.000000 -2.932144
+    vertex 0.533928 59.000000 -2.432144
+    vertex 0.533928 41.000000 -2.432144
+  endloop
+endfacet
+facet normal 1.000000 0.000000 0.000000
+  outer loop
+    vertex 0.533928 59.000000 -2.432144
+    vertex 0.533928 41.000000 -2.932144
+    vertex 0.533928 59.000000 -2.932144
+  endloop
+endfacet
+facet normal -1.000000 0.000000 0.000000
+  outer loop
+    vertex -1.466072 59.000000 -2.932144
+    vertex -1.466072 41.000000 -2.432144
+    vertex -1.466072 59.000000 -2.432144
+  endloop
+endfacet
+facet normal -1.000000 0.000000 0.000000
+  outer loop
+    vertex -1.466072 41.000000 -2.432144
+    vertex -1.466072 59.000000 -2.932144
+    vertex -1.466072 41.000000 -2.932144
+  endloop
+endfacet
+facet normal 0.000000 0.000000 -1.000000
+  outer loop
+    vertex -6.932144 46.000000 -2.932144
+    vertex 4.000000 48.000000 -2.932144
+    vertex 4.000000 46.000000 -2.932144
+  endloop
+endfacet
+facet normal -0.000000 0.000000 -1.000000
+  outer loop
+    vertex 4.000000 48.000000 -2.932144
+    vertex -6.932144 46.000000 -2.932144
+    vertex -6.932144 48.000000 -2.932144
+  endloop
+endfacet
+facet normal -0.000000 0.000000 1.000000
+  outer loop
+    vertex -6.932144 48.000000 -2.432144
+    vertex 4.000000 46.000000 -2.432144
+    vertex 4.000000 48.000000 -2.432144
+  endloop
+endfacet
+facet normal 0.000000 0.000000 1.000000
+  outer loop
+    vertex 4.000000 46.000000 -2.432144
+    vertex -6.932144 48.000000 -2.432144
+    vertex -6.932144 46.000000 -2.432144
+  endloop
+endfacet
+facet normal 0.000000 -1.000000 0.000000
+  outer loop
+    vertex -6.932144 46.000000 -2.932144
+    vertex 4.000000 46.000000 -2.432144
+    vertex -6.932144 46.000000 -2.432144
+  endloop
+endfacet
+facet normal 0.000000 -1.000000 -0.000000
+  outer loop
+    vertex 4.000000 46.000000 -2.432144
+    vertex -6.932144 46.000000 -2.932144
+    vertex 4.000000 46.000000 -2.932144
+  endloop
+endfacet
+facet normal 0.000000 1.000000 -0.000000
+  outer loop
+    vertex 4.000000 48.000000 -2.932144
+    vertex -6.932144 48.000000 -2.432144
+    vertex 4.000000 48.000000 -2.432144
+  endloop
+endfacet
+facet normal 0.000000 1.000000 0.000000
+  outer loop
+    vertex -6.932144 48.000000 -2.432144
+    vertex 4.000000 48.000000 -2.932144
+    vertex -6.932144 48.000000 -2.932144
+  endloop
+endfacet
+facet normal 1.000000 0.000000 0.000000
+  outer loop
+    vertex 4.000000 46.000000 -2.932144
+    vertex 4.000000 48.000000 -2.432144
+    vertex 4.000000 46.000000 -2.432144
+  endloop
+endfacet
+facet normal 1.000000 0.000000 0.000000
+  outer loop
+    vertex 4.000000 48.000000 -2.432144
+    vertex 4.000000 46.000000 -2.932144
+    vertex 4.000000 48.000000 -2.932144
+  endloop
+endfacet
+facet normal -1.000000 0.000000 0.000000
+  outer loop
+    vertex -6.932144 48.000000 -2.932144
+    vertex -6.932144 46.000000 -2.432144
+    vertex -6.932144 48.000000 -2.432144
+  endloop
+endfacet
+facet normal -1.000000 0.000000 0.000000
+  outer loop
+    vertex -6.932144 46.000000 -2.432144
+    vertex -6.932144 48.000000 -2.932144
+    vertex -6.932144 46.000000 -2.932144
+  endloop
+endfacet
+endsolid
